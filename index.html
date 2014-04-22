@@ -14,7 +14,7 @@
 	<script type="text/javascript" src="js/en_compressed.js"></script>
 	<script type="text/javascript" src="js/storage.js"></script>
 
- <script src="/socket.io/socket.io.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
 
 	<script type="text/javascript" src="blocks/input.js"></script>
 	<script type="text/javascript" src="blocks/output.js"></script>
@@ -24,39 +24,39 @@
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
     <script language="javascript" src="js/jquery.canvasAreaDraw.min.js"></script>
 
-  
+
 </head>
 <body>
     <div class="container">
-	<h1>Space-time</h1>
+		<h1>Space-time</h1>
 
-<ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#logic">Logic</a></li>
-  <li><a data-toggle="tab" href="#camera">Camera</a></li>
-  <li><a data-toggle="tab" href="#replay">Replay</a></li>
-  <li><a data-toggle="tab" href="#settings">Settings</a></li>
-</ul>
+		<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#logic">Logic</a></li>
+			<li><a data-toggle="tab" href="#camera">Camera</a></li>
+			<li><a data-toggle="tab" href="#replay">Replay</a></li>
+			<li><a data-toggle="tab" href="#settings">Settings</a></li>
+		</ul>
 
-<div class="tab-content">
-    <div id="logic" class="tab-pane fade in active">
-	<div id="blockly" style="height: 95%; width: 95%"></div>
-    </div>
-    <div id="camera" class="tab-pane fade">
-	<img width=500 id="cam" class="area" style="float: left" />
-	<img width=500 id="cv" style="float: right" />
+		<div class="tab-content">
+			<div id="logic" class="tab-pane fade in active">
+				<div id="blockly" style="height: 95%; width: 95%"></div>
+			</div>
+			<div id="camera" class="tab-pane fade">
+				<img width=500 id="cam" class="area" style="float: left" />
+				<img width=500 id="cv" style="float: right" />
 
-<canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;">
-</canvas>
-    </div>
+				<canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;">
+				</canvas>
+			</div>
 
-    <div id="replay" class="tab-pane fade">
-    replay
-    </div>
-    <div id="settings" class="tab-pane fade">
-    settings
-    </div>
-</div>
-</div>
+			<div id="replay" class="tab-pane fade">
+				replay
+			</div>
+			<div id="settings" class="tab-pane fade">
+				settings
+			</div>
+		</div>
+	</div>
 
 
 
@@ -326,100 +326,101 @@
 
 
 <script type="text/javascript">
-  var socket = io.connect('http://192.168.0.103');
-  
+	var socket = io.connect('http://192.168.0.103');
+
 	Blockly.inject(document.getElementById('blockly'),
 			{path: './', toolbox: document.getElementById('toolbox')});
-			
-/**
- * Bind an event to a function call.
- * @param {!Element} element Element upon which to listen.
- * @param {string} name Event name to listen to (e.g. 'mousedown').
- * @param {!Function} func Function to call when event is triggered.
- *     W3 browsers will call the function with the event object as a parameter,
- *     MSIE will not.
- */
-function bindEvent(element, name, func) {
-  if (element.addEventListener) {  // W3C
-    element.addEventListener(name, func, false);
-  } else if (element.attachEvent) {  // IE
-    element.attachEvent('on' + name, func);
-  }
-}
 
-
-/**
- * Backup code blocks to localStorage.
- */
-function backup_blocks() {
-	console.log('backup');
-  if ('localStorage' in window) {
-    var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-    window.localStorage.setItem('arduino', Blockly.Xml.domToText(xml));
-  }
-
-    var code = Blockly.Generator.workspaceToCode('JavaScript');
-    socket.emit('code', code);
-}
-
-/**
- * Restore code blocks from localStorage.
- */
-function restore_blocks() {
-  if ('localStorage' in window && window.localStorage.arduino) {
-    var xml = Blockly.Xml.textToDom(window.localStorage.arduino);
-    Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
-
-	var code = Blockly.Generator.workspaceToCode('JavaScript');
-console.log(code);
-
+	/**
+	 * Bind an event to a function call.
+	 * @param {!Element} element Element upon which to listen.
+	 * @param {string} name Event name to listen to (e.g. 'mousedown').
+	 * @param {!Function} func Function to call when event is triggered.
+	 *     W3 browsers will call the function with the event object as a parameter,
+	 *     MSIE will not.
+	 */
+	function bindEvent(element, name, func) {
+		if (element.addEventListener) {  // W3C
+			element.addEventListener(name, func, false);
+		} else if (element.attachEvent) {  // IE
+			element.attachEvent('on' + name, func);
+		}
 	}
-}
 
-function auto_save_and_restore_blocks() {
-  // Restore saved blocks in a separate thread so that subsequent
-  // initialization is not affected from a failed load.
-  window.setTimeout(restore_blocks, 0);
-  // Hook a save function onto unload.
- bindEvent(window, 'unload', backup_blocks);
-}
 
-auto_save_and_restore_blocks();
+	/**
+	 * Backup code blocks to localStorage.
+	 */
+	function backup_blocks() {
+		console.log('backup');
+		if ('localStorage' in window) {
+			var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+			window.localStorage.setItem('arduino', Blockly.Xml.domToText(xml));
+		}
 
-var old;
+		var code = Blockly.Generator.workspaceToCode('JavaScript');
+		socket.emit('code', code);
+	}
 
-  socket.on('position', function (position) {
-    if (position && position.x && position.y) {
+	/**
+	 * Restore code blocks from localStorage.
+	 */
+	function restore_blocks() {
+		if ('localStorage' in window && window.localStorage.arduino) {
+			var xml = Blockly.Xml.textToDom(window.localStorage.arduino);
+			Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+
+			var code = Blockly.Generator.workspaceToCode('JavaScript');
+			console.log(code);
+
+		}
+	}
+
+	function auto_save_and_restore_blocks() {
+		// Restore saved blocks in a separate thread so that subsequent
+		// initialization is not affected from a failed load.
+		window.setTimeout(restore_blocks, 0);
+		// Hook a save function onto unload.
+		bindEvent(window, 'unload', backup_blocks);
+	}
+
+	auto_save_and_restore_blocks();
+
+	var old;
+
+	socket.on('position', function(position) {
+		if (position && position.x && position.y) {
 //    var code = Blockly.Generator.workspaceToCode('JavaScript');
 //    socket.emit('code', code);
 
-if (!old) old = position;
+			if (!old)
+				old = position;
 
-var c = document.getElementById("myCanvas");
-var ctx = c.getContext("2d");
-	    ctx.clearRect(old.x, old.y, 10, 10);
-            ctx.beginPath();
-            ctx.rect(position.x, position.y, 10, 10);
-            ctx.fillStyle = 'rgba(46, 166, 203, 0.5)';
-            ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(old.x, old.y);
-ctx.globalAlpha=0.5;
-      ctx.lineTo(position.x, position.y);
-    ctx.strokeStyle = '#2ba6cb';
-        ctx.stroke();
+			var c = document.getElementById("myCanvas");
+			var ctx = c.getContext("2d");
+			ctx.clearRect(old.x, old.y, 10, 10);
+			ctx.beginPath();
+			ctx.rect(position.x, position.y, 10, 10);
+			ctx.fillStyle = 'rgba(46, 166, 203, 0.5)';
+			ctx.fill();
+			ctx.beginPath();
+			ctx.moveTo(old.x, old.y);
+			ctx.globalAlpha = 0.5;
+			ctx.lineTo(position.x, position.y);
+			ctx.strokeStyle = '#2ba6cb';
+			ctx.stroke();
 
-    old = position;
-}
-  });
+			old = position;
+		}
+	});
 
 
-socket.on('webcam', function (base64Image) {
-    $('#cam').attr('src',  base64Image);
-});
-socket.on('cv', function (base64Image) {
-    $('#cv').attr('src',  base64Image);
-});
+	socket.on('webcam', function(base64Image) {
+		$('#cam').attr('src', base64Image);
+	});
+	socket.on('cv', function(base64Image) {
+		$('#cv').attr('src', base64Image);
+	});
 
 </script>
 </body>

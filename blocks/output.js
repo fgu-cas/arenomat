@@ -9,7 +9,7 @@ Blockly.Language.sound = {
 				.appendTitle(new Blockly.FieldDropdown([["1", "1.mp3"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
 				.appendTitle("Zvuk")
 		this.appendDummyInput("")
-				//.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/sounda.png", 64, 64))
+		//.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/sounda.png", 64, 64))
 		this.appendValueInput("value")
 				.setCheck('Boolean')
 		this.setPreviousStatement(true, null);
@@ -44,10 +44,10 @@ Blockly.Language.lamp = {
 	init: function() {
 		this.setColour(190);
 		this.appendDummyInput("")
-			//	.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
+				//	.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
 				.appendTitle("Trest")
 		this.appendDummyInput("")
-				//.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/lampa.png", 64, 64))
+		//.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/lampa.png", 64, 64))
 		this.appendValueInput("value")
 				.setCheck('Boolean')
 		this.setPreviousStatement(true, null);
@@ -84,7 +84,7 @@ Blockly.Language.fan = {
 				.appendTitle("Nesquik")
 
 		this.appendDummyInput("")
-			//	.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/vetrak.png", 64, 64))
+		//	.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/vetrak.png", 64, 64))
 
 		this.appendValueInput("value")
 				.setCheck('Boolean')
@@ -119,10 +119,10 @@ Blockly.Language.humidifier = {
 	init: function() {
 		this.setColour(190);
 		this.appendDummyInput("")
-			//	.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
+				//	.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
 				.appendTitle("Svetlo")
 		this.appendDummyInput("")
-			//	.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/profesor.png", 64, 64))
+		//	.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/profesor.png", 64, 64))
 		this.appendValueInput("value", Number)
 				.setCheck('Boolean')
 		this.setPreviousStatement(true, null);

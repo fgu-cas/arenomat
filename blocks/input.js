@@ -1,5 +1,5 @@
 
-Blockly.Language.temperature = {	
+Blockly.Language.temperature = {
 	init: function() {
 		this.setColour(10);
 		this.appendDummyInput("")
@@ -9,7 +9,7 @@ Blockly.Language.temperature = {
 				.appendTitle("PIN#")
 				.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"]]), "PIN")
 		this.setOutput(true, Number);
-		this.setTooltip('return number of ambient temperature in ℃');
+		this.setTooltip('return number of ambient temperature in');
 	}
 };
 Blockly.JavaScript.temperature = function() {
