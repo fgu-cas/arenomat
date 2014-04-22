@@ -4,7 +4,7 @@
 -->
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
-    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap.no-icons.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome-ie7.css" rel="stylesheet">
 
@@ -22,31 +22,78 @@
 
     <script language="javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
-    <script language="javascript" src="js/jquery.canvasAreaDraw.min.js"></script>
+    <script language="javascript" src="js/jquery.canvasAreaDraw.js"></script>
 
+<style>
+@import url(//fonts.googleapis.com/css?family=Leckerli+One);
+.navbar-brand {
+    font-family: 'Leckerli One';
+    font-size: 35px;
+    font-style: normal;
+    font-weight: 700;
+    color: #428bca !important;
+    text-shadow: 1px 1px #fff !important;
+    &:hover {
+	color: #51CA42 !important;
+    }
+}
 
+canvas {
+    z-index: 999;
+    position: absolute;
+}
+
+</style>
 </head>
 <body>
-    <div class="container">
-		<h1>Space-time</h1>
-
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Rat in Space-time</a>
+    </div>
+</div>
+</nav>
+    <div class="container-fluid">
 		<ul class="nav nav-tabs">
 			<li class="active"><a data-toggle="tab" href="#logic">Logic</a></li>
 			<li><a data-toggle="tab" href="#camera">Camera</a></li>
-			<li><a data-toggle="tab" href="#replay">Replay</a></li>
 			<li><a data-toggle="tab" href="#settings">Settings</a></li>
 		</ul>
 
 		<div class="tab-content">
 			<div id="logic" class="tab-pane fade in active">
-				<div id="blockly" style="height: 95%; width: 95%"></div>
+			    <div class="row">
+			    <div class="col-md-12">
+				<div id="blockly" style="height: 500px; width: 100%"></div>
+			    </div>
+</div>
+			    <div class="row">
+			    <div class="col-md-12">
+				<a id="send" class="btn btn-primary" href="#">SEND</a>
+			    </div>
+			    </div>
 			</div>
-			<div id="camera" class="tab-pane fade">
-				<img width=500 id="cam" class="area" style="float: left" />
-				<img width=500 id="cv" style="float: right" />
 
-				<canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;">
+			<div id="camera" class="tab-pane fade">
+			    <div class="row">
+			    <span class="col-md-4">
+				<img width=500 height=375 id="cam" class="area" style="float: left" />
+			    </span>
+			    <span class="col-md-4">
+				<img width=500 height=375 id="cv" style="float: right" />
+			    </span>
+			    <span class="col-md-4">
+				<canvas id="myCanvas" width="500" height="375" style="background-color: #fdffdd">
 				</canvas>
+			    </span>
+			    </div>
 			</div>
 
 			<div id="replay" class="tab-pane fade">
@@ -388,10 +435,15 @@
 
 	var old;
 
+	$("#send").click(function() {
+
+    var code = Blockly.Generator.workspaceToCode('JavaScript');
+console.log(code);
+    socket.emit('code', code);
+});
+
 	socket.on('position', function(position) {
 		if (position && position.x && position.y) {
-//    var code = Blockly.Generator.workspaceToCode('JavaScript');
-//    socket.emit('code', code);
 
 			if (!old)
 				old = position;
@@ -422,6 +474,11 @@
 		$('#cv').attr('src', base64Image);
 	});
 
+    // store the currently selected tab in the hash value
+    $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
+        var id = $(e.target).attr("href").substr(1);
+        window.location.hash = id;
+    });
 </script>
 </body>
 </html>

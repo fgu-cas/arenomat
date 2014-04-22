@@ -19,7 +19,7 @@ Blockly.JavaScript.message = function() {
 		Blockly.JavaScript.message.functionName = functionName;
 		var func = [];
 		func.push('function ' + functionName + '(message) {');
-		func.push('  // alert(message)');
+		func.push('  console.log(message)');
 		func.push('}');
 		Blockly.JavaScript.definitions_['message'] = func.join('\n');
 	}

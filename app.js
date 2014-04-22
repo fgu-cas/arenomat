@@ -14,6 +14,7 @@ var lowThresh = 100;
 var highThresh = 200;
 var minArea = 100;
 var maxArea = 400;
+var point;
 
 app.listen(80)
 
@@ -74,7 +75,7 @@ function frameRead() {
 
 					// emits positions of the first point one
 					// TODO: more accurate position
-					var point = contours.point(i, 0);
+					point = contours.point(i, 0);
 					
 					//im.ellipse(point.x + 10, point.y + 10, 10, 10);
 					im.drawContour(contours, i, RED);
@@ -96,3 +97,11 @@ function frameRead() {
 intervalId = setInterval(function() {
 	frameRead(intervalId)
 }, 100);
+
+io.sockets.on('connection', function (socket) {
+  socket.on('code', function (data) {
+    console.log(data);
+point_x = point.x;
+eval(data);
+  });
+});

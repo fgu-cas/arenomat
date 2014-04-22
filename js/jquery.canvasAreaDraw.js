@@ -27,18 +27,20 @@
     }
 
     $reset = $('<button type="button" class="btn"><i class="icon-trash"></i>Clear</button>');
-    $canvas = $('<canvas>');
+    $canvas = $('<canvas width="500" height="350">');
     ctx = $canvas[0].getContext('2d');
 
-    image = new Image();
-    resize = function() {
-      $canvas.attr('height', image.height).attr('width', image.width);
+    image = $(this);
+   resize = function() {
+//      $canvas.attr('height', image.height).attr('width', image.width);
       draw();
     };
-    $(image).load(resize);
-    image.src = settings.imageUrl;
-    if (image.loaded) resize();
-    $canvas.css({background: 'url('+image.src+')'});
+//    $(image).load(resize);
+//    image.src = settings.imageUrl;
+    if (image.loaded) 
+//resize();
+draw();
+//    $canvas.css({background: 'url('+image.src+')'});
 
     $(document).ready( function() {
       $(input).after('<br>', $canvas, '<br>', $reset);
