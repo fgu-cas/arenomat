@@ -1,0 +1,24 @@
+Editor polygonů:
+http://iakob.com/canvas-area-draw/demo.html
+
+Blockly:
+
+sudo apt-get -y  install libopencv-dev nodejs-legacy npm
+
+sudo apt-get -y install build-essential cmake cmake-curses-gui pkg-config libpng12-0 libpng12-dev libpng++-dev libpng3 libpnglite-dev zlib1g-dbg zlib1g zlib1g-dev pngtools libtiff4-dev libtiff4 libtiffxx0c2 libtiff-tools libeigen3-dev
+sudo apt-get -y install libjpeg8 libjpeg8-dev libjpeg8-dbg libjpeg-progs libav-tools libavcodec-dev libavcodec54 libavformat54 libavformat-dev libgstreamer0.10-0-dbg libgstreamer0.10-0 libgstreamer0.10-dev libxine1-ffmpeg libxine-dev libxine1-bin libunicap2 libunicap2-dev swig libv4l-0 libv4l-dev python-numpy libpython2.7 python-dev python2.7-dev libgtk2.0-dev 
+git clone https://github.com/Itseez/opencv.git
+cd opencv*
+mkdir release
+cd release
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D BUILD_PYTHON_SUPPORT=ON -D BUILD_EXAMPLES=ON ..
+make
+sudo make install 
+
+- ledka na talíři - optickej feedback od motoru - oba směry otáčení? -> h + arduino
+
+SandBox pro spouštění kódu blockly
+http://gf3.github.io/sandbox/
+
+vm.runInNewContext
+
