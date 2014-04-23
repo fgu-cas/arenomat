@@ -5,13 +5,11 @@ Blockly.Language.sound = {
 	helpUrl: 'http://www.example.com/',
 	init: function() {
 		this.setColour(190);
-		this.appendDummyInput("")
-				.appendTitle(new Blockly.FieldDropdown([["1.mp3", "1.mp3"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
-				.appendTitle("Zvuk")
-		this.appendDummyInput("")
-		//.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/sounda.png", 64, 64))
-		this.appendValueInput("value")
-				.setCheck('Boolean')
+				
+		this.appendDummyInput("").appendTitle("Sound")
+		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/sound.png", 32, 32))
+		this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["1.mp3", "1.mp3"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
+
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setTooltip('sound');
@@ -43,13 +41,8 @@ Blockly.Language.light = {
 	helpUrl: 'http://www.example.com/',
 	init: function() {
 		this.setColour(190);
-		this.appendDummyInput("")
-				//	.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
-				.appendTitle("Svetlo")
-		this.appendDummyInput("")
-		//.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/lampa.png", 64, 64))
-		this.appendValueInput("value")
-				.setCheck('Boolean')
+		this.appendDummyInput("").appendTitle("Light")
+		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/light.png", 32, 32))
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setTooltip('Svetlo');
@@ -79,15 +72,10 @@ Blockly.Language.turntable = {
 	helpUrl: 'http://www.example.com/',
 	init: function() {
 		this.setColour(190);
-		this.appendDummyInput("")
-				.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
-				.appendTitle("Turntable")
+		this.appendDummyInput("").appendTitle("Turntable")
+		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/turntable.png", 32, 32))
+		this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["0.5", "0.5"], ["0.25", "0.25"]]), "PIN")
 
-		this.appendDummyInput("")
-		//	.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/vetrak.png", 64, 64))
-
-		this.appendValueInput("value")
-				.setCheck('Boolean')
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setTooltip('Arena');
@@ -119,12 +107,11 @@ Blockly.Language.shock = {
 	init: function() {
 		this.setColour(190);
 		this.appendDummyInput("")
-				.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
 				.appendTitle("Shock")
 		this.appendDummyInput("")
-		//	.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/profesor.png", 64, 64))
-		this.appendValueInput("value", Number)
-				.setCheck('Boolean')
+		    .appendTitle(new Blockly.FieldImage("img/shock.png", 32, 32))
+		this.appendDummyInput("")
+				.appendTitle(new Blockly.FieldDropdown([["0.2", "1"], ["2", "0.3"], ["3", "0.4"], ["4", "0.5"], ["5", "0.6"], ["6", "0.7"]]), "current")
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setTooltip('Shock');
@@ -132,21 +119,21 @@ Blockly.Language.shock = {
 };
 
 Blockly.JavaScript.shock = function() {
-	var argument0 = this.getTitleValue('PIN') || '0';
-	var argument1 = Blockly.JavaScript.valueToCode(this, 'value', Blockly.JavaScript.ORDER_COMMA) || 'false';
+	var argument0 = this.getTitleValue('current') || '0';
+//	var argument1 = Blockly.JavaScript.valueToCode(this, 'value', Blockly.JavaScript.ORDER_COMMA) || 'false';
 
 	if (!Blockly.JavaScript.definitions_['shock']) {
 		var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
 				'shock', Blockly.Generator.NAME_TYPE);
 		Blockly.JavaScript.shock.functionName = functionName;
 		var func = [];
-		func.push('function ' + functionName + '(PIN, in) {');
-		func.push('  gpio.write(PIN, in);');
+		func.push('function ' + functionName + '(current) {');
+		func.push('  msg(current);');
 		func.push('}');
 		Blockly.JavaScript.definitions_['shock'] = func.join('\n');
 	}
 	var code = Blockly.JavaScript.shock.functionName +
-			'(' + argument0 + ', ' + argument1 + ');\n';
+			'(' + argument0 + ');\n';
 	return code;
 
 };
@@ -156,12 +143,10 @@ Blockly.Language.feeder = {
 	init: function() {
 		this.setColour(190);
 		this.appendDummyInput("")
-//				.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]]), "PIN")
 				.appendTitle("Feeder")
 		this.appendDummyInput("")
-		//	.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/profesor.png", 64, 64))
-		this.appendValueInput("value", Number)
-				.setCheck('Boolean')
+		    .appendTitle(new Blockly.FieldImage("img/feeder.png", 32, 32))
+
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setTooltip('Shock');

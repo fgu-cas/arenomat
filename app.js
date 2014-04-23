@@ -101,7 +101,6 @@ intervalId = setInterval(function() {
 io.sockets.on('connection', function (socket) {
   socket.on('code', function (data) {
     console.log(data);
-point_x = point.x;
-eval(data);
+    eval(data);
   });
 });

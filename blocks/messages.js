@@ -4,6 +4,8 @@ Blockly.Language.message = {
 		this.setColour(190);
 		this.appendDummyInput("")
 				.appendTitle("message")
+		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/message.png", 32, 32))
+
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.appendValueInput("value", Text)

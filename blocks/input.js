@@ -4,12 +4,13 @@ Blockly.Language.area = {
 		this.setColour(10);
 		this.appendDummyInput("")
 				.appendTitle("Area")
+		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/area.png", 32, 32))
+
 		this.appendDummyInput("")
-				.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/ds1820.png", 64, 64))
-				.appendTitle("PIN#")
-				.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"]]), "PIN")
-		this.setOutput(true, Number);
-		this.setTooltip('return number of ambient temperature in');
+				.appendTitle("#")
+				.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"]]), "PIN");
+		this.setOutput(true, "Boolean");
+		this.setTooltip('return area activity');
 	}
 };
 Blockly.JavaScript.area = function() {
@@ -20,8 +21,8 @@ Blockly.JavaScript.area = function() {
 				'area', Blockly.Generator.NAME_TYPE);
 		Blockly.JavaScript.area.functionName = functionName;
 		var func = [];
-		func.push('function ' + functionName + '(PIN) {');
-		func.push(' return sense.area(PIN); ');
+		func.push('function ' + functionName + '(area) {');
+		func.push(' return areas[area]; ');
 		func.push('}');
 		Blockly.JavaScript.definitions_['area'] = func.join('\n');
 	}
@@ -37,6 +38,7 @@ Blockly.Language.time = {
 		this.setColour(10);
 		this.appendDummyInput("")
 				.appendTitle("Time")
+		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/time.png", 32, 32))
 		this.setOutput(true, Number);
 		this.setTooltip('return time');
 	}
@@ -65,9 +67,8 @@ Blockly.Language.motor_position = {
 	init: function() {
 		this.setColour(10);
 		this.appendDummyInput("")
-				.appendTitle("Light Sensor")
-		this.appendDummyInput("")
-				.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/photoresistor.png", 64, 64))
+				.appendTitle("Motor position")
+		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/motor_position.png", 32, 32))
 		this.setOutput(true, Number);
 		this.setTooltip('return number of ambient humidity');
 	}
@@ -87,37 +88,6 @@ Blockly.JavaScript.motor_position = function() {
 		Blockly.JavaScript.definitions_['motor_position'] = func.join('\n');
 	}
 	var code = Blockly.JavaScript.motor_position.functionName +
-			'(' + argument0 + ')';
-	return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
-};
-
-
-Blockly.Language.range = {
-	init: function() {
-		this.setColour(10);
-		this.appendDummyInput("")
-				.appendTitle("Range Sensor")
-		this.appendDummyInput("")
-				.appendTitle(new Blockly.FieldImage("http://localhost/blockly/apps/graph/range.png", 64, 64))
-		this.setOutput(true, Number);
-		this.setTooltip('return number of ambient humidity');
-	}
-};
-
-Blockly.JavaScript.range = function() {
-	var argument0 = this.getTitleValue('PIN') || '0';
-
-	if (!Blockly.JavaScript.definitions_['range']) {
-		var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
-				'range', Blockly.Generator.NAME_TYPE);
-		Blockly.JavaScript.range.functionName = functionName;
-		var func = [];
-		func.push('function ' + functionName + '(PIN) {');
-		func.push('  // return GPIO - a');
-		func.push('}');
-		Blockly.JavaScript.definitions_['range'] = func.join('\n');
-	}
-	var code = Blockly.JavaScript.range.functionName +
 			'(' + argument0 + ')';
 	return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
