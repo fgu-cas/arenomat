@@ -150,7 +150,7 @@ Blockly.JavaScript.feeder = function() {
 		var func = [];
 		func.push('function ' + functionName + '() {');
 		func.push('  servo.max();');
-//		func.push('  board.wait(1000, function() { servo.min(); });');
+		func.push('  board.wait(1000, function() { servo.min(); });');
 		func.push('}');
 		Blockly.JavaScript.definitions_['feeder'] = func.join('\n');
 	}

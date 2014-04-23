@@ -16,22 +16,6 @@ var areas = [ 5, 2, 1, 3 ];
 
 
 
-    io.sockets.on('connection', function (socket) {
-        socket.on('code', function (data) {
-
-var led = new five.Led(13);
-var servo = new five.Servo({
-  pin: 12,
-  range: [ 0, 180 ],
-  startAt: 0
-});
-
-
-            console.log(data);
-            eval(data);
-            console.log('eval ok');
-        });
-    });
 
 
 
@@ -41,11 +25,27 @@ app.listen(80)
 board.on("ready", function() {
     console.log('board ready');
 
+var led = new five.Led(13);
+var servo = new five.Servo({
+  pin: 12,
+  range: [ 0, 180 ],
+  startAt: 0
+});
+
+    io.sockets.on('connection', function (socket) {
+        socket.on('code', function (data) {
+
+
+
+            console.log(data);
+            eval(data);
+            console.log('eval ok');
+        });
+    });
+
     intervalId = setInterval(function() {
         frameRead(intervalId)
     }, 100);
-
-
 });
 
 
