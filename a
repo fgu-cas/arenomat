@@ -14,16 +14,16 @@ io.set('log level', 1); // reduce logging
 var board = new five.Board()
 var areas = [ 5, 2, 1, 3 ];
 
-
-
-
-
-
 app.listen(80)
 
 
 board.on("ready", function() {
     console.log('board ready');
+
+    intervalId = setInterval(function() {
+        frameRead(intervalId)
+    }, 100);
+
 
 var led = new five.Led(13);
 var servo = new five.Servo({
@@ -32,26 +32,16 @@ var servo = new five.Servo({
   startAt: 0
 });
 
-
     io.sockets.on('connection', function (socket) {
         socket.on('code', function (data) {
-
-
-
             console.log(data);
             eval(data);
             console.log('eval ok');
         });
     });
 
-
-
-
 });
 
-    intervalId = setInterval(function() {
-        frameRead(intervalId)
-    }, 1000);
 
 
 //var vc = new cv.VideoCapture("http://192.168.0.100/webcam/?action=stream&type=.mjpg")
