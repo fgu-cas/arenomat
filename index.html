@@ -43,8 +43,12 @@
 canvas {
     z-index: 999;
     position: absolute;
+    display: block;
 }
 
+.area {
+    z-index: -1;
+}
 </style>
 <body>
 <nav class="navbar navbar-default" role="navigation">
@@ -74,7 +78,7 @@ canvas {
 			    <div class="col-md-12">
 				<div id="blockly" style="height: 500px; width: 100%"></div>
 			    </div>
-</div>
+		</div>
 			    <div class="row">
 			    <div class="col-md-12">
 				<a id="send" class="btn btn-primary" href="#">SEND</a>
@@ -86,9 +90,11 @@ canvas {
 			    <div class="row">
 			    <span class="col-md-4">
 				<img width=500 height=375 id="cam" class="area" style="float: left" />
+				<br /><span id="cam_counter">0</span>
 			    </span>
 			    <span class="col-md-4">
 				<img width=500 height=375 id="cv" style="float: right" />
+				<br /><span id="cv_counter">0</span>
 			    </span>
 			    <span class="col-md-4">
 				<canvas id="myCanvas" width="500" height="375" style="background-color: #fdffdd">
@@ -428,6 +434,8 @@ canvas {
 	auto_save_and_restore_blocks();
 
 	var old;
+	var cam_counter = 0;
+	var cv_counter = 0;
 
 	$("#send").click(function() {
 	    var code = Blockly.Generator.workspaceToCode('JavaScript');
@@ -459,10 +467,15 @@ canvas {
 	});
 
 
+	var oldtime = 0;
 	socket.on('webcam', function(base64Image) {
+		var now = Date.now();
+		$('#cam_counter').text('' + (cam_counter++) + ' fps: ' + (1000/(now - oldtime)).toFixed(2));
 		$('#cam').attr('src', base64Image);
+		oldtime = now;
 	});
 	socket.on('cv', function(base64Image) {
+		$('#cv_counter').text(cv_counter++);
 		$('#cv').attr('src', base64Image);
 	});
 

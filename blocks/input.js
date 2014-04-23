@@ -44,20 +44,18 @@ Blockly.Language.time = {
 	}
 };
 Blockly.JavaScript.time = function() {
-	var argument0 = this.getTitleValue('PIN') || '0';
-
 	if (!Blockly.JavaScript.definitions_['time']) {
 		var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
 				'time', Blockly.Generator.NAME_TYPE);
 		Blockly.JavaScript.time.functionName = functionName;
 		var func = [];
-		func.push('function ' + functionName + '(PIN) {');
-		func.push('  // return GPIO - a');
+		func.push('function ' + functionName + '() {');
+		func.push('  return new Date().getTime() / 1000;');
 		func.push('}');
 		Blockly.JavaScript.definitions_['time'] = func.join('\n');
 	}
 	var code = Blockly.JavaScript.time.functionName +
-			'(' + argument0 + ')';
+			'()';
 	return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
