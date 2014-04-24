@@ -81,7 +81,8 @@ canvas {
 		</div>
 			    <div class="row">
 			    <div class="col-md-12">
-				<a id="send" class="btn btn-primary" href="#">SEND</a>
+				<a id="codeStart" class="btn btn-primary" href="#">START</a>
+				<a id="codeStop" class="btn btn-danger" href="#">STOP</a>
 			    </div>
 			    </div>
 			</div>
@@ -437,9 +438,13 @@ canvas {
 	var cam_counter = 0;
 	var cv_counter = 0;
 
-	$("#send").click(function() {
+	$("#codeStart").click(function() {
 	    var code = Blockly.Generator.workspaceToCode('JavaScript');
-	    socket.emit('code', code);
+	    socket.emit('codeStart', code);
+	});
+
+	$("#codeStop").click(function() {
+	    socket.emit('codeStop');
 	});
 
 	socket.on('position', function(position) {

@@ -9,7 +9,10 @@ var 	sys = require("util"),
 	five = require("johnny-five"),
 	lame = require('lame'),
 	Speaker = require('speaker'),
-	board = new five.Board();
+	board = new five.Board(),
+
+	isRunning = false,
+	code = false;
 
 function play(mp3) { 
 fs.createReadStream(mp3)
@@ -49,20 +52,16 @@ var servo = new five.Servo({
 var shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
  
     io.sockets.on('connection', function (socket) {
-        socket.on('code', function (data) {
-	    data = 'function go() { ' + data + ' }';
-            console.log(data);
-
-            eval(data);
-
-	    go();
-            console.log('eval ok');
+        socket.on('codeStart', function (data) {
+	    isRunning = true;
+	    code = data;
+	    console.log('codeStart: ' + data);
         });
+        socket.on('codeStop', function (data) {
+	    isRunning = false;
+	    console.log('codeStop: ' + data);
+	});
     });
-
-
-
-
 });
 
 
@@ -151,4 +150,12 @@ function frameRead() {
 			setTimeout(frameRead, 5);
 		}
 	});
+	if (isRunning && code) {
+	    console.log('eval: running');
+
+            eval('function go() { ' + code + ' }');
+	    go();
+
+            console.log('eval: ok');
+	}
 }
