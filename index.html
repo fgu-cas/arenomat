@@ -4,7 +4,7 @@
 -->
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    <title>Arenomat</title>
 <link rel="stylesheet" href="css/bootstrap.min.css">
 
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -50,6 +50,7 @@ canvas {
     z-index: -1;
 }
 </style>
+</head>
 <body>
 <nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
@@ -61,8 +62,13 @@ canvas {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Arena-O-Mat</a>
+      <a class="navbar-brand" href="#">Arenomat</a>
     </div>
+       <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+             <li class="active"><a href="#" id="elapsedTime">.</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
 </div>
 </nav>
     <div class="container-fluid">
@@ -381,6 +387,7 @@ canvas {
 
 
 <script type="text/javascript">
+	// TODO: dynamically!
 	var socket = io.connect('http://192.168.0.103');
 
 	Blockly.inject(document.getElementById('blockly'),
@@ -410,7 +417,7 @@ canvas {
 		console.log('backup');
 		if ('localStorage' in window) {
 			var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-			window.localStorage.setItem('arduino', Blockly.Xml.domToText(xml));
+			window.localStorage.setItem('arenomat', Blockly.Xml.domToText(xml));
 		}
 	}
 
@@ -418,8 +425,8 @@ canvas {
 	 * Restore code blocks from localStorage.
 	 */
 	function restore_blocks() {
-		if ('localStorage' in window && window.localStorage.arduino) {
-			var xml = Blockly.Xml.textToDom(window.localStorage.arduino);
+		if ('localStorage' in window && window.localStorage.arenomat) {
+			var xml = Blockly.Xml.textToDom(window.localStorage.arenomat);
 			Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
 		}
 	}
@@ -443,7 +450,7 @@ canvas {
 	    socket.emit('codeStart', code);
 	});
 
-	$("#codeStop").click(function() {
+	$("#codeStop, #elapsedTime").click(function() {
 	    socket.emit('codeStop');
 	});
 
@@ -482,6 +489,9 @@ canvas {
 	socket.on('cv', function(base64Image) {
 		$('#cv_counter').text(cv_counter++);
 		$('#cv').attr('src', base64Image);
+	});
+	socket.on('elapsedTime', function(elapsedTime) {
+		$('#elapsedTime').text(elapsedTime.toFixed(2));
 	});
 
     // store the currently selected tab in the hash value

@@ -38,8 +38,15 @@ Blockly.Language.light = {
 	helpUrl: 'http://www.example.com/',
 	init: function() {
 		this.setColour(190);
+
+
+
+
 		this.appendDummyInput("").appendTitle("Light")
-		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/light.png", 32, 32))
+		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/light.png", 32, 32));
+
+this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("100"), "delay");
+   
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setTooltip('Svetlo');
@@ -47,17 +54,21 @@ Blockly.Language.light = {
 };
 
 Blockly.JavaScript.light = function() {
+	var argument0 = this.getTitleValue('delay') || '0';
+
 	if (!Blockly.JavaScript.definitions_['light']) {
 		var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
 				'light', Blockly.Generator.NAME_TYPE);
 		Blockly.JavaScript.light.functionName = functionName;
 		var func = [];
-		func.push('function ' + functionName + '() {');
-		func.push('  led.toggle();');
+		func.push('function ' + functionName + '(delay) {');
+		func.push('  a_light.on();');
+		func.push('  board.wait(delay, function() { a_light.off(); });');
 		func.push('}');
 		Blockly.JavaScript.definitions_['light'] = func.join('\n');
 	}
-	var code = Blockly.JavaScript.light.functionName + '();\n';
+	var code = Blockly.JavaScript.light.functionName +
+			'(' + argument0 + ');\n';
 	return code;
 };
 
@@ -150,8 +161,8 @@ Blockly.JavaScript.feeder = function() {
 		Blockly.JavaScript.feeder.functionName = functionName;
 		var func = [];
 		func.push('function ' + functionName + '() {');
-		func.push('  servo.max();');
-		func.push('  board.wait(1000, function() { servo.min(); });');
+		func.push('  a_feeder.max();');
+		func.push('  board.wait(1000, function() { a_feeder.min(); });');
 		func.push('}');
 		Blockly.JavaScript.definitions_['feeder'] = func.join('\n');
 	}

@@ -22,7 +22,7 @@ Blockly.JavaScript.area = function() {
 		Blockly.JavaScript.area.functionName = functionName;
 		var func = [];
 		func.push('function ' + functionName + '(area) {');
-		func.push(' return areas[area]; ');
+		func.push(' return point.x; ');
 		func.push('}');
 		Blockly.JavaScript.definitions_['area'] = func.join('\n');
 	}
@@ -50,7 +50,7 @@ Blockly.JavaScript.time = function() {
 		Blockly.JavaScript.time.functionName = functionName;
 		var func = [];
 		func.push('function ' + functionName + '() {');
-		func.push('  return new Date().getTime() / 1000;');
+		func.push('  return (new Date().getTime() / 1000) - startTime;');
 		func.push('}');
 		Blockly.JavaScript.definitions_['time'] = func.join('\n');
 	}

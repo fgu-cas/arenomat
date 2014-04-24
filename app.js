@@ -12,7 +12,13 @@ var 	sys = require("util"),
 	board = new five.Board(),
 
 	isRunning = false,
-	code = false;
+	code = false,
+
+	startTime = 0,
+
+	a_light,
+	a_feeder,
+	a_shock;
 
 function play(mp3) { 
 fs.createReadStream(mp3)
@@ -37,31 +43,29 @@ console.log("cv");
 board.on("ready", function() {
     console.log('board ready');
 
-var led = new five.Led(13);
-var servo = new five.Servo({
+ 
+    io.sockets.on('connection', function (socket) {
+        socket.on('codeStart', function (data) {
+	    isRunning = true;
+	    startTime =  new Date().getTime() / 1000;
+	    code = data;
+	    console.log('codeStart: ' + data);
+        });
+        socket.on('codeStop', function () {
+	    isRunning = false;
+	    console.log('codeStop');
+	});
+    });
+
+ a_light = new five.Led(13);
+ a_feeder = new five.Servo({
   pin: 12,
   range: [ 0, 180 ],
   startAt: 0
 });
 
-  // "move" events fire after a successful move.
-  servo.on("move", function( err, degrees ) {
-    console.log( "move", degrees );
-  });
+var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 
-var shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
- 
-    io.sockets.on('connection', function (socket) {
-        socket.on('codeStart', function (data) {
-	    isRunning = true;
-	    code = data;
-	    console.log('codeStart: ' + data);
-        });
-        socket.on('codeStop', function (data) {
-	    isRunning = false;
-	    console.log('codeStop: ' + data);
-	});
-    });
 });
 
 
@@ -106,6 +110,9 @@ function handler(request, response) {
 var RED = [0, 0, 255]; //B, G, R
 
 function frameRead() {
+
+
+
 //  cv.readImage('http://192.168.0.100/webcam/?action=snapshot&ext=.jpg', function(im){
 	vc.read(function(err, im) {
 		if (im && im.width() && im.height()) {
@@ -150,8 +157,9 @@ function frameRead() {
 			setTimeout(frameRead, 5);
 		}
 	});
+
 	if (isRunning && code) {
-	    console.log('eval: running');
+	    io.sockets.emit('elapsedTime', (new Date().getTime() / 1000) - startTime);
 
             eval('function go() { ' + code + ' }');
 	    go();
