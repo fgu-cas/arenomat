@@ -1,26 +1,35 @@
-var sys = require("util"),
-		path = require("path"),
-		url = require("url"),
-		fs = require("fs"),
-		cv = require('opencv'),
-		app = require('http').createServer(handler),
-		io = require('socket.io').listen(app),
-    five = require("johnny-five"),
-		fs = require('fs')
+var 	sys = require("util"),
+	path = require("path"),
+	url = require("url"),
+	fs = require("fs"),
+	cv = require('opencv'),
+	app = require('http').createServer(handler),
+	io = require('socket.io').listen(app),
+	fs = require('fs'),
+	five = require("johnny-five"),
+	lame = require('lame'),
+	Speaker = require('speaker'),
+	board = new five.Board();
+
+function play(mp3) { 
+fs.createReadStream(mp3)
+  .pipe(new lame.Decoder())
+  .on('format', function (format) {
+    this.pipe(new Speaker(format));
+  });
+}
+
 io.set('log level', 1); // reduce logging
 
-
-
-var board = new five.Board()
 var areas = [ 5, 2, 1, 3 ];
 
-
-
-
-
-
 app.listen(80)
+console.log("Listening");
 
+intervalId = setInterval(function() {
+    frameRead(intervalId)
+}, 5000);
+console.log("cv");
 
 board.on("ready", function() {
     console.log('board ready');
@@ -32,14 +41,21 @@ var servo = new five.Servo({
   startAt: 0
 });
 
+  // "move" events fire after a successful move.
+  servo.on("move", function( err, degrees ) {
+    console.log( "move", degrees );
+  });
 
+var shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
+ 
     io.sockets.on('connection', function (socket) {
         socket.on('code', function (data) {
-
-
-
+	    data = 'function go() { ' + data + ' }';
             console.log(data);
+
             eval(data);
+
+	    go();
             console.log('eval ok');
         });
     });
@@ -49,9 +65,6 @@ var servo = new five.Servo({
 
 });
 
-    intervalId = setInterval(function() {
-        frameRead(intervalId)
-    }, 1000);
 
 
 //var vc = new cv.VideoCapture("http://192.168.0.100/webcam/?action=stream&type=.mjpg")

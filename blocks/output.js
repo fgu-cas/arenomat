@@ -5,7 +5,7 @@ Blockly.Language.sound = {
 				
 		this.appendDummyInput("").appendTitle("Sound")
 		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/sound.png", 32, 32))
-		this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["1.mp3", "1.mp3"], ["2", "2"], ["3", "3"], ["4", "4"]]), "filename")
+		this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["beep.mp3", "beep.mp3"], ["click.mp3", "click.mp3"], ["delete.mp3", "delete.mp3"]]), "filename")
 
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
@@ -22,12 +22,13 @@ Blockly.JavaScript.sound = function() {
 		Blockly.JavaScript.sound.functionName = functionName;
 		var func = [];
 		func.push('function ' + functionName + '(filename) {');
-		func.push('  console.log("play: " + filename + );');
+		func.push('  console.log("play: " + filename);');
+		func.push('  play("media/" + filename);');
 		func.push('}');
 		Blockly.JavaScript.definitions_['sound'] = func.join('\n');
 	}
 	var code = Blockly.JavaScript.sound.functionName +
-			'(' + argument0 + ');\n';
+			'("' + argument0 + '");\n';
 	return code;
 };
 
@@ -66,7 +67,7 @@ Blockly.Language.turntable = {
 		this.setColour(190);
 		this.appendDummyInput("").appendTitle("Turntable")
 		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/turntable.png", 32, 32))
-		this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["0.5", "0.5"], ["0.25", "0.25"]]), "velocity")
+		this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["0.25 RPM", "0.25"], ["0.5 RPM", "0.5"], ["0.25 RPM", "0.25"], ["1 RPM", "1"], ["2 RPM", "2"]]), "velocity")
 
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
@@ -96,13 +97,13 @@ Blockly.JavaScript.turntable = function() {
 Blockly.Language.shock = {
 	helpUrl: 'http://www.example.com/',
 	init: function() {
-		this.setColour(190);
+		this.setColour(0);
 		this.appendDummyInput("")
 				.appendTitle("Shock")
 		this.appendDummyInput("")
 		    .appendTitle(new Blockly.FieldImage("img/shock.png", 32, 32))
 		this.appendDummyInput("")
-				.appendTitle(new Blockly.FieldDropdown([["0.2", "1"], ["2", "0.3"], ["3", "0.4"], ["4", "0.5"], ["5", "0.6"], ["6", "0.7"]]), "current")
+				.appendTitle(new Blockly.FieldDropdown([["0.2mA", "2"], ["0.3mA", "3"], ["0.4mA", "4"], ["0.5mA", "5"], ["0.6mA", "6"], ["0.7mA", "7"]]), "current")
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
 		this.setTooltip('Shock');
@@ -132,7 +133,7 @@ Blockly.JavaScript.shock = function() {
 Blockly.Language.feeder = {
 	helpUrl: 'http://www.example.com/',
 	init: function() {
-		this.setColour(190);
+		this.setColour(120);
 		this.appendDummyInput("").appendTitle("Feeder")
 		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/feeder.png", 32, 32))
 
