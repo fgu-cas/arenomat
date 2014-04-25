@@ -13,6 +13,7 @@ var 	sys = require("util"),
 
 	isRunning = false,
 	code = false,
+	shocking = false,
 
 	startTime = 0,
 
@@ -53,7 +54,11 @@ board.on("ready", function() {
         });
         socket.on('codeStop', function () {
 	    isRunning = false;
+	    shocking = 0;
 	    console.log('codeStop');
+	});
+        socket.on('codeSave', function (data) {
+	    console.log('codeSave: ' + data);
 	});
     });
 
@@ -69,14 +74,15 @@ var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 });
 
 
+// 1280x720
 
 //var vc = new cv.VideoCapture("http://192.168.0.100/webcam/?action=stream&type=.mjpg")
-var vc = new cv.VideoCapture(0)
+var vc = new cv.VideoCapture(1, 1024, 576);
 
 var lowThresh = 100;
 var highThresh = 200;
-var minArea = 100;
-var maxArea = 400;
+var minArea = 0;
+var maxArea = 200;
 var point;
 
 
@@ -116,27 +122,30 @@ function frameRead() {
 //  cv.readImage('http://192.168.0.100/webcam/?action=snapshot&ext=.jpg', function(im){
 	vc.read(function(err, im) {
 		if (im && im.width() && im.height()) {
+
 			if (intervalId)
 				clearInterval(intervalId);
 
 			// matrix clone for image processing
 			check = im.copy();
 			check.convertGrayscale();
-			check.gaussianBlur([17, 17])
-			check = check.threshold(254, 255);
+			check.gaussianBlur([3, 3])
+
+			check = check.threshold(5, 255);
+
 			check.dilate(7);
 //im = check.copy();
-			check.canny(255, 255);
+//			check.canny(255, 255);
 
 			contours = check.findContours();
-			//im.drawAllContours(contours, RED);
+			im.drawAllContours(contours, RED);
 
 			// filters contours by area
-			if (contours.size() > 0) {
-				for (var i = 0; i < contours.size(); i++) {
+			if (contours.size() == 1) {
+				var i = 0;
 					var area = contours.area(i);
-					if (area < minArea || area > maxArea)
-						continue;
+					//if (area < minArea || area > maxArea)
+					//	continue;
 
 					// emits positions of the first point one
 					// TODO: more accurate position
@@ -145,24 +154,29 @@ function frameRead() {
 					//im.ellipse(point.x + 10, point.y + 10, 10, 10);
 					im.drawContour(contours, i, RED);
 
-					io.sockets.emit('position', point);
-					io.sockets.emit('cv', 'data:image/jpeg;base64,' + check.toBuffer().toString('base64'));
-					break;
-				}
-			}
+					var data = { 
+					    image: 'data:image/jpeg;base64,' + check.toBuffer().toString('base64'),
+					    position: point
+					}
+
+		    			io.sockets.emit('cv', data);
+				
+			} else
+			io.sockets.emit('cv', { position: false, image: 'data:image/jpeg;base64,0' });
 			
 			// webcam frame base64 encoded
 			io.sockets.emit('webcam', 'data:image/jpeg;base64,' + im.toBuffer().toString('base64'));
 			
-			setTimeout(frameRead, 5);
 		}
+			io.sockets.emit('shocking', shocking);
+			setTimeout(frameRead, 1);
 	});
 
 	if (isRunning && code) {
 	    io.sockets.emit('elapsedTime', (new Date().getTime() / 1000) - startTime);
 
             eval('function go() { ' + code + ' }');
-	    go();
+	setTimeout(go, 5);
 
             console.log('eval: ok');
 	}

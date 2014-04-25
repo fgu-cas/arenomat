@@ -27,24 +27,16 @@
     }
 
     $reset = $('<button type="button" class="btn"><i class="icon-trash"></i>Clear</button>');
-    $canvas = $('<canvas width="500" height="350">');
+    $canvas = $(this);
     ctx = $canvas[0].getContext('2d');
 
-    image = $(this);
    resize = function() {
-//      $canvas.attr('height', image.height).attr('width', image.width);
       draw();
     };
-//    $(image).load(resize);
-//    image.src = settings.imageUrl;
-    if (image.loaded) 
-//resize();
+    if (true) 
 draw();
-//    $canvas.css({background: 'url('+image.src+')'});
 
     $(document).ready( function() {
-      $(input).after('<br>', $canvas, '<br>', $reset);
-      $reset.click(reset);
       $canvas.bind('mousedown', mousedown);
       $canvas.bind('contextmenu', rightclick);
       $canvas.bind('mouseup', stopdrag);
@@ -172,7 +164,7 @@ draw();
   };
 
   $(document).ready(function() {
-    $('.area').canvasAreaDraw();
+    $('#area').canvasAreaDraw();
   });
 
   var dotLineLength = function(x, y, x0, y0, x1, y1, o) {

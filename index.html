@@ -16,15 +16,16 @@
         <script type="text/javascript" src="js/en_compressed.js"></script>
         <script type="text/javascript" src="js/storage.js"></script>
 
-        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
         <script type="text/javascript" src="js/storage.js"></script>
 
         <script type="text/javascript" src="blocks/input.js"></script>
         <script type="text/javascript" src="blocks/output.js"></script>
-        <script type="text/javascript" src="blocks/messages.js"></script>
 
-    <script language="javascript" src="js/jquery.canvasAreaDraw.js"></script>
+    <script type="text/javascript" src="js/BlobBuilder.min.js"></script>
+    <script type="text/javascript" src="js/FileSaver.min.js"></script>
+    <script type="text/javascript" src="js/jquery.canvasAreaDraw.js"></script>
 
 <style>
 @import url(//fonts.googleapis.com/css?family=Leckerli+One);
@@ -66,7 +67,9 @@ canvas {
     </div>
        <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
+	    <li class="active"><a href="#"  id="shocking">.......</a></li>
              <li class="active"><a href="#" id="elapsedTime">.</a></li>
+
             </ul>
           </div><!--/.nav-collapse -->
 </div>
@@ -76,6 +79,7 @@ canvas {
 			<li class="active"><a data-toggle="tab" href="#logic">Logic</a></li>
 			<li><a data-toggle="tab" href="#camera">Camera</a></li>
 			<li><a data-toggle="tab" href="#settings">Settings</a></li>
+			<li>
 		</ul>
 
 		<div class="tab-content">
@@ -86,9 +90,21 @@ canvas {
 			    </div>
 		</div>
 			    <div class="row">
+<br />
 			    <div class="col-md-12">
-				<a id="codeStart" class="btn btn-primary" href="#">START</a>
+<div class="btn-toolbar" role="toolbar">
+<div class="btn-group">
+				<a id="codeStart" class="btn btn-success" href="#">START</a>
 				<a id="codeStop" class="btn btn-danger" href="#">STOP</a>
+</div>
+
+<div class="btn-group">
+				<a id="codeSave" class="btn btn-warning" href="#">save</a>
+				<a id="codeLoad" class="btn btn-primary" href="#">load</a>
+				<a id="codeClear" class="btn btn-danger" href="#">clear</a>
+<input type="file" id="load" style="display: none;"/>
+</div>
+</div>
 			    </div>
 			    </div>
 			</div>
@@ -97,15 +113,19 @@ canvas {
 			    <div class="row">
 			    <span class="col-md-4">
 				<img width=500 height=375 id="cam" class="area" style="float: left" />
+				<canvas id="areas" width="1024" height="576" style="width: 500px; height: 365px"></canvas>
 				<br /><span id="cam_counter">0</span>
 			    </span>
 			    <span class="col-md-4">
-				<img width=500 height=375 id="cv" style="float: right" />
-				<br /><span id="cv_counter">0</span>
+				<img width=500 height=375 id="cv"/>
+ <div class="progress progress-striped active">
+    <div class="progress-bar"  role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+</div>
+				<span id="cv_counter">0</span>
 			    </span>
 			    <span class="col-md-4">
-				<canvas id="myCanvas" width="500" height="375" style="background-color: #fdffdd">
-				</canvas>
+				<canvas id="arena" width="1024" height="576" style="width: 500px; height: 365px; background-color: #fdffdd"></canvas>
+				<canvas id="object" width="1024" height="576" style="width: 500px; height: 365px; position: absolute; z-index: 1000"></canvas>
 			    </span>
 			    </div>
 			</div>
@@ -114,11 +134,49 @@ canvas {
 				replay
 			</div>
 			<div id="settings" class="tab-pane fade">
-				settings
+<br />
+<form class="form-horizontal" role="form">
+  <div class="form-group">
+    <label for="dev" class="col-sm-2 control-label">Video device</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" id="dev" placeholder="0">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="width" class="col-sm-2 control-label">Width</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" id="width" placeholder="640">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="height" class="col-sm-2 control-label">Height</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" id="height" placeholder="480">
+    </div>
+  </div>
+
+
+
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default">Save</button>
+    </div>
+  </div>
+</form>
+
 			</div>
 		</div>
+
+
 	</div>
 
+<div class="footer navbar-default navbar-fixed-bottom">
+  <div class="container-fluid">
+       <a class="active" href="#">Michal Vondracek (info@michalvondracek.cz)</a>
+  </div>
+</div>
 
 
 
@@ -439,7 +497,81 @@ canvas {
 		bindEvent(window, 'unload', backup_blocks);
 	}
 
+
+
+/**
+* Save blocks to local file
+*/
+function save() {
+  var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+  var data = Blockly.Xml.domToText(xml);
+
+  // Store data in blob.
+  var builder = new BlobBuilder;
+  builder.append(data);
+  saveAs(builder.getBlob("text/plain;charset=utf-8"), "block.xml");
+};
+
+/**
+* Load blocks from local file
+*
+*/
+function load(event) {
+    if (!event) return;
+
+  var files = event.target.files;
+  
+  // Only allow uploading one file.
+  if (files.length !== 1)
+    return;
+
+  // FileReader
+  var reader = new FileReader();
+  reader.onloadend = function(event) {
+    var target = event.target;
+    // 2 === FileReader.DONE
+    if (target.readyState === 2) {
+      if (confirm("Want to clean current blocks? Press 'Cancel' will load blocks into current workspace.")) { 
+        Blockly.mainWorkspace.clear();
+      }
+      var xml = Blockly.Xml.textToDom(target.result);
+      Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+    }
+    // Reset value of input after loading
+    // because Chrome will not fire a 'change' event
+    // if the same file is loaded again.
+    loadInput.value = '';
+  };
+  reader.readAsText(files[0]);
+};
+
+function clear() {
+  var count = Blockly.mainWorkspace.getAllBlocks().length;
+  if ((count > 2) || window.confirm('Are you sure?')) {
+    Blockly.mainWorkspace.clear();
+  }
+}
+
+
 	auto_save_and_restore_blocks();
+
+// arena image
+	var c = document.getElementById("arena");
+	var ctx = c.getContext("2d");
+	ctx.arc(ctx.canvas.width/2, ctx.canvas.height/2, ctx.canvas.height/2, 0, Math.PI*2);
+	ctx.fillStyle = 'rgba(250, 250, 250, 0.1)';
+	ctx.fill();
+	ctx.stroke();
+
+
+
+  // init load event
+  var loadInput = document.getElementById('load');
+  loadInput.addEventListener('change', load, false);
+  document.getElementById('codeLoad').onclick = function() {
+        loadInput.click();
+  };
+
 
 	var old;
 	var cam_counter = 0;
@@ -450,45 +582,81 @@ canvas {
 	    socket.emit('codeStart', code);
 	});
 
+	$("#codeSave").click(function() {
+	    save();
+	});
+	$("#codeLoad").click(function() {
+	    load();
+	});
+	$("#codeClear").click(function() {
+	    clear();
+	});
+
 	$("#codeStop, #elapsedTime").click(function() {
 	    socket.emit('codeStop');
 	});
 
-	socket.on('position', function(position) {
-		if (position && position.x && position.y) {
-
-			if (!old)
-				old = position;
-
-			var c = document.getElementById("myCanvas");
-			var ctx = c.getContext("2d");
-			ctx.clearRect(old.x, old.y, 10, 10);
-			ctx.beginPath();
-			ctx.rect(position.x, position.y, 10, 10);
-			ctx.fillStyle = 'rgba(46, 166, 203, 0.5)';
-			ctx.fill();
-			ctx.beginPath();
-			ctx.moveTo(old.x, old.y);
-			ctx.globalAlpha = 0.5;
-			ctx.lineTo(position.x, position.y);
-			ctx.strokeStyle = '#2ba6cb';
-			ctx.stroke();
-
-			old = position;
-		}
-	});
 
 
 	var oldtime = 0;
+
+	socket.on('shocking', function(shocking) {
+	    $('#shocking').css('background',(shocking) ? 'red' : 'black');
+	    $('#shocking').text(shocking/10);
+	});
+
 	socket.on('webcam', function(base64Image) {
 		var now = Date.now();
-		$('#cam_counter').text('' + (cam_counter++) + ' fps: ' + (1000/(now - oldtime)).toFixed(2));
+		$('#cam_counter').text('frame no: ' + (cam_counter++) + ' fps: ' + (1000/(now - oldtime)).toFixed(2));
+
+    var perc = (cv_counter / cam_counter * 100).toFixed(1);
+
+		$('#cv_counter').text('frame no: ' + (cv_counter));
+
+$('.progress-bar').css('width', perc+'%').text(perc);
+
 		$('#cam').attr('src', base64Image);
 		oldtime = now;
 	});
-	socket.on('cv', function(base64Image) {
-		$('#cv_counter').text(cv_counter++);
-		$('#cv').attr('src', base64Image);
+	socket.on('cv', function(data) {
+		if (data.image != 'data:image/jpeg;base64,0') {
+		    cv_counter++;
+		}
+		$('#cv').attr('src', data.image);
+		var position = data.position;
+		if (position && position.x && position.y) {
+
+			if (!old)
+				old = [position];
+
+			if (old[old.length -1].x != position.x && old[old.length - 1].y != position.y) {
+
+			var c = document.getElementById("object");
+			var ctx = c.getContext("2d");
+			ctx.canvas.width = ctx.canvas.width;
+			ctx.clearRect(old.x, old.y, 10, 10);
+			ctx.beginPath();
+			ctx.arc(position.x+5, position.y+5, 10, 0, Math.PI*2, true);
+			ctx.fillStyle = 'rgba(203, 0, 0, 1)';
+			ctx.fill();
+
+
+			ctx.beginPath();
+			ctx.globalAlpha = 1;
+			for(var i = 1; i < old.length; i++) {
+			ctx.moveTo(old[i-1].x, old[i-1].y);
+			    ctx.lineTo(old[i].x, old[i].y);
+			}
+			ctx.strokeStyle = '#2ba6cb';
+			ctx.stroke();
+
+
+			old.push(position);
+
+			if (old.length > 200) old.shift();
+		    }
+		}
+
 	});
 	socket.on('elapsedTime', function(elapsedTime) {
 		$('#elapsedTime').text(elapsedTime.toFixed(2));
@@ -499,6 +667,8 @@ canvas {
         var id = $(e.target).attr("href").substr(1);
         window.location.hash = id;
     });
+
+    $('#area').canvasAreaDraw();
 </script>
 </body>
 </html>
