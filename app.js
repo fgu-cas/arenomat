@@ -81,7 +81,7 @@ var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 // 1280x720, 1024x576
 
 //var vc = new cv.VideoCapture("http://192.168.0.100/webcam/?action=stream&type=.mjpg")
-var vc = new cv.VideoCapture(1, 800, 600);
+var vc = new cv.VideoCapture(0); //, 800, 600);
 
 var lowThresh = 100;
 var highThresh = 200;
@@ -146,7 +146,7 @@ function frameRead() {
 			check.convertGrayscale();
 			check.gaussianBlur([3, 3])
 
-			check = check.threshold(5, 255);
+			check = check.threshold(100, 255);
 
 			check.dilate(7);
 //im = check.copy();
@@ -157,17 +157,21 @@ function frameRead() {
 
 			// filters contours by area
 			if (contours.size() == 1) {
-				var i = 0;
-					var area = contours.area(i);
+				//var i = 0;
+					//var area = contours.area(i);
 					//if (area < minArea || area > maxArea)
 					//	continue;
 
 					// emits positions of the first point one
 					// TODO: more accurate position
-					point = contours.point(i, 0);
+
+mu = contours.moments(0);
+point = { x: mu.m10/mu.m00 , y: mu.m01/mu.m00 };
+
+					point = contours.point(0, 0);
 					
 					//im.ellipse(point.x + 10, point.y + 10, 10, 10);
-					im.drawContour(contours, i, RED);
+					//im.drawContour(contours, i, RED);
 
 		    			io.sockets.emit('position', point);
 					activeArea[0] = in_poly(areas[0], point);

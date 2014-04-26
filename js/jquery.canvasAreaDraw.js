@@ -128,7 +128,7 @@
       ctx.lineWidth = 1;
 
       ctx.beginPath();
-	ctx.strokeRect(position.x, position.y, 5, 5);
+//	ctx.strokeRect(position.x, position.y, 5, 5);
       ctx.moveTo(points[0].x, points[0].y);
 var width = 10;
       for (var i = 0; i < points.length; i++) {
