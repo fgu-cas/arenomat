@@ -1,4 +1,4 @@
-var 	sys = require("util"),
+var 	sys = require("util"), 
 	path = require("path"),
 	url = require("url"),
 	fs = require("fs"),
@@ -31,7 +31,7 @@ fs.createReadStream(mp3)
 
 io.set('log level', 1); // reduce logging
 
-var areas = [ 5, 2, 1, 3 ];
+var activeArea = [ 0, 0, 0, 0 ], areas = [ 0, 0 ];
 
 app.listen(80)
 console.log("Listening");
@@ -60,6 +60,10 @@ board.on("ready", function() {
         socket.on('codeSave', function (data) {
 	    console.log('codeSave: ' + data);
 	});
+        socket.on('area', function (data) {
+//	    console.log('area: ' + data);
+	    areas[0] = data;
+	});
     });
 
  a_light = new five.Led(13);
@@ -74,10 +78,10 @@ var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 });
 
 
-// 1280x720
+// 1280x720, 1024x576
 
 //var vc = new cv.VideoCapture("http://192.168.0.100/webcam/?action=stream&type=.mjpg")
-var vc = new cv.VideoCapture(1, 1024, 576);
+var vc = new cv.VideoCapture(1, 800, 600);
 
 var lowThresh = 100;
 var highThresh = 200;
@@ -114,6 +118,17 @@ function handler(request, response) {
 ;
 
 var RED = [0, 0, 255]; //B, G, R
+
+//+ Jonas Raoni Soares Silva
+//@ http://jsfromhell.com/math/is-point-in-poly [v1.0]
+
+function in_poly(poly, pt){
+    for(var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+	((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+	&& (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+	&& (c = !c);
+    return c;
+}
 
 function frameRead() {
 
@@ -154,15 +169,12 @@ function frameRead() {
 					//im.ellipse(point.x + 10, point.y + 10, 10, 10);
 					im.drawContour(contours, i, RED);
 
-					var data = { 
-					    image: 'data:image/jpeg;base64,' + check.toBuffer().toString('base64'),
-					    position: point
-					}
-
-		    			io.sockets.emit('cv', data);
-				
-			} else
-			io.sockets.emit('cv', { position: false, image: 'data:image/jpeg;base64,0' });
+		    			io.sockets.emit('position', point);
+					activeArea[0] = in_poly(areas[0], point);
+					    io.sockets.emit('activeArea', activeArea);
+			}
+			else
+		    			io.sockets.emit('position', { x: 0, y:0 });
 			
 			// webcam frame base64 encoded
 			io.sockets.emit('webcam', 'data:image/jpeg;base64,' + im.toBuffer().toString('base64'));
@@ -178,6 +190,6 @@ function frameRead() {
             eval('function go() { ' + code + ' }');
 	setTimeout(go, 5);
 
-            console.log('eval: ok');
+            //console.log('eval: ok');
 	}
 }

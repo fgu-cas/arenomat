@@ -40,15 +40,18 @@
         color: #51CA42 !important;
     }
 }
-
-canvas {
-    z-index: 999;
-    position: absolute;
-    display: block;
+.navbar-nav {
+    border-bottom: none !important;
 }
 
-.area {
-    z-index: -1;
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
+    background: white !important;
+    color: black !important;
+}
+
+canvas {
+    display: block;
 }
 </style>
 </head>
@@ -63,9 +66,17 @@ canvas {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Arenomat</a>
+      <a class="navbar-brand" href="#">ArénOmat</a>
     </div>
        <div class="navbar-collapse collapse">
+		<ul class="nav navbar-nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#tlogic">Logic</a></li>
+			<li><a data-toggle="tab" href="#tcamera">Camera</a></li>
+			<li><a data-toggle="tab" href="#tsettings">Settings</a></li>
+			<li>
+		</ul>
+
+
             <ul class="nav navbar-nav navbar-right">
 	    <li class="active"><a href="#"  id="shocking">.......</a></li>
              <li class="active"><a href="#" id="elapsedTime">.</a></li>
@@ -75,15 +86,9 @@ canvas {
 </div>
 </nav>
     <div class="container-fluid">
-		<ul class="nav nav-tabs">
-			<li class="active"><a data-toggle="tab" href="#logic">Logic</a></li>
-			<li><a data-toggle="tab" href="#camera">Camera</a></li>
-			<li><a data-toggle="tab" href="#settings">Settings</a></li>
-			<li>
-		</ul>
 
 		<div class="tab-content">
-			<div id="logic" class="tab-pane fade in active">
+			<div id="tlogic" class="tab-pane fade in active">
 			    <div class="row">
 			    <div class="col-md-12">
 				<div id="blockly" style="height: 500px; width: 100%"></div>
@@ -109,31 +114,29 @@ canvas {
 			    </div>
 			</div>
 
-			<div id="camera" class="tab-pane fade">
+			<div id="tcamera" class="tab-pane fade">
 			    <div class="row">
-			    <span class="col-md-4">
-				<img width=500 height=375 id="cam" class="area" style="float: left" />
-				<canvas id="areas" width="1024" height="576" style="width: 500px; height: 365px"></canvas>
-				<br /><span id="cam_counter">0</span>
-			    </span>
-			    <span class="col-md-4">
-				<img width=500 height=375 id="cv"/>
+			    <span class="col-md-6">
+				<img width=95% id="cam" class="area" style="position: absolute" />
+				<canvas id="areas" width="760" height="570" style="width: 95%; position: absolute; border: 3px solid red; z-index: 999"></canvas>
  <div class="progress progress-striped active">
     <div class="progress-bar"  role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
 </div>
-				<span id="cv_counter">0</span>
+frames: <span id="cam_counter">0</span><br />
+recognized: <span id="cv_counter">0</span><br />
+fps: <span id="fps">0</span>
 			    </span>
-			    <span class="col-md-4">
-				<canvas id="arena" width="1024" height="576" style="width: 500px; height: 365px; background-color: #fdffdd"></canvas>
-				<canvas id="object" width="1024" height="576" style="width: 500px; height: 365px; position: absolute; z-index: 1000"></canvas>
+			    <span class="col-md-6">
+				<canvas id="arena" width="760" height="570" style="width: 95%; position: absolute; background-color: #fdffdd"></canvas>
+				<canvas id="object" width="760" height="570" style="width: 95%; position: absolute; z-index: 1000"></canvas>
 			    </span>
 			    </div>
 			</div>
 
-			<div id="replay" class="tab-pane fade">
+			<div id="treplay" class="tab-pane fade">
 				replay
 			</div>
-			<div id="settings" class="tab-pane fade">
+			<div id="tsettings" class="tab-pane fade">
 <br />
 <form class="form-horizontal" role="form">
   <div class="form-group">
@@ -573,18 +576,19 @@ function clear() {
   };
 
 
-	var old;
+	var old, position = { x: 0, y: 0 };
 	var cam_counter = 0;
 	var cv_counter = 0;
+	var activeArea = [ false ];
 
 	$("#codeStart").click(function() {
 	    var code = Blockly.Generator.workspaceToCode('JavaScript');
 	    socket.emit('codeStart', code);
 	});
-
 	$("#codeSave").click(function() {
 	    save();
 	});
+
 	$("#codeLoad").click(function() {
 	    load();
 	});
@@ -596,38 +600,46 @@ function clear() {
 	    socket.emit('codeStop');
 	});
 
-
-
 	var oldtime = 0;
 
 	socket.on('shocking', function(shocking) {
 	    $('#shocking').css('background',(shocking) ? 'red' : 'black');
 	    $('#shocking').text(shocking/10);
 	});
+	socket.on('activeArea', function(data) {
+	    activeArea = data;
+	});
 
 	socket.on('webcam', function(base64Image) {
 		var now = Date.now();
-		$('#cam_counter').text('frame no: ' + (cam_counter++) + ' fps: ' + (1000/(now - oldtime)).toFixed(2));
+		$('#cam_counter').text(cam_counter);
+var fps = (1000/(now - oldtime)).toFixed(0);
+		$('#fps').text(fps);
+ $('#fps').css('color', (fps < 15) ? 'red' : 'green');
+
+		$('#cv_counter').text(cv_counter);
 
     var perc = (cv_counter / cam_counter * 100).toFixed(1);
-
-		$('#cv_counter').text('frame no: ' + (cv_counter));
-
 $('.progress-bar').css('width', perc+'%').text(perc);
 
 		$('#cam').attr('src', base64Image);
 		oldtime = now;
+		cam_counter++;
 	});
-	socket.on('cv', function(data) {
-		if (data.image != 'data:image/jpeg;base64,0') {
-		    cv_counter++;
+	socket.on('position', function(pos) {
+		position = pos;
+		if (!position.x && !position.y && old) {
+			var c = document.getElementById("object");
+			var ctx = c.getContext("2d");
+			ctx.arc(old[old.length - 1].x+5, old[old.length - 1].y+5, 10, 0, Math.PI*2, true);
+			ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+			ctx.fill();
 		}
-		$('#cv').attr('src', data.image);
-		var position = data.position;
-		if (position && position.x && position.y) {
-
+		else {
 			if (!old)
 				old = [position];
+
+			cv_counter++;
 
 			if (old[old.length -1].x != position.x && old[old.length - 1].y != position.y) {
 
@@ -635,9 +647,8 @@ $('.progress-bar').css('width', perc+'%').text(perc);
 			var ctx = c.getContext("2d");
 			ctx.canvas.width = ctx.canvas.width;
 			ctx.clearRect(old.x, old.y, 10, 10);
-			ctx.beginPath();
 			ctx.arc(position.x+5, position.y+5, 10, 0, Math.PI*2, true);
-			ctx.fillStyle = 'rgba(203, 0, 0, 1)';
+			ctx.fillStyle = 'rgba(0, 255, 0, 1)';
 			ctx.fill();
 
 
@@ -654,6 +665,9 @@ $('.progress-bar').css('width', perc+'%').text(perc);
 			old.push(position);
 
 			if (old.length > 200) old.shift();
+
+    $('#area').canvasAreaDraw();
+
 		    }
 		}
 
@@ -662,11 +676,18 @@ $('.progress-bar').css('width', perc+'%').text(perc);
 		$('#elapsedTime').text(elapsedTime.toFixed(2));
 	});
 
-    // store the currently selected tab in the hash value
-    $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
-        var id = $(e.target).attr("href").substr(1);
-        window.location.hash = id;
-    });
+  $(document).ready(function() {
+    if(location.hash) {
+       $('a[href=' + location.hash + ']').tab('show');
+    }
+  $(document.body).on("click", "a[data-toggle]", function(event) {
+    location.hash = this.getAttribute("href");
+  });
+});
+  $(window).on('popstate', function() {
+    var anchor = location.hash || $("a[data-toggle=tab]").first().attr("href");
+    $('a[href=' + anchor + ']').tab('show');
+  });
 
     $('#area').canvasAreaDraw();
 </script>

@@ -8,39 +8,27 @@
 
   }
 
+  $.fn.canvasAreaReDraw = function(options) {
+
+    this.each(function(index, element) {
+      draw.apply(element);
+    });
+
+  }
+
   var init = function(index, input, options) {
 
     var points, activePoint, settings;
-    var $reset, $canvas, ctx, image;
+    var $canvas, ctx, image;
     var draw, mousedown, stopdrag, move, resize, reset, rightclick, record;
 
     settings = $.extend({
-      imageUrl: $(this).attr('src')
+//      imageUrl: $(this).attr('src')
     }, options);
-
-    if ( $(this).val().length ) {
-      points = $(this).val().split(',').map(function(point) {
-        return parseInt(point, 10);
-      });
-    } else {
-      points = [];
-    }
-
-    $reset = $('<button type="button" class="btn"><i class="icon-trash"></i>Clear</button>');
-    $canvas = $(this);
-    ctx = $canvas[0].getContext('2d');
 
    resize = function() {
       draw();
     };
-    if (true) 
-draw();
-
-    $(document).ready( function() {
-      $canvas.bind('mousedown', mousedown);
-      $canvas.bind('contextmenu', rightclick);
-      $canvas.bind('mouseup', stopdrag);
-    });
 
     reset = function() {
       points = [];
@@ -52,8 +40,8 @@ draw();
         e.offsetX = (e.pageX - $(e.target).offset().left);
         e.offsetY = (e.pageY - $(e.target).offset().top);
       }
-      points[activePoint] = Math.round(e.offsetX);
-      points[activePoint+1] = Math.round(e.offsetY);
+      points[activePoint].x = Math.round(e.offsetX);
+      points[activePoint].y = Math.round(e.offsetY);
       draw();
     };
 
@@ -70,10 +58,10 @@ draw();
         e.offsetY = (e.pageY - $(e.target).offset().top);
       }
       var x = e.offsetX, y = e.offsetY;
-      for (var i = 0; i < points.length; i+=2) {
-        dis = Math.sqrt(Math.pow(x - points[i], 2) + Math.pow(y - points[i+1], 2));
+      for (var i = 0; i < points.length; i++) {
+        dis = Math.sqrt(Math.pow(x - points[i].x, 2) + Math.pow(y - points.y, 2));
         if ( dis < 6 ) {
-          points.splice(i, 2);
+          points.splice(i, 1);
           draw();
           record();
           return false;
@@ -96,8 +84,8 @@ draw();
       }
       x = e.offsetX; y = e.offsetY;
 
-      for (var i = 0; i < points.length; i+=2) {
-        dis = Math.sqrt(Math.pow(x - points[i], 2) + Math.pow(y - points[i+1], 2));
+      for (var i = 0; i < points.length; i++) {
+        dis = Math.sqrt(Math.pow(x - points[i].x, 2) + Math.pow(y - points[i].y, 2));
         if ( dis < 6 ) {
           activePoint = i;
           $(this).bind('mousemove', move);
@@ -105,12 +93,12 @@ draw();
         }
       }
 
-      for (var i = 0; i < points.length; i+=2) {
+      for (var i = 0; i < points.length; i++) {
         if (i > 1) {
           lineDis = dotLineLength(
             x, y,
-            points[i], points[i+1],
-            points[i-2], points[i-1],
+            points[i].x, points[i].y,
+            points[i-1].x, points[i-1].y,
             true
           );
           if (lineDis < 6) {
@@ -118,8 +106,7 @@ draw();
           }
         }
       }
-
-      points.splice(insertAt, 0, Math.round(x), Math.round(y));
+      points.splice(insertAt, 0, { x: Math.round(x), y: Math.round(y) });
       activePoint = insertAt;
       $(this).bind('mousemove', move);
 
@@ -132,25 +119,33 @@ draw();
     draw = function() {
       ctx.canvas.width = ctx.canvas.width;
 
-      if (points.length < 2) {
+      if (points.length < 1) {
         return false;
       }
       ctx.globalCompositeOperation = 'destination-over';
       ctx.fillStyle = 'rgb(255,255,255)'
-      ctx.strokeStyle = 'rgb(255,20,20)';
+      ctx.strokeStyle = 'rgb(20,20,255)';
       ctx.lineWidth = 1;
 
       ctx.beginPath();
-      ctx.moveTo(points[0], points[1]);
-      for (var i = 0; i < points.length; i+=2) {
-        ctx.fillRect(points[i]-2, points[i+1]-2, 4, 4);
-        ctx.strokeRect(points[i]-2, points[i+1]-2, 4, 4);
-        if (points.length > 2 && i > 1) {
-          ctx.lineTo(points[i], points[i+1]);
+	ctx.strokeRect(position.x, position.y, 5, 5);
+      ctx.moveTo(points[0].x, points[0].y);
+var width = 10;
+      for (var i = 0; i < points.length; i++) {
+        ctx.fillRect(points[i].x-width/2, points[i].y-width/2, width, width);
+        ctx.strokeRect(points[i].x-width/2, points[i].y-width/2, width, width);
+
+        if (points.length > 1 && i > 0) {
+          ctx.lineTo(points[i].x, points[i].y);
         }
       }
+
       ctx.closePath();
+//console.log(activeArea);
+if (activeArea[0])
       ctx.fillStyle = 'rgba(255,0,0,0.3)';
+else
+      ctx.fillStyle = 'rgba(0,0,255,0.3)';
       ctx.fill();
       ctx.stroke();
 
@@ -158,13 +153,47 @@ draw();
     };
 
     record = function() {
-//      $(input).val(points.join(','));
+	localStorage.setItem('data', points);
+            socket.emit('area', points);
+
     };
+
+
+
+    if(false) { //localStorage.data!=null){
+    points = localStorage.data.split(',').map(function(point) {
+        return parseInt(point, 10);
+      });
+
+    } else {
+      points = [];
+    }
+    $canvas = $(this);
+
+    record();
+
+    ctx = $canvas[0].getContext('2d');
+
+
+
+    $(document).ready( function() {
+      $canvas.bind('mousedown', mousedown);
+      $canvas.bind('contextmenu', rightclick);
+      $canvas.bind('mouseup', stopdrag);
+    });
+
+        socket.on('position', function() {
+	    if (position.x && position.y) {
+		draw();
+	    }
+        });
+
+setInterval(draw,500);
 
   };
 
   $(document).ready(function() {
-    $('#area').canvasAreaDraw();
+    $('#areas').canvasAreaDraw();
   });
 
   var dotLineLength = function(x, y, x0, y0, x1, y1, o) {

@@ -22,7 +22,7 @@ Blockly.JavaScript.area = function() {
 		Blockly.JavaScript.area.functionName = functionName;
 		var func = [];
 		func.push('function ' + functionName + '(area) {');
-		func.push(' return point.x; ');
+		func.push(' return activeArea[area - 1]; ');
 		func.push('}');
 		Blockly.JavaScript.definitions_['area'] = func.join('\n');
 	}
