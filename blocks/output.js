@@ -156,8 +156,8 @@ Blockly.JavaScript.feeder = function() {
 		Blockly.JavaScript.feeder.functionName = functionName;
 		var func = [];
 		func.push('function ' + functionName + '() {');
-		func.push('  a_feeder.max();');
-		func.push('  board.wait(1000, function() { a_feeder.min(); });');
+		func.push('  if (!feeding) { a_feeder.max(); feeding = true; ');
+		func.push('  board.wait(1000, function() { if (feeding) { a_feeder.min(); feeding = false }}); }');
 		func.push('}');
 		Blockly.JavaScript.definitions_['feeder'] = func.join('\n');
 	}

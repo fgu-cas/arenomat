@@ -14,6 +14,7 @@ var 	sys = require("util"),
 	isRunning = false,
 	code = false,
 	shocking = false,
+	feeding = false,
 
 	startTime = 0,
 
