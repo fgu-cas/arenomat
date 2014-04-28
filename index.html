@@ -119,7 +119,7 @@ canvas {
 			    <span class="col-md-6">
 				<div style="width: 640px; height: 480px">
 				<img width="640" height="480" id="cam" class="area" style="position: absolute" />
-				<canvas id="areas"  width="640" height="480" style="position: absolute; border: 1px solid black; z-index: 999"></canvas>
+				<canvas id="areas"  width="640" height="480" style="position: absolute; z-index: 999"></canvas>
 				<canvas id="object" width="640" height="480" style="position: absolute; z-index: 900"></canvas>
 				<canvas id="arena"  width="640" height="480" style="position: absolute"></canvas>
 				</div>
@@ -563,19 +563,16 @@ function clear() {
 // arena image
 	var c = document.getElementById("arena");
 	var ctx = c.getContext("2d");
+// center
 	ctx.arc(ctx.canvas.width/2, ctx.canvas.height/2, 5, 0, Math.PI*2);
 	ctx.stroke();
 
-	ctx.beginPath();
-
-var radius = ctx.canvas.height/2;
-	ctx.arc(ctx.canvas.width/2, ctx.canvas.height/2, ctx.canvas.height/2, 0, Math.PI*2);
-	ctx.fillStyle = 'rgba(250, 250, 250, 0.3)';
-	ctx.clip();
-ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-//	ctx.clearRect();
-
-
+// mask
+ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+ctx.beginPath();
+ctx.arc(ctx.canvas.width/2, ctx.canvas.height/2, ctx.canvas.height/2, 0, 2 * Math.PI);
+ctx.rect(ctx.canvas.width, 0, -ctx.canvas.width, ctx.canvas.height);
+ctx.fill();
 
   // init load event
   var loadInput = document.getElementById('load');

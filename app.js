@@ -82,7 +82,7 @@ var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 // 1280x720, 1024x576
 
 //var vc = new cv.VideoCapture("http://192.168.0.100/webcam/?action=stream&type=.mjpg")
-var vc = new cv.VideoCapture(0); //, 800, 600);
+var vc = new cv.VideoCapture(1); //, 800, 600);
 
 var lowThresh = 100;
 var highThresh = 200;
@@ -145,9 +145,9 @@ function frameRead() {
 			// matrix clone for image processing
 			check = im.copy();
 			check.convertGrayscale();
-			check.gaussianBlur([3, 3])
+//			check.gaussianBlur([3, 3])
 
-			check = check.threshold(100, 255);
+			check = check.threshold(240, 255);
 
 			check.dilate(7);
 //im = check.copy();
