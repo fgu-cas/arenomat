@@ -43,7 +43,7 @@ intervalId = setInterval(function() {
 console.log("cv");
 
 ////board.on("ready", function() {
-    console.log('board ready');
+////    console.log('board ready');
 
  
     io.sockets.on('connection', function (socket) {
