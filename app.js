@@ -9,7 +9,7 @@ var 	sys = require("util"),
 	five = require("johnny-five"),
 	lame = require('lame'),
 	Speaker = require('speaker'),
-	board = new five.Board(),
+	////board = new five.Board(),
 
 	isRunning = false,
 	code = false,
@@ -42,7 +42,7 @@ intervalId = setInterval(function() {
 }, 5000);
 console.log("cv");
 
-board.on("ready", function() {
+////board.on("ready", function() {
     console.log('board ready');
 
  
@@ -65,7 +65,7 @@ board.on("ready", function() {
 //	    console.log('area: ' + data);
 	    areas[0] = data;
 	});
-    });
+////});
 
  a_light = new five.Led(13);
  a_feeder = new five.Servo({
@@ -82,7 +82,7 @@ var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 // 1280x720, 1024x576
 
 //var vc = new cv.VideoCapture("http://192.168.0.100/webcam/?action=stream&type=.mjpg")
-var vc = new cv.VideoCapture(1); //, 800, 600);
+var vc = new cv.VideoCapture(0); //, 800, 600);
 
 var lowThresh = 100;
 var highThresh = 200;
