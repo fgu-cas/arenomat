@@ -6,10 +6,10 @@ var 	sys = require("util"),
 	app = require('http').createServer(handler),
 	io = require('socket.io').listen(app),
 	fs = require('fs'),
-	five = require("johnny-five"),
+//	five = require("johnny-five"),
 	lame = require('lame'),
 	Speaker = require('speaker'),
-	board = new five.Board(),
+//	board = new five.Board(),
 
 	isRunning = false,
 	code = false,
@@ -42,10 +42,22 @@ intervalId = setInterval(function() {
 }, 5000);
 console.log("cv");
 
-board.on("ready", function() {
+//board.on("ready", function() {
     console.log('board ready');
 
  
+//    });
+/*
+ a_light = new five.Led(13);
+ a_feeder = new five.Servo({
+  pin: 12,
+  range: [ 0, 180 ],
+  startAt: 0
+});
+
+var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
+*/
+
     io.sockets.on('connection', function (socket) {
         socket.on('codeStart', function (data) {
 	    isRunning = true;
@@ -65,24 +77,13 @@ board.on("ready", function() {
 //	    console.log('area: ' + data);
 	    areas[0] = data;
 	});
-    });
-
- a_light = new five.Led(13);
- a_feeder = new five.Servo({
-  pin: 12,
-  range: [ 0, 180 ],
-  startAt: 0
-});
-
-var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
-
 });
 
 
 // 1280x720, 1024x576
 
 //var vc = new cv.VideoCapture("http://192.168.0.100/webcam/?action=stream&type=.mjpg")
-var vc = new cv.VideoCapture(1); //, 800, 600);
+var vc = new cv.VideoCapture(0, 800, 600);
 
 var lowThresh = 100;
 var highThresh = 200;
@@ -136,15 +137,15 @@ function frameRead() {
 
 
 //  cv.readImage('http://192.168.0.100/webcam/?action=snapshot&ext=.jpg', function(im){
-	vc.read(function(err, im) {
-		if (im && im.width() && im.height()) {
-
+	vc.read(function(err, check) {
+		if (check && check.width() && check.height()) {
 			if (intervalId)
 				clearInterval(intervalId);
 
 			// matrix clone for image processing
-			check = im.copy();
 			check.convertGrayscale();
+			// webcam frame base64 encoded
+			io.sockets.emit('webcam', 'data:image/jpeg;base64,' + check.toBuffer().toString('base64'));
 //			check.gaussianBlur([3, 3])
 
 			check = check.threshold(240, 255);
@@ -154,7 +155,7 @@ function frameRead() {
 //			check.canny(255, 255);
 
 			contours = check.findContours();
-			im.drawAllContours(contours, RED);
+//			im.drawAllContours(contours, RED);
 
 			// filters contours by area
 			if (contours.size() == 1) {
@@ -181,19 +182,17 @@ point = { x: mu.m10/mu.m00 , y: mu.m01/mu.m00 };
 			else
 		    			io.sockets.emit('position', { x: 0, y:0 });
 			
-			// webcam frame base64 encoded
-			io.sockets.emit('webcam', 'data:image/jpeg;base64,' + im.toBuffer().toString('base64'));
 			
 		}
 			io.sockets.emit('shocking', shocking);
-			setTimeout(frameRead, 1);
+			setTimeout(frameRead, 25);
 	});
 
 	if (isRunning && code) {
 	    io.sockets.emit('elapsedTime', (new Date().getTime() / 1000) - startTime);
 
             eval('function go() { ' + code + ' }');
-	setTimeout(go, 5);
+	setTimeout(go, 10);
 
             //console.log('eval: ok');
 	}

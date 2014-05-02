@@ -7,9 +7,8 @@
     <title>Arenomat</title>
 <link rel="stylesheet" href="css/bootstrap.min.css">
 
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 
         <script type="text/javascript" src="js/blockly_compressed.js"></script>
         <script type="text/javascript" src="js/javascript_compressed.js"></script>
@@ -22,6 +21,7 @@
 
         <script type="text/javascript" src="blocks/input.js"></script>
         <script type="text/javascript" src="blocks/output.js"></script>
+        <script type="text/javascript" src="blocks/experiment.js"></script>
 
     <script type="text/javascript" src="js/BlobBuilder.min.js"></script>
     <script type="text/javascript" src="js/FileSaver.min.js"></script>
@@ -106,8 +106,8 @@ canvas {
 <div class="btn-group">
 				<a id="codeSave" class="btn btn-warning" href="#">save</a>
 				<a id="codeLoad" class="btn btn-primary" href="#">load</a>
-				<a id="codeClear" class="btn btn-danger" href="#">clear</a>
 <input type="file" id="load" style="display: none;"/>
+				<a id="codeClear" class="btn btn-danger" href="#">clear</a>
 </div>
 </div>
 			    </div>
@@ -116,21 +116,18 @@ canvas {
 
 			<div id="tcamera" class="tab-pane fade">
 			    <div class="row">
-			    <span class="col-md-6">
-				<div style="width: 640px; height: 480px">
-				<img width="640" height="480" id="cam" class="area" style="position: absolute" />
-				<canvas id="areas"  width="640" height="480" style="position: absolute; z-index: 999"></canvas>
-				<canvas id="object" width="640" height="480" style="position: absolute; z-index: 900"></canvas>
-				<canvas id="arena"  width="640" height="480" style="position: absolute"></canvas>
+			    <span class="col-md-12">
+				<div style="width: 800px; height: 600px">
+				<img width="800" height="600" id="cam" class="area" style="position: absolute" />
+				<canvas id="areas"  width="800" height="600" style="position: absolute; z-index: 999"></canvas>
+				<canvas id="object" width="800" height="600" style="position: absolute; z-index: 900"></canvas>
+				<canvas id="arena"  width="800" height="600" style="position: absolute"></canvas>
 				</div>
- <div class="progress progress-striped active" style="width: 640px; height: 30px;">
+ <div class="progress progress-striped active" style="width: 800px; height: 30px;">
     <div class="progress-bar"  role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
 </div>
-frames: <span id="cam_counter">0</span><br />
-recognized: <span id="cv_counter">0</span><br />
-fps: <span id="fps">0</span>
-			    </span>
-			    <span class="col-md-6">
+frames: <span id="cam_counter">0</span>, recognized: <span id="cv_counter">0</span>, fps: <span id="fps">0</span>
+<br /><br />
 			    </span>
 			    </div>
 			</div>
@@ -151,13 +148,13 @@ fps: <span id="fps">0</span>
   <div class="form-group">
     <label for="width" class="col-sm-2 control-label">Width</label>
     <div class="col-sm-10">
-      <input type="number" class="form-control" id="width" placeholder="640">
+      <input type="number" class="form-control" id="width" placeholder="800">
     </div>
   </div>
   <div class="form-group">
     <label for="height" class="col-sm-2 control-label">Height</label>
     <div class="col-sm-10">
-      <input type="number" class="form-control" id="height" placeholder="480">
+      <input type="number" class="form-control" id="height" placeholder="600">
     </div>
   </div>
 
@@ -229,9 +226,14 @@ fps: <span id="fps">0</span>
 			<block type="controls_flow_statements"></block>
 		</category>
 	</category>
+	<category name="Experiment">
+		<block type="experiment"></block>
+		<block type="subject"></block>
+		<block type="robot"></block>
+	</category>
 	<category name="Input">
 		<block type="motor_position"></block>
-		<block type="area"></block>
+		<block type="zone"></block>
 		<block type="time"></block>
 	</category>
 	<category name="Output">
@@ -451,10 +453,10 @@ fps: <span id="fps">0</span>
 
 <script type="text/javascript">
 	// TODO: dynamically!
-	var socket = io.connect('http://192.168.0.103');
+	var socket = io.connect(window.location.host);
 
 	Blockly.inject(document.getElementById('blockly'),
-			{path: './', toolbox: document.getElementById('toolbox')});
+			{ path: './', toolbox: document.getElementById('toolbox')});
 
 	/**
 	 * Bind an event to a function call.
