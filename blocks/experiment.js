@@ -15,9 +15,18 @@ this.appendStatementInput("code").appendTitle('code');
 //this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("100"), "delay").appendTitle('ms');
 this.setInputsInline(false);
 
+var d = new Date();
+
+var month = d.getMonth()+1;
+var day = d.getDate();
+
+var output = 'date: ' + d.getFullYear() + '/' +
+    (month<10 ? '0' : '') + month + '/' +
+    (day<10 ? '0' : '') + day;
+
 		this.appendDummyInput("")
-				.appendTitle("#")
-				.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"]]), "PIN");
+				.appendTitle(output)
+//				.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"]]), "PIN");
 		//this.setOutput(true, "Boolean");
 		this.setTooltip('return experiment activity');
 	}
