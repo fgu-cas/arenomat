@@ -72,6 +72,7 @@ Blockly.Language.turntable = {
 	init: function() {
 		this.setColour(190);
 		this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/turntable.png", 16, 16)).appendTitle("Turntable")
+		this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["CW", "CW"], ["CCW", "CCW"]]), "direction")
 		this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["0.25 RPM", "0.25"], ["0.5 RPM", "0.5"], ["0.25 RPM", "0.25"], ["1 RPM", "1"], ["2 RPM", "2"]]), "velocity")
 
 		this.setPreviousStatement(true, null);

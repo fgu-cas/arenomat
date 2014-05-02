@@ -32,21 +32,19 @@ var output = 'date: ' + d.getFullYear() + '/' +
 	}
 };
 Blockly.JavaScript.experiment = function(block) {
-	var argument0 = this.getTitleValue('PIN') || '0';
-	var codeblock = ''; //Blockly.JavaScript.statementToCode(block, 'code');
-
-
+	var argument0 = this.getTitleValue('name') || '0';
+	var codeblock = Blockly.JavaScript.statementToCode(block, 'code');
+console.log(codeblock);
 	if (!Blockly.JavaScript.definitions_['experiment']) {
 		var functionName = Blockly.JavaScript.variableDB_.getDistinctName('experiment', Blockly.Generator.NAME_TYPE);
 		Blockly.JavaScript.experiment.functionName = functionName;
 		var func = [];
 		func.push
 		func.push('function ' + functionName + '(experiment) {');
-		func.push(' return true; ');
+		func.push(codeblock);
 		func.push('}');
 		Blockly.JavaScript.definitions_['experiment'] = func.join('\n');
 	}
-	var code = codeblock + '\n' + Blockly.JavaScript.experiment.functionName +
-			'(' + argument0 + ')';
+	var code = Blockly.JavaScript.experiment.functionName + '()';
 	return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
