@@ -7,6 +7,8 @@ Blockly.Language.experiment = {
 				.appendTitle("experiment")
 
 this.appendValueInput("name").appendTitle('name');
+this.appendValueInput("person").appendTitle('goal');
+this.appendValueInput("goal").appendTitle('goal');
 this.appendValueInput("subject").appendTitle('subject');
 this.appendValueInput("length").setCheck('Number').appendTitle('length');
 this.appendValueInput("day").setCheck('Number').appendTitle('day');
@@ -31,17 +33,14 @@ var output = 'date: ' + d.getFullYear() + '/' +
 		this.setTooltip('return experiment activity');
 	}
 };
-Blockly.JavaScript.experiment = function(block) {
-	var argument0 = this.getTitleValue('name') || '0';
-	var codeblock = Blockly.JavaScript.statementToCode(block, 'code');
-console.log(codeblock);
+Blockly.JavaScript.experiment = function() {
+	var codeblock = Blockly.JavaScript.statementToCode(this, 'code');
 	if (!Blockly.JavaScript.definitions_['experiment']) {
 		var functionName = Blockly.JavaScript.variableDB_.getDistinctName('experiment', Blockly.Generator.NAME_TYPE);
 		Blockly.JavaScript.experiment.functionName = functionName;
 		var func = [];
-		func.push
-		func.push('function ' + functionName + '(experiment) {');
-		func.push(codeblock);
+		func.push('function ' + functionName + '() {');
+		func.push(	codeblock);
 		func.push('}');
 		Blockly.JavaScript.definitions_['experiment'] = func.join('\n');
 	}
