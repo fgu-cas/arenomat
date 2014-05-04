@@ -27,6 +27,9 @@ ctx.fill();
         var objectc = document.getElementById("object");
         var objectctx = objectc.getContext("2d");
 
+        var webcamc = document.getElementById("webcam");
+        var webcamctx = webcamc.getContext("2d");
+
         var oldtime = 0;
 
 	socket = io.connect(window.location.host);
@@ -51,7 +54,7 @@ ctx.fill();
 if (actualFrame != base64Image) {
     image.src = 'data:image/jpeg;base64,' + actualFrame;
     actualFrame = 0;
-objectctx.drawImage(image, 0, 0);
+webcamctx.drawImage(image, 0, 0);
 
 		actualFrame = base64Image;
 }
@@ -80,7 +83,7 @@ objectctx.drawImage(image, 0, 0);
 
                         if (old[old.length -1].x != position.x && old[old.length - 1].y != position.y) {
 
-//                        objectctx.canvas.width = ctx.canvas.width;
+                        objectctx.canvas.width = ctx.canvas.width;
 
 //                      objectctx.clearRect(old.x, old.y, 10, 10);
                         objectctx.arc(position.x+5, position.y+5, 10, 0, Math.PI*2, true);
