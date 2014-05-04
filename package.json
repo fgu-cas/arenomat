@@ -4,15 +4,25 @@
   "description": "Arena automat",
   "main": "app.js",
   "dependencies": {
-    "opencv": "peterbraden/node-opencv",
-    "socket.io": "~0.9.16",
+    "body-parser": "~1.0.0",
+    "cookie-parser": "~1.0.1",
+    "debug": "~0.7.4",
+    "express": "~4.0.0",
+    "hjs": "~0.0.6",
+    "hogan-express": "^0.5.2",
     "johnny-five": "~0.7.31",
+    "lame": "~1.0.3",
+    "less-middleware": "0.1.15",
+    "mongoose": "3.8.x",
+    "morgan": "~1.0.0",
+    "opencv": "peterbraden/node-opencv",
+    "socket.io": "^0.9.16",
     "speaker": "~0.1.0",
-    "lame": "~1.0.3"
+    "static-favicon": "~1.0.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app"
   },
   "author": "Majkl",
   "license": "MIT",
