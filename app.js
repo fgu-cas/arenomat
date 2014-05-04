@@ -6,10 +6,8 @@ var 	sys = require("util"),
 	app = require('http').createServer(handler),
 	io = require('socket.io').listen(app),
 	fs = require('fs'),
-//	five = require("johnny-five"),
 	lame = require('lame'),
 	Speaker = require('speaker'),
-//	board = new five.Board(),
 
 	isRunning = false,
 	code = false,
@@ -42,21 +40,22 @@ intervalId = setInterval(function() {
 }, 5000);
 console.log("cv");
 
-//board.on("ready", function() {
+var five = require("johnny-five");
+var board = new five.Board();
+board.on('error', function() {
+  console.log('not ready!');
+});
+board.on("ready", function() {
     console.log('board ready');
 
- 
-//    });
-/*
  a_light = new five.Led(13);
  a_feeder = new five.Servo({
   pin: 12,
   range: [ 0, 180 ],
   startAt: 0
-});
-
+ });
 var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
-*/
+});
 
     io.sockets.on('connection', function (socket) {
         socket.on('codeStart', function (data) {
