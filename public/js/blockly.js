@@ -54,7 +54,7 @@
 /**
 * Save blocks to local file
 */
-function save() {
+function codeExport() {
   var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
   var data = Blockly.Xml.domToText(xml);
 
@@ -68,7 +68,7 @@ function save() {
 * Load blocks from local file
 *
 */
-function load(event) {
+function codeImport(event) {
     if (!event) return;
 
   var files = event.target.files;
@@ -97,7 +97,7 @@ function load(event) {
   reader.readAsText(files[0]);
 };
 
-function clear() {
+function codeClear() {
   var count = Blockly.mainWorkspace.getAllBlocks().length;
   if ((count > 2) || window.confirm('Are you sure?')) {
     Blockly.mainWorkspace.clear();
@@ -106,4 +106,35 @@ function clear() {
 
 
         auto_save_and_restore_blocks();
+
+  // init load event
+  // fake input file
+  // TODO: jquery style
+  var loadInput = document.getElementById('import');
+  loadInput.addEventListener('change', codeImport, false);
+  document.getElementById('codeImport').onclick = function() {
+        loadInput.click();
+  };
+
+
+
+        $("#codeStart").click(function() {
+            var code = Blockly.Generator.workspaceToCode('JavaScript');
+            socket.emit('codeStart', code);
+        });
+        $("#codeExport").click(function() {
+            codeExport();
+        });
+
+        $("#codeImport").click(function() {
+            codeImport();
+        });
+        $("#codeClear").click(function() {
+            codeClear();
+        });
+
+        $("#codeStop, #elapsedTime").click(function() {
+            socket.emit('codeStop');
+        });
+
 });

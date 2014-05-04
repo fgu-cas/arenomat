@@ -21,7 +21,7 @@ var ExperimentSchema = new mongoose.Schema({
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { camWidth: 640, camHeight: 480 });
 });
 
 // route to show all our experiments

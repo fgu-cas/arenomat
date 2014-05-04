@@ -1,3 +1,6 @@
+var camWidth = 800, camHeight = 600;
+
+
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -15,14 +18,13 @@ var io = require('socket.io').listen(http);
 var mongoose = require('mongoose');
 
 var cv = require('opencv');
+var fs = require('fs');
 
 var lame = require('lame');
 var Speaker = require('speaker');
 
 
 
-
-//io.set('log level', 1); // reduce logging
 
 
 // Set View Engine
@@ -129,12 +131,22 @@ function in_poly(poly, pt){
 
 // WEBCAM
 try {
-    var vc = new cv.VideoCapture(0, 800, 600);
+    var vc = new cv.VideoCapture(0);
+    vc.setWidth(camWidth);
+    vc.setHeigh(camHeight);
+
     var point;
 } catch (e) {
     console.log('no webcam');
 }
 
+// main frame loop start
+if (vc) {
+intervalId = setInterval(function() {
+    console.log("cv");
+    frameRead(intervalId)
+}, 1000);
+}
 
 
 // EXPERIMENT
@@ -150,6 +162,7 @@ var a_light, a_feeder, a_shock;
 
 var activeArea = [ 0, 0, 0, 0 ], areas = [ 0, 0 ];
 
+var im;
 
 // one frame - looped
 function frameRead() {
@@ -159,15 +172,16 @@ if (vc)
                         if (intervalId)
                                 clearInterval(intervalId);
 
+			im = check.copy();
                         // matrix clone for image processing
                         check.convertGrayscale();
                         // webcam frame base64 encoded
-                        io.sockets.emit('webcam', 'data:image/jpeg;base64,' + check.toBuffer().toString('base64'));
 
                         check = check.threshold(240, 255);
                         check.dilate(7);
                         contours = check.findContours();
-//                      im.drawAllContours(contours, RED);
+
+                      im.drawAllContours(contours, [255, 0, 0]);
 
                         // filters contours by area
                         if (contours.size() == 1) {
@@ -178,7 +192,7 @@ if (vc)
 
                                         // emits positions of the first point one
 mu = contours.moments(0);
-point = { x: mu.m10/mu.m00 , y: mu.m01/mu.m00 };
+point = { x: Math.round(mu.m10/mu.m00) , y: Math.round(mu.m01/mu.m00) };
 
 //                                      point = contours.point(0, 0);
 
@@ -189,29 +203,23 @@ point = { x: mu.m10/mu.m00 , y: mu.m01/mu.m00 };
                                         activeArea[0] = in_poly(areas[0], point);
                                             io.sockets.emit('activeArea', activeArea);
                         }
-                        else
-                                        io.sockets.emit('position', { x: 0, y:0 });
-
-
                 }
-                        io.sockets.emit('shocking', shocking);
-                        setTimeout(frameRead, 25);
+
+                if (shocking) io.sockets.emit('shocking', shocking);
+
+io.set('log level', 1); // reduce logging
+io.sockets.emit('webcam', im.toBuffer().toString('base64'));
+io.set('log level', 5); // reduce logging
+
+                        setTimeout(frameRead, 50);
         });
 
         if (isRunning && code) {
             io.sockets.emit('elapsedTime', (new Date().getTime() / 1000) - startTime);
 
             eval('function go() { ' + code + ' }');
-        setTimeout(go, 10);
+        setTimeout(go, 100);
 
             //console.log('eval: ok');
         }
-}
-
-// main frame loop start
-if (vc) {
-intervalId = setInterval(function() {
-    console.log("cv");
-    frameRead(intervalId)
-}, 1000);
 }
