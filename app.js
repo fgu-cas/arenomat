@@ -45,6 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/experiments', users);
 
+
 http.listen(80, function() { 
     console.log('Listening on port %d', http.address().port);
 });
@@ -146,6 +147,8 @@ var isRunning = false;
 var startTime = 0;
 
 var a_light, a_feeder, a_shock;
+
+var activeArea = [ 0, 0, 0, 0 ], areas = [ 0, 0 ];
 
 
 // one frame - looped

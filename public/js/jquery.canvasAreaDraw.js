@@ -154,7 +154,7 @@ else
 
     record = function() {
 	localStorage.setItem('data', points);
-//            socket.emit('area', points);
+            socket.emit('area', points);
 
     };
 
@@ -191,10 +191,6 @@ else
 setInterval(draw,500);
 
   };
-
-  $(document).ready(function() {
-    $('#areas').canvasAreaDraw();
-  });
 
   var dotLineLength = function(x, y, x0, y0, x1, y1, o) {
     function lineLength(x, y, x0, y0){

@@ -22,7 +22,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node app"
+    "start": "nodemon --debug app.js"
   },
   "author": "Majkl",
   "license": "MIT",
