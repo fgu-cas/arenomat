@@ -20,13 +20,6 @@ var 	sys = require("util"),
 	a_feeder,
 	a_shock;
 
-function play(mp3) { 
-fs.createReadStream(mp3)
-  .pipe(new lame.Decoder())
-  .on('format', function (format) {
-    this.pipe(new Speaker(format));
-  });
-}
 
 io.set('log level', 1); // reduce logging
 
@@ -35,10 +28,6 @@ var activeArea = [ 0, 0, 0, 0 ], areas = [ 0, 0 ];
 app.listen(80)
 console.log("Listening");
 
-intervalId = setInterval(function() {
-    frameRead(intervalId)
-}, 5000);
-console.log("cv");
 
 var five = require("johnny-five");
 var board = new five.Board();
@@ -56,6 +45,15 @@ board.on("ready", function() {
  });
 var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 });
+
+
+function play(mp3) { 
+fs.createReadStream(mp3)
+  .pipe(new lame.Decoder())
+  .on('format', function (format) {
+    this.pipe(new Speaker(format));
+  });
+}
 
     io.sockets.on('connection', function (socket) {
         socket.on('codeStart', function (data) {
@@ -82,8 +80,12 @@ var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 // 1280x720, 1024x576
 
 //var vc = new cv.VideoCapture("http://192.168.0.100/webcam/?action=stream&type=.mjpg")
-var vc = new cv.VideoCapture(0, 800, 600);
 
+try {
+var vc = new cv.VideoCapture(0, 800, 600);
+} catch (e) {
+    console.log('no webcam');
+}
 var lowThresh = 100;
 var highThresh = 200;
 var minArea = 0;
@@ -132,10 +134,7 @@ function in_poly(poly, pt){
 }
 
 function frameRead() {
-
-
-
-//  cv.readImage('http://192.168.0.100/webcam/?action=snapshot&ext=.jpg', function(im){
+if (vc)
 	vc.read(function(err, check) {
 		if (check && check.width() && check.height()) {
 			if (intervalId)
@@ -145,14 +144,9 @@ function frameRead() {
 			check.convertGrayscale();
 			// webcam frame base64 encoded
 			io.sockets.emit('webcam', 'data:image/jpeg;base64,' + check.toBuffer().toString('base64'));
-//			check.gaussianBlur([3, 3])
 
 			check = check.threshold(240, 255);
-
 			check.dilate(7);
-//im = check.copy();
-//			check.canny(255, 255);
-
 			contours = check.findContours();
 //			im.drawAllContours(contours, RED);
 
@@ -164,12 +158,10 @@ function frameRead() {
 					//	continue;
 
 					// emits positions of the first point one
-					// TODO: more accurate position
-
 mu = contours.moments(0);
 point = { x: mu.m10/mu.m00 , y: mu.m01/mu.m00 };
 
-					point = contours.point(0, 0);
+//					point = contours.point(0, 0);
 					
 					//im.ellipse(point.x + 10, point.y + 10, 10, 10);
 					//im.drawContour(contours, i, RED);
@@ -196,3 +188,8 @@ point = { x: mu.m10/mu.m00 , y: mu.m01/mu.m00 };
             //console.log('eval: ok');
 	}
 }
+
+intervalId = setInterval(function() {
+    frameRead(intervalId)
+}, 5000);
+console.log("cv");
