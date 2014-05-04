@@ -131,13 +131,13 @@ function in_poly(poly, pt) {
 // WEBCAM
 try {
 	var vc = new cv.VideoCapture(0);
-	vc.setWidth(camWidth);
-	vc.setHeigh(camHeight);
-
-	var point;
+//	vc.setWidth(camWidth);
+//	vc.setHeigh(camHeight);
 } catch (e) {
 	console.log('no webcam');
 }
+
+var point;
 
 // main frame loop start
 if (vc) {
@@ -207,7 +207,7 @@ function frameRead() {
 			io.sockets.emit('webcam', im.toBuffer().toString('base64'));
 			io.set('log level', 5); // logging level to 5
 
-			setTimeout(frameRead, 50);
+			setTimeout(frameRead, 5);
 		});
 	}
 	

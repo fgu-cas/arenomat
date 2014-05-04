@@ -20,11 +20,13 @@
     "speaker": "~0.1.0",
     "static-favicon": "~1.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "*"
+  },
   "scripts": {
     "start": "nodemon --debug app.js"
   },
   "author": "Majkl",
   "license": "MIT",
-  "homepage": "http://git.michalvondracek.cz/arenaomat.git"
+  "homepage": "http://git.michalvondracek.cz/arenomat.git"
 }

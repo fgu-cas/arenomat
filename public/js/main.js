@@ -1,9 +1,11 @@
+var socket;
+var activeArea = [false];
+
 $(document).ready(function() {
-	var socket, actualFrame;
 	var old, position = {x: 0, y: 0};
 	var cam_counter = 0;
 	var cv_counter = 0;
-	var activeArea = [false];
+	var actualFrame;
 	var image = new Image();
 	var objectc = document.getElementById("object");
 	var objectctx = objectc.getContext("2d");
@@ -48,17 +50,15 @@ $(document).ready(function() {
 		var fps = (1000 / (now - oldtime)).toFixed(0);
 		$('#fps').text(fps).css('color', (fps < 15) ? 'red' : 'green');
 
-		if (actualFrame != base64Image) {
-			image.src = 'data:image/jpeg;base64,' + actualFrame;
-			actualFrame = 0;
-			webcamctx.drawImage(image, 0, 0);
-
-			actualFrame = base64Image;
-		}
-
+		actualFrame = base64Image;
 		oldtime = now;
 		cam_counter++;
 	});
+
+setInterval(function () {
+	image.src = 'data:image/jpeg;base64,' + actualFrame;
+	webcamctx.drawImage(image, 0, 0);
+}, 40);
 
 	socket.on('position', function(pos) {
 		position = pos;
@@ -115,6 +115,11 @@ $(document).ready(function() {
 	});
 
 	$('#areas').canvasAreaDraw();
+
+
+	$('.del').click( function () {
+	    alert('dsfdf');
+	});
 });
 
 // load tab via hash

@@ -1,5 +1,10 @@
+<table border=1>
 {{#experiments}}
-    {{name}}
+<tr>
+    <td align=top>{{name}}</td>
+    <td><small>{{xml}}</small></td>
+    <td><a href="#" class="del" data="{{name}}">del</a></td>
+    <td><a href="#" class="load" data="{{name}}">load</a></td>
+</tr>
 {{/experiments}}
-
-{{> blockly }}
+</table>

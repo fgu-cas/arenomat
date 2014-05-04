@@ -105,6 +105,21 @@ $(document).ready(function() {
 
 	auto_save_and_restore_blocks();
 
+
+	function codeSave() {
+		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+		var name = $(xml).find('value[name="name"]')[0].innerText;
+		var xml = Blockly.Xml.domToText(xml);
+		var code = Blockly.Generator.workspaceToCode('JavaScript');
+
+data = { name: name, xml: xml, code: code };
+
+
+$.post( "/experiments", data, function( data ) {
+  alert('ok');
+});
+	}
+
 	// init load event
 	// fake input file
 	// TODO: jquery style
@@ -121,6 +136,9 @@ $(document).ready(function() {
 	
 	$("#codeExport").click(function() {
 		codeExport();
+	});
+	$("#codeSave").click(function() {
+		codeSave();
 	});
 
 	$("#codeImport").click(function() {

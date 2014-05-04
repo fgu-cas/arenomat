@@ -4,14 +4,9 @@ var mongoose = require('mongoose');
 
 //creating the schema for mongo
 var ExperimentSchema = new mongoose.Schema({
-	title: String,
 	name: String,
-	date: String,
-	content: String,
-	replies: String,
-	views: String,
-	message: String,
-	messagedate: String
+	code: String,
+	xml: String,
 });
 
 //Experiments will be used to do or  CRUD
