@@ -4,7 +4,7 @@
   "description": "Arena automat",
   "main": "app.js",
   "dependencies": {
-    "opencv": "~0.3.1",
+    "opencv": "peterbraden/node-opencv",
     "socket.io": "~0.9.16",
     "johnny-five": "~0.7.31",
     "speaker": "~0.1.0",
