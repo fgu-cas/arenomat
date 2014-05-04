@@ -1,5 +1,0 @@
-{{#experiments}}
-    {{name}}
-{{/experiments}}
-
-{{> blockly }}

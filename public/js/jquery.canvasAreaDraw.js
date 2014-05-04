@@ -154,7 +154,7 @@ else
 
     record = function() {
 	localStorage.setItem('data', points);
-            socket.emit('area', points);
+//            socket.emit('area', points);
 
     };
 

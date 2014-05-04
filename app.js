@@ -4,8 +4,15 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
+var routes = require('./routes/index');
+var users = require('./routes/users');
+
+var app = express();
+var http = require('http').createServer(app);
+var io = require('socket.io').listen(http);
+
 var mongoose = require('mongoose');
-var http = require('http');
 
 var cv = require('opencv');
 
@@ -13,25 +20,6 @@ var lame = require('lame');
 var Speaker = require('speaker');
 
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
-var app = express();
-
-var server = require('http').createServer(app)
-var io = require('socket.io').listen(server);
-
-
-var        isRunning = false,
-        code = false,
-        shocking = false,
-        feeding = false,
-
-        startTime = 0,
-
-        a_light,
-        a_feeder,
-        a_shock;
 
 
 //io.set('log level', 1); // reduce logging
@@ -43,7 +31,7 @@ app.set('view options', {layout: true});
 app.set('layout', 'layout');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
-app.set('partials', { menu: 'menu', blockly: 'blockly' });
+app.set('partials', { menu: 'menu', blockly: 'blockly', head: 'head', foot: 'foot' });
 
 app.enable('view cache');
 
@@ -56,11 +44,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/experiments', users);
-server.listen(80);
+
+http.listen(80, function() { 
+    console.log('Listening on port %d', http.address().port);
+});
 
 //mongoose
 mongoose.connect("mongodb://localhost/arenomat");
-
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -100,6 +90,7 @@ module.exports = app;
 
 // sockets
 io.sockets.on('connection', function (socket) {
+	console.log('connection');
         socket.on('codeStart', function (data) {
             isRunning = true;
             startTime =  new Date().getTime() / 1000;
@@ -134,6 +125,8 @@ function in_poly(poly, pt){
     return c;
 }
 
+
+// WEBCAM
 try {
     var vc = new cv.VideoCapture(0, 800, 600);
     var point;
@@ -141,6 +134,21 @@ try {
     console.log('no webcam');
 }
 
+
+
+// EXPERIMENT
+var code = false;
+
+var shocking = false;
+var feeding = false;
+
+var isRunning = false;
+var startTime = 0;
+
+var a_light, a_feeder, a_shock;
+
+
+// one frame - looped
 function frameRead() {
 if (vc)
         vc.read(function(err, check) {
@@ -197,7 +205,10 @@ point = { x: mu.m10/mu.m00 , y: mu.m01/mu.m00 };
         }
 }
 
+// main frame loop start
+if (vc) {
 intervalId = setInterval(function() {
+    console.log("cv");
     frameRead(intervalId)
 }, 1000);
-console.log("cv");
+}
