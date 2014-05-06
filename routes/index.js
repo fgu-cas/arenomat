@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var mongoose = require('mongoose');
+var mongoose = require('mongoose-paginate');
 
 //creating the schema for mongo
 var ExperimentSchema = new mongoose.Schema({
@@ -11,6 +11,19 @@ var ExperimentSchema = new mongoose.Schema({
 
 //Experiments will be used to do or  CRUD
 var Experiments = mongoose.model('Experiments', ExperimentSchema);
+
+//creating the schema for mongo
+var FrameSchema = new mongoose.Schema({
+	session_id: String,
+	tracked: Boolean,
+	cv: {},
+	output: {},
+	webcam: Buffer,
+	date: { type: Date, default: Date.now }
+});
+
+//Frames
+var Frames = mongoose.model('Frames', FrameSchema);
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -49,12 +62,28 @@ router.param('name', function(req, res, next, name) {
 
 //experiments page show
 router.get('/experiments/:name', function(req, res) {
-	res.render("experiments/show", {experiment: req.experiment});
+
+	Frames.count({}, function (err, frameCount) {
+		res.render("experiments/view", {experiment: req.experiment, frameCount: frameCount });
+	});
 });
 
 //edit experiments
 router.get('/experiments/:name/edit', function(req, res) {
 	res.render("experiments/edit", {experiment: req.experiment});
+});
+
+router.get('/frames/:id', function (req, res) {
+    Frames.paginate({}, req.params.id, 1, function(error, pageCount, data, itemCount) {
+	if (error) {
+    	    console.error(error);
+	} else {
+if (data[0].webcam) {
+	 res.writeHead(200, {'Content-Type': 'image/jpeg'});
+        res.end(data[0].webcam);
+}
+	}
+    });
 });
 
 //handle updates

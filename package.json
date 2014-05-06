@@ -14,6 +14,7 @@
     "lame": "~1.0.3",
     "less-middleware": "0.1.15",
     "mongoose": "3.8.x",
+    "mongoose-paginate": "^2.2.0",
     "morgan": "~1.0.0",
     "opencv": "peterbraden/node-opencv",
     "socket.io": "^0.9.16",

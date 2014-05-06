@@ -14,7 +14,7 @@ var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io').listen(http);
 
-var mongoose = require('mongoose');
+var mongoose = require('mongoose-paginate');
 
 var cv = require('opencv');
 var fs = require('fs');
@@ -52,7 +52,10 @@ http.listen(80, function() {
 });
 
 //mongoose
+//mongoose.set('debug', true)
 mongoose.connect("mongodb://localhost/arenomat");
+
+var Frame = mongoose.model('Frames');
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -204,8 +207,24 @@ function frameRead() {
 				io.sockets.emit('shocking', shocking);
 
 			io.set('log level', 1); // reduce logging
-			io.sockets.emit('webcam', im.toBuffer().toString('base64'));
+var jpeg = im.toBuffer();//.toString('base64');
+			io.sockets.emit('webcam', jpeg.toString('base64'));
 			io.set('log level', 5); // logging level to 5
+if (point) {
+    var actual = new Frame({ 
+	webcam: jpeg, 
+	cv: { 
+	    subject: { 
+		position: { 
+		    x: point.x, 
+		    y: point.y 
+		}
+	    }
+	} 
+    });
+    actual.save();
+}
+
 
 			setTimeout(frameRead, 5);
 		});

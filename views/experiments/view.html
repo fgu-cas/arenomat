@@ -1,0 +1,18 @@
+<div class="container">
+    <div class="row">
+<img id="image" src="/frames/1" />
+<br />
+<input id="ex6" type="text" style="width: 640px" data-slider-min="1" data-slider-max="{{ frameCount }}" data-slider-step="1" data-slider-value="1" />
+
+<script>
+$("#ex6").slider({
+    tooltip: 'always'
+});
+
+$("#ex6").on('slide', function(slideEvt) {
+    $("#image").attr("src", '/frames/' + slideEvt.value);
+});
+
+</script>
+</div>
+</div>
