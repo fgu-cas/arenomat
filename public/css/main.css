@@ -20,6 +20,24 @@
 	color: black !important;
 }
 
-canvas {
-	display: block;
+#zones {
+    z-index: 1000;
+}
+#arena {
+    z-index: 998;
+}
+#webcam {
+    z-index: -1;
+}
+.change {
+    display: block;
+    padding: 5px;
+    border: 1px solid black;
+    margin: 5px;
+    float: left;
+}
+
+#vision canvas {
+    float: left;
+    position: absolute;
 }

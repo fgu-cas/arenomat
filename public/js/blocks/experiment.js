@@ -13,6 +13,7 @@ this.appendValueInput("subject").appendTitle('subject');
 this.appendValueInput("length").setCheck('Number').appendTitle('length');
 this.appendValueInput("day").setCheck('Number').appendTitle('day');
 this.appendValueInput("comment").appendTitle('comment');
+this.appendStatementInput("setup").appendTitle('setup');
 this.appendStatementInput("code").appendTitle('code');
 //this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("100"), "delay").appendTitle('ms');
 this.setInputsInline(false);
@@ -35,10 +36,13 @@ var output = 'date: ' + d.getFullYear() + '/' +
 };
 Blockly.JavaScript.experiment = function() {
 	var codeblock = Blockly.JavaScript.statementToCode(this, 'code');
+	var setupblock = Blockly.JavaScript.statementToCode(this, 'setup');
+
 	if (!Blockly.JavaScript.definitions_['experiment']) {
 		var functionName = Blockly.JavaScript.variableDB_.getDistinctName('experiment', Blockly.Generator.NAME_TYPE);
 		Blockly.JavaScript.experiment.functionName = functionName;
 		var func = [];
+		func.push(setupblock);
 		func.push('function ' + functionName + '() {');
 		func.push(	codeblock);
 		func.push('}');

@@ -1,0 +1,1 @@
+mongo arenomat --eval "db.dropDatabase();"

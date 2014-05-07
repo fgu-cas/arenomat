@@ -73,17 +73,21 @@ router.get('/experiments/:name/edit', function(req, res) {
 	res.render("experiments/edit", {experiment: req.experiment});
 });
 
-router.get('/frames/:id', function (req, res) {
-    Frames.paginate({}, req.params.id, 1, function(error, pageCount, data, itemCount) {
+router.get('/frames/info/:id', function (req, res) {
+//    Frames.find({}).skip(req.params.id).limit(1).select('cv').exec(function (error, data) {
+    var page = req.params.id || 1;
+    Frames.paginate({}, page, 1, function(error, pageCount, data, itemCount) {
 	if (error) {
     	    console.error(error);
 	} else {
-if (data[0].webcam) {
-	 res.writeHead(200, {'Content-Type': 'image/jpeg'});
-        res.end(data[0].webcam);
+if (data[0] && data[0].webcam) {
+	    res.json({
+		webcam: (new Buffer(data[0].webcam).toString('base64')),
+		cv: data[0].cv
+	    });
 }
 	}
-    });
+    });	
 });
 
 //handle updates

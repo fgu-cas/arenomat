@@ -1,17 +1,39 @@
 <div class="container">
     <div class="row">
-<img id="image" src="/frames/1" />
+<img id="image" />
 <br />
 <input id="ex6" type="text" style="width: 640px" data-slider-min="1" data-slider-max="{{ frameCount }}" data-slider-step="1" data-slider-value="1" />
-
+<br />
+position x: <span id="position_x">0</span>
+ y: <span id="position_y">0</span>
 <script>
+var timer;
+var oldValue;
+
+function delayShow(value) {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+	$.get('/frames/info/' + value, function( data ) {
+	    $('#position_x').text(data.cv.subject.position.x);
+	    $('#position_y').text(data.cv.subject.position.y);
+            $("#image").attr("src",  'data:image/jpeg;base64,' + data.webcam);
+	});
+    }, 200);
+}
+
 $("#ex6").slider({
     tooltip: 'always'
 });
 
 $("#ex6").on('slide', function(slideEvt) {
-    $("#image").attr("src", '/frames/' + slideEvt.value);
+    if (oldValue !== slideEvt.value) {
+	oldValue = slideEvt.value;
+        delayShow(slideEvt.value);
+    }
 });
+
+    delayShow(1);
+
 
 </script>
 </div>

@@ -34,15 +34,21 @@
 		<div id="tcamera" class="tab-pane fade">
 			<div class="row">
 				<div class="col-md-12">
-					<div style="width: {{ camWidth }}px; height: {{ camHeight }}px">
-						<canvas id="areas"  width="{{ camWidth }}" height="{{ camHeight }}" style="position: absolute; z-index: 999"></canvas>
-						<canvas id="webcam"  width="{{ camWidth }}" height="{{ camHeight }}" style="position: absolute; z-index: 900"></canvas>
-						<canvas id="object" width="{{ camWidth }}" height="{{ camHeight }}" style="position: absolute; z-index: 901"></canvas>
-						<canvas id="arena"  width="{{ camWidth }}" height="{{ camHeight }}" style="position: absolute; z-index: 905"></canvas>
+					<div id="vision" style="width: {{ camWidth }}px; height: {{ camHeight }}px">
+						<canvas id="webcam"  width="{{ camWidth }}" height="{{ camHeight }}"></canvas>
 					</div>
-					<div class="progress progress-striped active" style="width: {{ camWidth }}px; height: 30px;">
-						<div class="progress-bar"  role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-					</div>
+<a href="0" class="active change">0</a>
+
+<a href="1" class="change">1</a>
+
+<a href="2" class="change">2</a>
+
+<a href="3" class="change">3</a>
+
+<a href="4" class="change">4</a>
+
+<a href="5" class="change">5</a>
+
 					frames: <span id="cam_counter">0</span>, recognized: <span id="cv_counter">0</span>, fps: <span id="fps">0</span>
 					<br /><br />
 				</div>

@@ -8,7 +8,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 var http = require('http').createServer(app);
@@ -44,7 +43,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/experiments', users);
 
 
 http.listen(80, function() {
@@ -54,7 +52,6 @@ http.listen(80, function() {
 //mongoose
 //mongoose.set('debug', true)
 mongoose.connect("mongodb://localhost/arenomat");
-
 var Frame = mongoose.model('Frames');
 
 /// catch 404 and forwarding to error handler
@@ -209,7 +206,7 @@ function frameRead() {
 			io.set('log level', 1); // reduce logging
 var jpeg = im.toBuffer();//.toString('base64');
 			io.sockets.emit('webcam', jpeg.toString('base64'));
-			io.set('log level', 5); // logging level to 5
+			io.set('log level', 1); // logging level to 5
 if (point) {
     var actual = new Frame({ 
 	webcam: jpeg, 
@@ -226,7 +223,7 @@ if (point) {
 }
 
 
-			setTimeout(frameRead, 5);
+			setTimeout(frameRead, 15);
 		});
 	}
 	
