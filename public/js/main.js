@@ -8,7 +8,7 @@ $(document).ready(function() {
     var actualFrame;
     var image = new Image();
     var webcamctx = $('#webcam').get(0).getContext("2d");
-    var vision = $('#vision').drawVision();
+    var vision = $('#vision').arena();
 
 	// websockets
 	socket = io.connect(window.location.host);
@@ -19,6 +19,7 @@ $(document).ready(function() {
 
 	socket.on('activeArea', function(data) {
 		activeArea = data;
+		$('#vision').arena('setInZones', data);
 	});
 
 	socket.on('webcam', function(base64Image) {
@@ -38,24 +39,12 @@ $(document).ready(function() {
 	setInterval(function() {
 		image.src = 'data:image/jpeg;base64,' + actualFrame;
 		webcamctx.drawImage(image, 0, 0);
-	//	vision.draw();
+//		vision.draw();
 	}, 40);
 
 	socket.on('position', function(pos) {
-		position = pos;
-
-		if (!old)
-			old = [position];
-
 		cv_counter++;
-
-		if (old[old.length - 1].x != position.x && old[old.length - 1].y != position.y) {
-			old.push(position);
-
-			if (old.length > 200)
-				old.shift();
-		}
-
+		$('#vision').arena('addPosition', pos);
 	});
 
 	socket.on('elapsedTime', function(elapsedTime) {

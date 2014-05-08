@@ -109,7 +109,7 @@ io.sockets.on('connection', function(socket) {
 	});
 	socket.on('area', function(data) {
 //          console.log('area: ' + data);
-		areas[0] = data;
+		areas = data;
 	});
 });
 
@@ -194,8 +194,9 @@ function frameRead() {
 					point = {x: Math.round(mu.m10 / mu.m00), y: Math.round(mu.m01 / mu.m00)};
 
 					io.sockets.emit('position', point);
-
-					activeArea[0] = in_poly(areas[0], point);
+					for(var n = 0; n < areas.length; n++) {
+					    activeArea[n] = in_poly(areas[n], point);
+					}
 					io.sockets.emit('activeArea', activeArea);
 				}
 			}
