@@ -44,9 +44,11 @@
 	},
 	// more objects
 	addPosition: function (pos) {
-	    this.positions.subject.push(pos);
+	    this.positions.subject.push(pos[0]);
+	    this.positions.robot.push(pos[1]);
 
 	    if (this.positions.subject.length > 50) this.positions.subject.shift();
+	    if (this.positions.robot.length > 50) this.positions.robot.shift();
 	    this.drawObjects();
 	},
          init: function (element, options) {
@@ -63,6 +65,13 @@
                  $(this.element).append(canvas);
                  ctxs[sets[n]] = canvas.get(0).getContext("2d");
              }
+
+	     var controls = $('<div />').addClass('controls');
+	     for(var n = 0; n < this.zones.length; n++) {
+		controls.append($('<br />'));
+	     }
+	     $(this.element).append(controls);
+
 
              // $(document).ready(function () {
              // alert('ready');
@@ -108,28 +117,29 @@
 
          drawObjects: function () {
              var ctx = this.ctxs['objects'];
-
              ctx.canvas.width = ctx.canvas.width;
 
              ctx.beginPath();
              ctx.globalAlpha = 1;
-
-             $.each(this.positions, function (index, positions) {
+	     var c = 0;
+             for(var n in this.positions) 
+		if (this.positions.hasOwnProperty(n)) {
                  var i;
                  ctx.beginPath();
-                 for (i = 1; i < positions.length; i++) {
-                     ctx.moveTo(positions[i - 1].x, positions[i - 1].y);
-                     ctx.lineTo(positions[i].x, positions[i].y);
+                 for (i = 1; i < this.positions[n].length; i++) {
+                     ctx.moveTo(this.positions[n][i - 1].x, this.positions[n][i - 1].y);
+                     ctx.lineTo(this.positions[n][i].x, this.positions[n][i].y);
                  }
-                 ctx.strokeStyle = '#2ba6cb';
+                 ctx.strokeStyle = 'rgba(' + this.colors[c] + ', 0.5)';
                  ctx.stroke();
                  i--;
 
                  ctx.beginPath();
-                 ctx.arc(positions[i].x, positions[i].y, 10, 0, Math.PI * 2, true);
-                 ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
+                 ctx.arc(this.positions[n][i].x, this.positions[n][i].y, 10, 0, Math.PI * 2, true);
+                 ctx.fillStyle = 'rgba(' + this.colors[c] + ', 1)';
                  ctx.fill();
-             });
+		c++;
+             }
          },
 
          drawZones: function () {
@@ -161,9 +171,9 @@
                  }
 
                  ctx.closePath();
-                 ctx.fillStyle = 'rgba(' + this.colors[n] + ',0.3)';
-                 if (n == this.activeZone) ctx.fillStyle = 'rgba(' + this.colors[n] + ',0.7)';
-		 if (this.inZones[n]) ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+                 ctx.fillStyle = 'rgba(' + this.colors[n] + ',0.2)';
+                 if (n == this.activeZone) ctx.fillStyle = 'rgba(' + this.colors[n] + ',0.3)';
+		 if (this.inZones[n]) ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
                  ctx.fill();
                  ctx.stroke();
              }
@@ -173,13 +183,13 @@
 
          move: function (e) {
              var that = e.data;
+console.log(that.zones);
              if (!e.offsetX) {
                  e.offsetX = (e.pageX - $(e.target).offset().left);
                  e.offsetY = (e.pageY - $(e.target).offset().top);
              }
              that.zones[that.activeZone][that.activePoint].x = Math.round(e.offsetX);
              that.zones[that.activeZone][that.activePoint].y = Math.round(e.offsetY);
-
              that.drawZones();
          },
 
@@ -188,6 +198,7 @@
              $(that).unbind('mousemove');
              that.record();
              that.activePoint = null;
+             that.drawZones();
          },
          
          rightclick: function (e) {
@@ -229,16 +240,18 @@
              x = e.offsetX;
              y = e.offsetY;
 
+	    // new point
              for (var i = 0; i < that.zones[that.activeZone].length; i++) {
                  dis = Math.sqrt(Math.pow(x - that.zones[that.activeZone][i].x, 2) + Math.pow(y - that.zones[that.activeZone][i].y, 2));
                  if (dis < 6) {
                      that.activePoint = i;
-
-                     $(this).bind('mousemove', that, that.move);
+console.log('move');
+                     $(that).bind('mousemove', that, that.move);
                      return false;
                  }
              }
 
+	    // split the line and make a point
              for (var i = 0; i < that.zones[that.activeZone].length; i++) {
                  if (i > 1) {
                      lineDis = dotLineLength(

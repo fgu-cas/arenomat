@@ -113,7 +113,7 @@ io.sockets.on('connection', function(socket) {
 	});
 });
 
-
+ 
 // Video processing
 
 //+ Jonas Raoni Soares Silva
@@ -174,8 +174,6 @@ function frameRead() {
 				im = check.copy();
 				// matrix clone for image processing
 				check.convertGrayscale();
-				// webcam frame base64 encoded
-
 				check = check.threshold(240, 255);
 				check.dilate(7);
 				contours = check.findContours();
@@ -183,20 +181,25 @@ function frameRead() {
 				im.drawAllContours(contours, [255, 0, 0]);
 
 				// filters contours by area
-				if (contours.size() == 1) {
+				if (contours.size() == 2) {
 					//var i = 0;
 					//var area = contours.area(i);
 					//if (area < minArea || area > maxArea)
 					//      continue;
 
-					// emits positions of the first point one
-					mu = contours.moments(0);
-					point = {x: Math.round(mu.m10 / mu.m00), y: Math.round(mu.m01 / mu.m00)};
-
-					io.sockets.emit('position', point);
+					// emits positions of the contours mass center
+					points = [];
 					for(var n = 0; n < areas.length; n++) {
+						mu = contours.moments(n);
+						point = {x: Math.round(mu.m10 / mu.m00), y: Math.round(mu.m01 / mu.m00)};
 					    activeArea[n] = in_poly(areas[n], point);
+					    points.push(point);
 					}
+					if (contours.area(0) < contours.area(1)) {
+					    var swap = points.shift();
+					    points.push(swap);
+					}
+					io.sockets.emit('position', points);
 					io.sockets.emit('activeArea', activeArea);
 				}
 			}
@@ -220,7 +223,7 @@ if (point) {
 	    }
 	} 
     });
-    actual.save();
+//    actual.save();
 }
 
 
