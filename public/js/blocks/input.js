@@ -21,7 +21,7 @@ Blockly.JavaScript.zone = function() {
 		Blockly.JavaScript.zone.functionName = functionName;
 		var func = [];
 		func.push('function ' + functionName + '(zone) {');
-		func.push(' return activezone[zone - 1]; ');
+		func.push(' return true; // activeZone[zone - 1]; ');
 		func.push('}');
 		Blockly.JavaScript.definitions_['zone'] = func.join('\n');
 	}

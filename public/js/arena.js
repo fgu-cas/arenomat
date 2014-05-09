@@ -39,16 +39,19 @@
      Plugin.prototype = {
 	// true/false when mouse is in
 	setInZones: function (ins) {
-	    this.inZones = ins;
 	    this.drawZones();
 	},
 	// more objects
-	addPosition: function (pos) {
-	    this.positions.subject.push(pos[0]);
-	    this.positions.robot.push(pos[1]);
-
+	setData: function (data) {
+	    this.inZones = data[0].zones;
+	    this.positions.subject.push(data[0].position);
 	    if (this.positions.subject.length > 50) this.positions.subject.shift();
-	    if (this.positions.robot.length > 50) this.positions.robot.shift();
+
+	    if (data[1]) {
+		    this.positions.robot.push(data[1].position);
+		    if (this.positions.robot.length > 50) this.positions.robot.shift();
+	    }
+	    this.drawZones();
 	    this.drawObjects();
 	},
          init: function (element, options) {
@@ -177,13 +180,12 @@
                  ctx.fill();
                  ctx.stroke();
              }
-             this.record();
+//             this.record();
          },
 
 
          move: function (e) {
              var that = e.data;
-console.log(that.zones);
              if (!e.offsetX) {
                  e.offsetX = (e.pageX - $(e.target).offset().left);
                  e.offsetY = (e.pageY - $(e.target).offset().top);

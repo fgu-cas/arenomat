@@ -14,7 +14,7 @@ this.appendValueInput("length").setCheck('Number').appendTitle('length');
 this.appendValueInput("day").setCheck('Number').appendTitle('day');
 this.appendValueInput("comment").appendTitle('comment');
 this.appendStatementInput("setup").appendTitle('setup');
-this.appendStatementInput("code").appendTitle('code');
+this.appendStatementInput("loop").appendTitle('loop');
 //this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("100"), "delay").appendTitle('ms');
 this.setInputsInline(false);
 
@@ -35,19 +35,17 @@ var output = 'date: ' + d.getFullYear() + '/' +
 	}
 };
 Blockly.JavaScript.experiment = function() {
-	var codeblock = Blockly.JavaScript.statementToCode(this, 'code');
+	var loopblock = Blockly.JavaScript.statementToCode(this, 'loop');
 	var setupblock = Blockly.JavaScript.statementToCode(this, 'setup');
 
 	if (!Blockly.JavaScript.definitions_['experiment']) {
 		var functionName = Blockly.JavaScript.variableDB_.getDistinctName('experiment', Blockly.Generator.NAME_TYPE);
 		Blockly.JavaScript.experiment.functionName = functionName;
 		var func = [];
-		func.push(setupblock);
-		func.push('function ' + functionName + '() {');
-		func.push(	codeblock);
-		func.push('}');
+		func.push('function setup() { ' + setupblock + '}');
+		func.push('function loop() { ' + loopblock + '}');
 		Blockly.JavaScript.definitions_['experiment'] = func.join('\n');
 	}
-	var code = Blockly.JavaScript.experiment.functionName + '()';
+	var code = '';//Blockly.JavaScript.experiment.functionName + '()';
 	return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };

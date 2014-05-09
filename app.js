@@ -161,72 +161,66 @@ var a_light, a_feeder, a_shock;
 
 var activeArea = [0, 0, 0, 0], areas = [0, 0];
 
+var actualFrame;
+
 var im;
 
-// one frame - looped
-function frameRead() {
-	if (vc) {
-		vc.read(function(err, check) {
-			if (check && check.width() && check.height()) {
-				if (intervalId)
-					clearInterval(intervalId);
 
-				im = check.copy();
+function opencv(check) {
+
+var frame = {
+                timestamp: new Date(),
+cv: []
+        }
+
+				frame.webcam = check.toBuffer().toString('base64');
 				// matrix clone for image processing
 				check.convertGrayscale();
 				check = check.threshold(240, 255);
 				check.dilate(7);
 				contours = check.findContours();
 
-				im.drawAllContours(contours, [255, 0, 0]);
+				if (contours.size() > 0) {
 
-				// filters contours by area
-				if (contours.size() == 2) {
-					//var i = 0;
-					//var area = contours.area(i);
-					//if (area < minArea || area > maxArea)
-					//      continue;
-
-					// emits positions of the contours mass center
-					points = [];
-					for(var n = 0; n < areas.length; n++) {
+					frame.tracked = true;
+	var points = [];
+					for(var n = 0; n < contours.size(); n++) {
 						mu = contours.moments(n);
-						point = {x: Math.round(mu.m10 / mu.m00), y: Math.round(mu.m01 / mu.m00)};
-					    activeArea[n] = in_poly(areas[n], point);
-					    points.push(point);
+
+						points.push({x: Math.round(mu.m10 / mu.m00), y: Math.round(mu.m01 / mu.m00), area: contours.area(n)});
 					}
-					if (contours.area(0) < contours.area(1)) {
-					    var swap = points.shift();
-					    points.push(swap);
+console.log(n, points);
+
+					points.sort(function(a, b) { return a.area - b.area; });
+
+					for(var n = 0; n < points.length; n++) {
+					    if (!frame.cv[n]) frame.cv[n] = {};
+					    frame.cv[n].position = points[n];
+
+					    for(var i = 0; i < areas.length; i++ ) {
+						if (!frame.cv[n].zones) frame.cv[n].zones = {};
+						frame.cv[n].zones[i] = in_poly(areas[i], points[n]);
+					    }
 					}
-					io.sockets.emit('position', points);
-					io.sockets.emit('activeArea', activeArea);
 				}
-			}
-
-			if (shocking)
-				io.sockets.emit('shocking', shocking);
-
-			io.set('log level', 1); // reduce logging
-var jpeg = im.toBuffer();//.toString('base64');
-			io.sockets.emit('webcam', jpeg.toString('base64'));
-			io.set('log level', 1); // logging level to 5
-if (point) {
-    var actual = new Frame({ 
-	webcam: jpeg, 
-	cv: { 
-	    subject: { 
-		position: { 
-		    x: point.x, 
-		    y: point.y 
-		}
-	    }
-	} 
-    });
-//    actual.save();
+    return frame;
 }
 
+// one frame - looped
+function frameRead() {
+	if (vc) {
+		vc.read(function(err, check) {
+			if (intervalId) clearInterval(intervalId);
 
+			if (check && check.width() && check.height()) {
+				var frame = opencv(check);
+
+				io.set('log level', 2);
+//console.log(frame);
+
+				io.sockets.emit('frame', frame);
+				io.set('log level', 5); // logging level to 5
+			}
 			setTimeout(frameRead, 15);
 		});
 	}
