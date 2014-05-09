@@ -7,7 +7,6 @@
 				</div>
 			</div>
 			<div class="row">
-				<br />
 				<div class="col-md-12">
 					<div class="btn-toolbar" role="toolbar">
 						<div class="btn-group">
@@ -37,26 +36,61 @@
 					<div id="vision" style="width: {{ camWidth }}px; height: {{ camHeight }}px">
 						<canvas id="webcam"  width="{{ camWidth }}" height="{{ camHeight }}"></canvas>
 					</div>
-<a href="0" class="active change">0</a>
-
-<a href="1" class="change">1</a>
-
-<a href="2" class="change">2</a>
-
-<a href="3" class="change">3</a>
-
-<a href="4" class="change">4</a>
-
-<a href="5" class="change">5</a>
-
+					<a href="0" class="active change">0</a>
+					<a href="1" class="change">1</a>
+					<a href="2" class="change">2</a>
+					<a href="3" class="change">3</a>
+					<a href="4" class="change">4</a>
+					<a href="5" class="change">5</a>
 					frames: <span id="cam_counter">0</span>, recognized: <span id="cv_counter">0</span>, fps: <span id="fps">0</span>
-					<br /><br />
 				</div>
 			</div>
 		</div>
 
-		<div id="treplay" class="tab-pane fade">
-			replay
+		<div id="tanalyze" class="tab-pane fade">
+
+			
+
+<img id="image" />
+<br />
+<input id="ex6" type="text" style="width: 640px" data-slider-min="1" data-slider-max="{{ frameCount }}" data-slider-step="1" data-slider-value="1" />
+<br />
+position x: <span id="position_x">0</span>
+ y: <span id="position_y">0</span>
+<script>
+var timer;
+var oldValue;
+
+function delayShow(value) {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+	$.get('/frames/info/' + value, function( data ) {
+	    $('#position_x').text(data.cv.subject.position.x);
+	    $('#position_y').text(data.cv.subject.position.y);
+            $("#image").attr("src",  'data:image/jpeg;base64,' + data.webcam);
+	});
+    }, 200);
+}
+
+$("#ex6").slider({
+    tooltip: 'always'
+});
+
+$("#ex6").on('slide', function(slideEvt) {
+    if (oldValue !== slideEvt.value) {
+	oldValue = slideEvt.value;
+        delayShow(slideEvt.value);
+    }
+});
+
+    delayShow(1);
+
+
+</script>
+			
+			
+			
+			
 		</div>
 		<div id="tsettings" class="tab-pane fade">
 			<br />

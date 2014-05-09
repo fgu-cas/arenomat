@@ -31,7 +31,12 @@ app.set('view options', {layout: true});
 app.set('layout', 'layout');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
-app.set('partials', {menu: 'menu', blockly: 'blockly', head: 'head', foot: 'foot'});
+app.set('partials', {
+  menu: 'menu',
+  blockly: 'blockly',
+  assets: 'assets',
+  foot: 'foot'
+});
 
 app.enable('view cache');
 
@@ -46,7 +51,7 @@ app.use('/', routes);
 
 
 http.listen(80, function() {
-	console.log('Listening on port %d', http.address().port);
+  console.log('Listening on port %d', http.address().port);
 });
 
 //mongoose
@@ -56,9 +61,9 @@ var Frame = mongoose.model('Frames');
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
-	var err = new Error('Not Found');
-	err.status = 404;
-	next(err);
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 /// error handlers
@@ -66,23 +71,23 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-	app.use(function(err, req, res, next) {
-		res.status(err.status || 500);
-		res.render('error', {
-			message: err.message,
-			error: err
-		});
-	});
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  });
 }
 
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
-	res.status(err.status || 500);
-	res.render('error', {
-		message: err.message,
-		error: {}
-	});
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
 });
 
 
@@ -92,59 +97,59 @@ module.exports = app;
 
 // sockets
 io.sockets.on('connection', function(socket) {
-	console.log('connection');
-	socket.on('codeStart', function(data) {
-		isRunning = true;
-		startTime = new Date().getTime() / 1000;
-		code = data;
-		console.log('codeStart: ' + data);
-	});
-	socket.on('codeStop', function() {
-		isRunning = false;
-		shocking = 0;
-		console.log('codeStop');
-	});
-	socket.on('codeSave', function(data) {
-		console.log('codeSave: ' + data);
-	});
-	socket.on('area', function(data) {
+  console.log('connection');
+  socket.on('codeStart', function(data) {
+    isRunning = true;
+    startTime = new Date().getTime() / 1000;
+    code = data;
+    console.log('codeStart: ' + data);
+  });
+  socket.on('codeStop', function() {
+    isRunning = false;
+    shocking = 0;
+    console.log('codeStop');
+  });
+  socket.on('codeSave', function(data) {
+    console.log('codeSave: ' + data);
+  });
+  socket.on('area', function(data) {
 //          console.log('area: ' + data);
-		areas = data;
-	});
+    areas = data;
+  });
 });
 
- 
+
 // Video processing
 
 //+ Jonas Raoni Soares Silva
 //@ http://jsfromhell.com/math/is-point-in-poly [v1.0]
 
 function in_poly(poly, pt) {
-	for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
-		((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
-				&& (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
-				&& (c = !c);
-	return c;
+  for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+    ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+      && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+      && (c = !c);
+  return c;
 }
 
 
 // WEBCAM
 try {
-	var vc = new cv.VideoCapture(0);
+  var vc = new cv.VideoCapture(0);
 //	vc.setWidth(camWidth);
 //	vc.setHeigh(camHeight);
 } catch (e) {
-	console.log('no webcam');
+  console.log('no webcam');
 }
 
 var point;
 
 // main frame loop start
 if (vc) {
-	intervalId = setInterval(function() {
-		console.log("cv");
-		frameRead(intervalId)
-	}, 1000);
+  intervalId = setInterval(function() {
+    console.log("cv");
+    frameRead(intervalId)
+  }, 1000);
 }
 
 
@@ -168,69 +173,74 @@ var im;
 
 function opencv(check) {
 
-var frame = {
-                timestamp: new Date(),
-cv: []
-        }
+  var frame = {
+    timestamp: new Date(),
+    cv: []
+  }
 
-				frame.webcam = check.toBuffer().toString('base64');
-				// matrix clone for image processing
-				check.convertGrayscale();
-				check = check.threshold(240, 255);
-				check.dilate(7);
-				contours = check.findContours();
+  frame.webcam = check.toBuffer().toString('base64');
+  // matrix clone for image processing
+  check.convertGrayscale();
+  check = check.threshold(240, 255);
+  check.dilate(7);
+  contours = check.findContours();
 
-				if (contours.size() > 0) {
+  if (contours.size() > 0) {
 
-					frame.tracked = true;
-	var points = [];
-					for(var n = 0; n < contours.size(); n++) {
-						mu = contours.moments(n);
+    frame.tracked = true;
+    var points = [];
+    for (var n = 0; n < contours.size(); n++) {
+      mu = contours.moments(n);
 
-						points.push({x: Math.round(mu.m10 / mu.m00), y: Math.round(mu.m01 / mu.m00), area: contours.area(n)});
-					}
-console.log(n, points);
+      points.push({x: Math.round(mu.m10 / mu.m00), y: Math.round(mu.m01 / mu.m00), area: contours.area(n)});
+    }
+    console.log(n, points);
 
-					points.sort(function(a, b) { return a.area - b.area; });
+    points.sort(function(a, b) {
+      return a.area - b.area;
+    });
 
-					for(var n = 0; n < points.length; n++) {
-					    if (!frame.cv[n]) frame.cv[n] = {};
-					    frame.cv[n].position = points[n];
+    for (var n = 0; n < points.length; n++) {
+      if (!frame.cv[n])
+        frame.cv[n] = {};
+      frame.cv[n].position = points[n];
 
-					    for(var i = 0; i < areas.length; i++ ) {
-						if (!frame.cv[n].zones) frame.cv[n].zones = {};
-						frame.cv[n].zones[i] = in_poly(areas[i], points[n]);
-					    }
-					}
-				}
-    return frame;
+      for (var i = 0; i < areas.length; i++) {
+        if (!frame.cv[n].zones)
+          frame.cv[n].zones = {};
+        frame.cv[n].zones[i] = in_poly(areas[i], points[n]);
+      }
+    }
+  }
+  return frame;
 }
 
 // one frame - looped
 function frameRead() {
-	if (vc) {
-		vc.read(function(err, check) {
-			if (intervalId) clearInterval(intervalId);
+  if (vc) {
+    vc.read(function(err, check) {
+      if (intervalId)
+        clearInterval(intervalId);
 
-			if (check && check.width() && check.height()) {
-				var frame = opencv(check);
+      if (check && check.width() && check.height()) {
+        var frame = opencv(check);
 
-				io.set('log level', 2);
+        io.set('log level', 2);
 //console.log(frame);
 
-				io.sockets.emit('frame', frame);
-				io.set('log level', 5); // logging level to 5
-			}
-			setTimeout(frameRead, 15);
-		});
-	}
-	
-	if (isRunning && code) {
-		io.sockets.emit('elapsedTime', (new Date().getTime() / 1000) - startTime);
+        io.sockets.emit('frame', frame);
+        io.set('log level', 5); // logging level to 5
+      }
+      setTimeout(frameRead, 15);
+    });
+  }
 
-		eval('function go() { ' + code + ' }');
-		setTimeout(go, 100);
+  if (isRunning && code) {
+    io.sockets.emit('elapsedTime', (new Date().getTime() / 1000) - startTime);
 
-		//console.log('eval: ok');
-	}
+    eval('function go() { ' + code + ' }');
+    setTimeout(go, 100);
+
+    //console.log('eval: ok');
+  }
 }

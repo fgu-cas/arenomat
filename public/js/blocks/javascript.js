@@ -3,8 +3,8 @@ Blockly.Language.javascript_setinterval = {
   init: function() {
     this.setColour(210);
     this.appendValueInput("interval")
-        .setCheck(Number)
-        .appendTitle("setInterval");
+      .setCheck(Number)
+      .appendTitle("setInterval");
     this.appendStatementInput("callback");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -19,7 +19,7 @@ Blockly.JavaScript.javascript_setinterval = function() {
   var code = 'setInterval( function(){\n';
   code += statements_callback;
   code += '}, ';
-  code +=  value_interval;
+  code += value_interval;
   code += ');\n';
   return code;
 };
@@ -31,7 +31,7 @@ Blockly.JavaScript.javascript_settimeout = function() {
   var code = 'setTimeout( function(){\n';
   code += statements_callback;
   code += '}, ';
-  code +=  value_timeout;
+  code += value_timeout;
   code += ');\n';
   return code;
 };
@@ -42,8 +42,8 @@ Blockly.Language.javascript_settimeout = {
   init: function() {
     this.setColour(210);
     this.appendValueInput("timeout")
-        .setCheck(Number)
-        .appendTitle("setTimeout");
+      .setCheck(Number)
+      .appendTitle("setTimeout");
     this.appendStatementInput("callback");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
