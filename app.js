@@ -12,6 +12,10 @@ var routes = require('./routes/index');
 var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io').listen(http);
+io.enable('browser client minification');  // send minified client
+//io.enable('browser client etag');          // apply etag caching logic based on version number
+io.enable('browser client gzip');          // gzip the file
+io.set('log level', 1);                    // reduce logging
 
 var mongoose = require('mongoose-paginate');
 
@@ -144,15 +148,6 @@ try {
 
 var point;
 
-// main frame loop start
-if (vc) {
-  intervalId = setInterval(function() {
-    console.log("cv");
-    frameRead(intervalId)
-  }, 1000);
-}
-
-
 // EXPERIMENT
 var code = false;
 
@@ -171,7 +166,7 @@ var actualFrame;
 var im;
 
 
-function opencv(check) {
+function blobDetector(check) {
 
   var frame = {
     timestamp: new Date(),
@@ -194,7 +189,6 @@ function opencv(check) {
 
       points.push({x: Math.round(mu.m10 / mu.m00), y: Math.round(mu.m01 / mu.m00), area: contours.area(n)});
     }
-    console.log(n, points);
 
     points.sort(function(a, b) {
       return b.area - a.area;
@@ -215,32 +209,32 @@ function opencv(check) {
   return frame;
 }
 
-// one frame - looped
-function frameRead() {
-  if (vc) {
-    vc.read(function(err, check) {
-      if (intervalId)
-        clearInterval(intervalId);
 
-      if (check && check.width() && check.height()) {
-        var frame = opencv(check);
+var stream = vc.toStream();
 
-        io.set('log level', 2);
-//console.log(frame);
+stream.read();
 
-        io.sockets.emit('frame', frame);
-        io.set('log level', 5); // logging level to 5
-      }
-      setTimeout(frameRead, 15);
-    });
-  }
+stream.on("data", function(im) {
+  stream.pause();
+
+  var frame = blobDetector(im);
 
   if (isRunning && code) {
-    io.sockets.emit('elapsedTime', (new Date().getTime() / 1000) - startTime);
 
     eval('function go() { ' + code + ' }');
     setTimeout(go, 100);
 
     //console.log('eval: ok');
   }
-}
+
+  io.sockets.emit('elapsedTime', (new Date().getTime() / 1000) - startTime);
+
+  io.set('log level', 2);
+  //console.log(frame);
+
+  io.sockets.emit('frame', frame);
+  io.set('log level', 5); // logging level to 5
+
+  process.nextTick(function() { stream.resume(); });
+});
+

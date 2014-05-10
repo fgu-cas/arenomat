@@ -46,14 +46,15 @@
     setData: function(frame) {
       if (frame.tracked) {
         this.inZones = frame.cv[0].zones;
-        this.positions.subject.push(frame.cv[0].position);
-        if (this.positions.subject.length > 50) this.positions.subject.shift();
 
-        if (frame.cv[1]) {
-          this.positions.robot.push(frame.cv[1].position);
-          if (this.positions.robot.length > 50) this.positions.robot.shift();
+    for(var n = 0; n < frame.cv.length; n++) {
+        if (frame.cv[n]) {
+	  if (!this.positions[n]) this.positions[n] = [];
+          this.positions[n].push(frame.cv[n].position);
+          if (this.positions[n].length > 50) this.positions[n].shift();
         }
       }
+}
       this.drawZones();
       this.drawObjects();
     },
@@ -249,7 +250,7 @@
         if (dis < 6) {
           that.activePoint = i;
           console.log('move');
-          $(that).bind('mousemove', that, that.move);
+          that.bind('mousemove', that, that.move);
           return false;
         }
       }
@@ -272,7 +273,7 @@
         y: Math.round(y)
       });
       that.activePoint = insertAt;
-      $(that).bind('mousemove', that, that.move);
+      $('vision').bind('mousemove', that, that.move);
 
       that.drawZones();
       that.record();
