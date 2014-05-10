@@ -5,7 +5,7 @@ var FrameSchema = new mongoose.Schema({
   tracked: Boolean,
   cv: [],
   output: [],
-  webcam: Buffer,
+  webcam: String,
   date: {type: Date, default: Date.now}
 });
 

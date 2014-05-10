@@ -57,14 +57,16 @@
 
 		<div id="tanalyze" class="tab-pane fade">
 
-			
-
 <img id="image" />
 <br />
 <input id="ex6" type="text" style="width: 640px" data-slider-min="1" data-slider-max="{{ frameCount }}" data-slider-step="1" data-slider-value="1" />
 <br />
-position x: <span id="position_x">0</span>
- y: <span id="position_y">0</span>
+object 1 <span id="object_1">0,1</span><br />
+object 2 <span id="object_2">0,1</span><br />
+object 3 <span id="object_3">0,1</span><br />
+object 4 <span id="object_4">0,1</span><br />
+object 5 <span id="object_5">0,1</span><br />
+object 6 <span id="object_6">0,1</span><br />
 <script>
 var timer;
 var oldValue;
@@ -73,11 +75,16 @@ function delayShow(value) {
     clearTimeout(timer);
     timer = setTimeout(function () {
 	$.get('/frames/' + value, function( data ) {
-if (data.tracked) {
-	    $('#position_x').text(data.cv[0].position.x);
-	    $('#position_y').text(data.cv[1].position.y);
+//	    if (data.tracked) {
+for(var n = 0; n < 7; n++) {
+    var t = '';
+  if (data.cv[n]) {
+    t = data.cv[n].position.x + ', ' + data.cv[n].position.y;
+  }
+		$('#object_' + (n+1)).text(t);
+//}
 }
-            $("#image").attr("src",  'data:image/jpeg;base64,' + data.webcam);
+             $("#image").attr("src",  'data:image/jpeg;base64,' + data.webcam);
 	});
     }, 200);
 }
