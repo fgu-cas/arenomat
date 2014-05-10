@@ -197,7 +197,7 @@ function opencv(check) {
     console.log(n, points);
 
     points.sort(function(a, b) {
-      return a.area - b.area;
+      return b.area - a.area;
     });
 
     for (var n = 0; n < points.length; n++) {

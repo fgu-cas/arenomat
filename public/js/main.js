@@ -13,15 +13,9 @@ $(document).ready(function() {
   // websockets
   socket = io.connect(window.location.host);
 
-  socket.on('shocking', function(shocking) {
-    $('#shocking').text(shocking / 10).css('background', (shocking > 0) ? 'red !important' : 'black !important');
-  });
-  
-  socket.on('activeArea', function(data) {
-  });
-
   socket.on('frame', function(frame) {
     var now = Date.now();
+    $('#shocking').text(shocking / 10).css('background', (shocking > 0) ? 'red !important' : 'black !important');
 
     $('#cam_counter').text(cam_counter);
     $('#cv_counter').text(cv_counter);
@@ -33,11 +27,9 @@ $(document).ready(function() {
     actualFrame = frame;
 
     cam_counter++;
+    if (frame.tracked) cv_counter++;
 
-    if (frame.tracked) {
-      cv_counter++;
-      $('#vision').arena('setData', frame.cv);
-    }
+    $('#vision').arena('setData', frame);
   });
 
   setInterval(function() {
