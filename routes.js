@@ -74,7 +74,7 @@ router.get('/frames/:id', function(req, res) {
       console.error(error);
     } else {
       if (data[0] && data[0].webcam) {
-	data[0].webcam = new Buffer(data[0].webcam).toString('base64');
+	//data[0].webcam = new Buffer(data[0].webcam).toString('base64');
         res.json(data[0]);
       }
     }

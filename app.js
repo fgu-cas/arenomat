@@ -191,8 +191,8 @@ stream.on("data", function(im) {
   io.set('log level', 5); // logging level to 5
 
 
-    var oneFrame = new Frame(frame);
-    oneFrame.save();
+//  frame.webcam = new Buffer(frame.webcam);
+  new Frame(frame).save();
 
   process.nextTick(function() { stream.resume(); });
 });
