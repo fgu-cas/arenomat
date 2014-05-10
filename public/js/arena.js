@@ -57,7 +57,7 @@
       }
 }
       this.drawZones();
-      this.drawObjects();
+      this.drawObjects(frame.tracked);
     },
     init: function(element, options) {
       var ctxs = this.ctxs;
@@ -123,7 +123,7 @@
       ctx.rect(ctx.canvas.width, 0, -ctx.canvas.width, ctx.canvas.height);
       ctx.fill();
     },
-    drawObjects: function() {
+    drawObjects: function(tracked) {
       var ctx = this.ctxs['objects'];
       ctx.canvas.width = ctx.canvas.width;
 
@@ -147,6 +147,9 @@
           ctx.beginPath();
           ctx.arc(this.positions[n][i].x, this.positions[n][i].y, radius, 0, Math.PI * 2, true);
           ctx.fillStyle = 'rgba(' + this.colors[c] + ', 1)';
+
+	if (!tracked) ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+
           ctx.fill();
           c++;
         }

@@ -1,5 +1,7 @@
 $(document).ready(function() {
-
+  Blockly.FieldColour.colors = [
+      "#000000", "#3B3131", "#463E3F", "#504A4B", "#5C5858", "#666362",
+      "#F9B7FF", "#E3E4FA", "#FFFFFF"];
   Blockly.inject(document.getElementById('blockly'),
     {path: './', toolbox: document.getElementById('toolbox')});
 

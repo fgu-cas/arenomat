@@ -33,7 +33,7 @@ router.get('/', function(req, res) {
 // route to show all our experiments
 router.get("/experiments", function(req, res) {
   Experiments.find({}, function(err, docs) {
-    res.render('experiments/index', {experiments: docs});
+    res.render('experiments/index', {experiments: docs, layout: false});
   });
 });
 

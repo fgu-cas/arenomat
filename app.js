@@ -104,6 +104,7 @@ io.sockets.on('connection', function(socket) {
   console.log('connection');
   socket.on('codeStart', function(data) {
     isRunning = true;
+    first = true;
     startTime = new Date().getTime() / 1000;
     code = data;
     console.log('codeStart: ' + data);
@@ -140,6 +141,7 @@ var a_light, a_feeder, a_shock;
 var activeArea = [0, 0, 0, 0], zones = [0, 0];
 
 var actualFrame;
+var first = true;
 
 var im;
 
@@ -168,10 +170,12 @@ stream.on("data", function(im) {
   if (isRunning && code) {
     frame.elapsedTime = (new Date().getTime() / 1000) - startTime;
 
-    eval('function go() { ' + code + ' }');
-    setTimeout(go, 100);
-
-    //console.log('eval: ok');
+    if (first) {
+	s = 'setup(); ';
+	first = false;
+    }
+    eval('function go() { ' + code + ' ' + s + ' loop(); }');
+    setTimeout(go, 1);
   }
 
   io.set('log level', 2);

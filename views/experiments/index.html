@@ -1,10 +1,24 @@
-<table border=1>
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">Load experiment</h4>
+
+</div>  
+<div class="modal-body">  
+<div class="table-responsive">
+<table class="table table-striped table-hover">
+<tr>
+    <th>name</th>
+    <th colspan="2">action</th>
+</tr>
 {{#experiments}}
 <tr>
     <td align=top>{{name}}</td>
-    <td><small>{{xml}}</small></td>
     <td><a href="#" class="del" data="{{name}}">del</a></td>
     <td><a href="#" class="load" data="{{name}}">load</a></td>
 </tr>
 {{/experiments}}
 </table>
+</div>
+</div>  
+
+
