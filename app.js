@@ -118,33 +118,11 @@ io.sockets.on('connection', function(socket) {
   });
   socket.on('area', function(data) {
 //          console.log('area: ' + data);
-    areas = data;
+    zones = data;
   });
 });
 
 
-// Video processing
-
-//+ Jonas Raoni Soares Silva
-//@ http://jsfromhell.com/math/is-point-in-poly [v1.0]
-
-function in_poly(poly, pt) {
-  for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
-    ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
-      && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
-      && (c = !c);
-  return c;
-}
-
-
-// WEBCAM
-try {
-  var vc = new cv.VideoCapture(0);
-//	vc.setWidth(camWidth);
-//	vc.setHeigh(camHeight);
-} catch (e) {
-  console.log('no webcam');
-}
 
 var point;
 
@@ -159,14 +137,60 @@ var startTime = 0;
 
 var a_light, a_feeder, a_shock;
 
-var activeArea = [0, 0, 0, 0], areas = [0, 0];
+var activeArea = [0, 0, 0, 0], zones = [0, 0];
 
 var actualFrame;
 
 var im;
 
 
+
+// WEBCAM
+try {
+  var vc = new cv.VideoCapture(0);
+//	vc.setWidth(camWidth);
+//	vc.setHeigh(camHeight);
+} catch (e) {
+  console.log('no webcam');
+}
+
+var stream = vc.toStream();
+
+stream.read();
+
+stream.on("data", function(im) {
+  stream.pause();
+
+  var frame = blobDetector(im);
+
+  frame.elapsedTime = 0;
+
+  if (isRunning && code) {
+    frame.elapsedTime = (new Date().getTime() / 1000) - startTime;
+
+    eval('function go() { ' + code + ' }');
+    setTimeout(go, 100);
+
+    //console.log('eval: ok');
+  }
+
+  io.set('log level', 2);
+  io.sockets.emit('frame', frame);
+  io.set('log level', 5); // logging level to 5
+
+  process.nextTick(function() { stream.resume(); });
+});
+
 function blobDetector(check) {
+//+ Jonas Raoni Soares Silva
+//@ http://jsfromhell.com/math/is-point-in-poly [v1.0]
+  function in_poly(poly, pt) {
+    for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+      ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
+        && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
+        && (c = !c);
+    return c;
+  }
 
   var frame = {
     timestamp: new Date(),
@@ -174,10 +198,12 @@ function blobDetector(check) {
   }
 
   frame.webcam = check.toBuffer().toString('base64');
+
   // matrix clone for image processing
   check.convertGrayscale();
   check = check.threshold(240, 255);
   check.dilate(7);
+
   contours = check.findContours();
 
   if (contours.size() > 0) {
@@ -191,7 +217,7 @@ function blobDetector(check) {
     }
 
     points.sort(function(a, b) {
-      return b.area - a.area;
+      return a.area - b.area;
     });
 
     for (var n = 0; n < points.length; n++) {
@@ -199,42 +225,12 @@ function blobDetector(check) {
         frame.cv[n] = {};
       frame.cv[n].position = points[n];
 
-      for (var i = 0; i < areas.length; i++) {
+      for (var i = 0; i < zones.length; i++) {
         if (!frame.cv[n].zones)
           frame.cv[n].zones = {};
-        frame.cv[n].zones[i] = in_poly(areas[i], points[n]);
+        frame.cv[n].zones[i] = in_poly(zones[i], points[n]);
       }
     }
   }
   return frame;
 }
-
-
-var stream = vc.toStream();
-
-stream.read();
-
-stream.on("data", function(im) {
-  stream.pause();
-
-  var frame = blobDetector(im);
-
-  if (isRunning && code) {
-
-    eval('function go() { ' + code + ' }');
-    setTimeout(go, 100);
-
-    //console.log('eval: ok');
-  }
-
-  io.sockets.emit('elapsedTime', (new Date().getTime() / 1000) - startTime);
-
-  io.set('log level', 2);
-  //console.log(frame);
-
-  io.sockets.emit('frame', frame);
-  io.set('log level', 5); // logging level to 5
-
-  process.nextTick(function() { stream.resume(); });
-});
-
