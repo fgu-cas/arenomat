@@ -7,8 +7,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-
 var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io').listen(http);
@@ -17,8 +15,6 @@ io.enable('browser client minification');  // send minified client
 io.enable('browser client gzip');          // gzip the file
 io.set('log level', 1);                    // reduce logging
 
-var mongoose = require('mongoose-paginate');
-
 var cv = require('opencv');
 var fs = require('fs');
 
@@ -26,7 +22,13 @@ var lame = require('lame');
 var Speaker = require('speaker');
 
 
+var mongoose = require('mongoose-paginate');
+var modelsPath = __dirname + '/models';
+fs.readdirSync(modelsPath).forEach(function(file) {
+  return require("" + modelsPath + "/" + file);
+});
 
+var routes = require('./routes');
 
 
 // Set View Engine
@@ -60,8 +62,13 @@ http.listen(80, function() {
 
 //mongoose
 //mongoose.set('debug', true)
-mongoose.connect("mongodb://localhost/arenomat");
-var Frame = mongoose.model('Frames');
+var URI = "mongodb://localhost/arenomat";
+mongoose.connect(URI, function(err) {
+    if (err) {
+      throw err;
+    }
+    return console.log('Connected to database');
+  });
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -145,6 +152,7 @@ var first = true;
 
 var im;
 
+var Frame = mongoose.model('Frame');
 
 
 // WEBCAM
@@ -181,6 +189,10 @@ stream.on("data", function(im) {
   io.set('log level', 2);
   io.sockets.emit('frame', frame);
   io.set('log level', 5); // logging level to 5
+
+
+    var oneFrame = new Frame(frame);
+    oneFrame.save();
 
   process.nextTick(function() { stream.resume(); });
 });
@@ -238,3 +250,5 @@ function blobDetector(check) {
   }
   return frame;
 }
+
+exports = module.exports = app

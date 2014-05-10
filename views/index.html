@@ -72,9 +72,11 @@ var oldValue;
 function delayShow(value) {
     clearTimeout(timer);
     timer = setTimeout(function () {
-	$.get('/frames/info/' + value, function( data ) {
-	    $('#position_x').text(data.cv.subject.position.x);
-	    $('#position_y').text(data.cv.subject.position.y);
+	$.get('/frames/' + value, function( data ) {
+if (data.tracked) {
+	    $('#position_x').text(data.cv[0].position.x);
+	    $('#position_y').text(data.cv[1].position.y);
+}
             $("#image").attr("src",  'data:image/jpeg;base64,' + data.webcam);
 	});
     }, 200);

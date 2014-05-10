@@ -15,30 +15,30 @@ $(document).ready(function() {
 
   socket.on('frame', function(frame) {
     var now = Date.now();
+    var fps = (1000 / (now - oldtime)).toFixed(0);
+    $('#fps').text(fps).css('color', (fps < 15) ? 'red' : 'green');
+    oldtime = now;
+
     $('#shocking').text(shocking / 10).css('background', (shocking > 0) ? 'red !important' : 'black !important');
 
     $('#cam_counter').text(cam_counter);
     $('#cv_counter').text(cv_counter);
 
-    var fps = (1000 / (now - oldtime)).toFixed(0);
-    $('#fps').text(fps).css('color', (fps < 15) ? 'red' : 'green');
-    oldtime = now;
+    $('#elapsedTime').text(frame.elapsedTime.toFixed(2));
 
-    actualFrame = frame;
+    actualFrame = frame.webcam;
 
     cam_counter++;
     if (frame.tracked) cv_counter++;
 
     $('#vision').arena('setData', frame);
-    $('#elapsedTime').text(frame.elapsedTime.toFixed(2));
   });
 
   setInterval(function() {
-    if (actualFrame.webcam) {
-      image.src = 'data:image/jpeg;base64,' + actualFrame.webcam;
+    if (actualFrame && (window.location.hash == '#tcamera')) {
+      image.src = 'data:image/jpeg;base64,' + actualFrame;
       webcamctx.drawImage(image, 0, 0);
     }
-//		vision.draw();
   }, 40);
 
   // TABS
