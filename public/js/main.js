@@ -30,6 +30,7 @@ $(document).ready(function() {
     if (frame.tracked) cv_counter++;
 
     $('#vision').arena('setData', frame);
+    $('#elapsedTime').text(frame.elapsedTime.toFixed(2));
   });
 
   setInterval(function() {
@@ -40,9 +41,6 @@ $(document).ready(function() {
 //		vision.draw();
   }, 40);
 
-  socket.on('elapsedTime', function(elapsedTime) {
-    $('#elapsedTime').text(elapsedTime.toFixed(2));
-  });
   // TABS
   // load via hash
   if (location.hash) {

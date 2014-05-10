@@ -21,6 +21,7 @@
 
     this.activeZone = 0;
     this.activePoint = 0;
+    this.moving = false;
 
     this.inZones = []; // TODO: get the rid of this
 
@@ -86,7 +87,8 @@
       $('#zones')
         .bind('mousedown', this, this.mousedown)
         .bind('contextmenu', this, this.rightclick)
-        .bind('mouseup', this, this.stopdrag);
+        .bind('mouseup', this, this.stopdrag)
+	.bind('mousemove', this, this.move);
 
       $('.change').on('click', this, function(e) {
         var that = e.data;
@@ -190,6 +192,8 @@
     },
     move: function(e) {
       var that = e.data;
+
+    if (that.moving) {
       if (!e.offsetX) {
         e.offsetX = (e.pageX - $(e.target).offset().left);
         e.offsetY = (e.pageY - $(e.target).offset().top);
@@ -197,12 +201,14 @@
       that.zones[that.activeZone][that.activePoint].x = Math.round(e.offsetX);
       that.zones[that.activeZone][that.activePoint].y = Math.round(e.offsetY);
       that.drawZones();
+     }
     },
     stopdrag: function(e) {
       var that = e.data;
-      $(that).unbind('mousemove');
+      //$(that).unbind('mousemove');
       that.record();
       that.activePoint = null;
+that.moving = false;
       that.drawZones();
     },
     rightclick: function(e) {
@@ -249,8 +255,9 @@
         dis = Math.sqrt(Math.pow(x - that.zones[that.activeZone][i].x, 2) + Math.pow(y - that.zones[that.activeZone][i].y, 2));
         if (dis < 6) {
           that.activePoint = i;
+	    that.moving = true;
           console.log('move');
-          that.bind('mousemove', that, that.move);
+          //that.bind('mousemove', that, that.move);
           return false;
         }
       }
@@ -273,7 +280,8 @@
         y: Math.round(y)
       });
       that.activePoint = insertAt;
-      $('vision').bind('mousemove', that, that.move);
+that.moving = true;
+//      $('vision').bind('mousemove', that, that.move);
 
       that.drawZones();
       that.record();
