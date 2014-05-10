@@ -14,6 +14,7 @@ $(document).ready(function() {
   socket = io.connect(window.location.host);
 
   socket.on('frame', function(frame) {
+if (location.hash == '#tcamera') {
     var now = Date.now();
     var fps = (1000 / (now - oldtime)).toFixed(0);
     $('#fps').text(fps).css('color', (fps < 15) ? 'red' : 'green');
@@ -32,6 +33,7 @@ $(document).ready(function() {
     if (frame.tracked) cv_counter++;
 
     $('#vision').arena('setData', frame);
+}
   });
 
   setInterval(function() {
