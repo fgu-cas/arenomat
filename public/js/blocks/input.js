@@ -7,7 +7,7 @@ Blockly.Language.zone = {
 
     this.appendValueInput("zone").setCheck('Number')
       .appendTitle("is in zone")
-
+this.setInputsInline(true);
     //.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"]]), "PIN");
     this.setOutput(true, "Boolean");
     this.setTooltip('return zone activity');

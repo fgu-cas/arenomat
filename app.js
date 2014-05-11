@@ -22,6 +22,13 @@ var lame = require('lame');
 var Speaker = require('speaker');
 
 
+var debounce = require('debounce');
+
+process.addListener('uncaughtException', function (err, stack) {
+    console.log('Caught exception: '+err+'\n'+err.stack);
+    console.log('\u0007'); // Terminal bell
+});
+
 var mongoose = require('mongoose-paginate');
 var modelsPath = __dirname + '/models';
 fs.readdirSync(modelsPath).forEach(function(file) {
@@ -131,28 +138,26 @@ io.sockets.on('connection', function(socket) {
 
 
 
-var point;
-
 // EXPERIMENT
 var code = false;
+var mLoop, mSetup; // global copy of custom script functions
 
-var shocking = false;
-var feeding = false;
+var isArduino = false, isWebcam = false;
 
 var isRunning = false;
 var startTime = 0;
 
-var a_light, a_feeder, a_shock;
+var arduino = {
+    light: {},
+    feeder: {},
+    shock: {}
+}
 
-var activeArea = [0, 0, 0, 0], zones = [0, 0];
-
+var zones = [];
 var actualFrame;
 var first = true;
 
-var im;
-
 var Frame = mongoose.model('Frame');
-
 
 // WEBCAM
 try {
@@ -163,19 +168,34 @@ try {
   console.log('no webcam');
 }
 
+if (vc) {
+    isWebcam = true;
+    console.log('webcam: ok');
+
+
 var stream = vc.toStream();
-var mLoop, mSetup;
 stream.read();
+}
+
+
 
 stream.on("data", function(im) {
   stream.pause();
 
-  var frame = blobDetector(im);
+ actualFrame = {
+    timestamp: new Date(),
+    elapsedTime: 0,
+    isArduino: isArduino,
+    isWebcam: isWebcam,
+    cv: [],
+    actions: { shocking: 0 },
+    webcam: im.toBuffer().toString('base64')
+  }
 
-  frame.elapsedTime = 0;
+  blobDetector(im);
 
   if (isRunning && code) {
-    frame.elapsedTime = (new Date().getTime() / 1000) - startTime;
+    actualFrame.elapsedTime = (new Date().getTime() / 1000) - startTime;
 
     if (first) {
 	first = false;
@@ -185,19 +205,19 @@ stream.on("data", function(im) {
 	mSetup = setup;
 	mSetup();
     }
-    setTimeout(mLoop, 1);
+    mLoop();
   }
 
-// global variable for client side scripts
-    actualFrame = frame;
+//  new Frame(actualFrame).save();
+
+  // no need to save in db
+//  actualFrame.isRunning = isRunning;
 
   io.set('log level', 2);
-  io.sockets.emit('frame', frame);
+  io.sockets.emit('frame', actualFrame);
   io.set('log level', 5); // logging level to 5
+ 
 
-
-//  frame.webcam = new Buffer(frame.webcam);
-  new Frame(frame).save();
 
   process.nextTick(function() { stream.resume(); });
 });
@@ -213,12 +233,6 @@ function blobDetector(check) {
     return c;
   }
 
-  var frame = {
-    timestamp: new Date(),
-    cv: []
-  }
-
-  frame.webcam = check.toBuffer().toString('base64');
 
   // matrix clone for image processing
   check.convertGrayscale();
@@ -229,7 +243,7 @@ function blobDetector(check) {
 
   if (contours.size() > 0) {
 
-    frame.tracked = true;
+    actualFrame.tracked = true;
     var points = [];
     for (var n = 0; n < contours.size(); n++) {
       mu = contours.moments(n);
@@ -242,35 +256,46 @@ function blobDetector(check) {
     });
 
     for (var n = 0; n < points.length; n++) {
-      if (!frame.cv[n])
-        frame.cv[n] = {};
-      frame.cv[n].position = points[n];
+      if (!actualFrame.cv[n])
+        actualFrame.cv[n] = {};
+      actualFrame.cv[n].position = points[n];
 
       for (var i = 0; i < zones.length; i++) {
-        if (!frame.cv[n].zones)
-          frame.cv[n].zones = {};
-        frame.cv[n].zones[i] = in_poly(zones[i], points[n]);
+        if (!actualFrame.cv[n].zones)
+          actualFrame.cv[n].zones = {};
+        actualFrame.cv[n].zones[i] = in_poly(zones[i], points[n]);
       }
     }
   }
-  return frame;
 }
 
 var five = require("johnny-five");
 var board = new five.Board();
+
 board.on('error', function() {
   console.log('not ready!');
 });
-board.on("ready", function() {
-    console.log('board ready');
 
- a_light = new five.Led(13);
- a_feeder = new five.Servo({
+board.on("ready", function() {
+ console.log('board ready');
+ isArduino = true;
+
+ arduino.light = new five.Led(13);
+ arduino.feeder = new five.Servo({
   pin: 12,
   range: [ 0, 180 ],
   startAt: 0
  });
-var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
+ arduino.shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 });
+
+function play(mp3) { 
+console.log('play: ' + mp3);
+return fs.createReadStream(mp3)
+  .pipe(new lame.Decoder())
+  .on('format', function (format) {
+    this.pipe(new Speaker(format));
+  });
+}
 
 exports = module.exports = app

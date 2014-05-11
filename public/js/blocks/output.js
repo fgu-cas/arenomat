@@ -20,7 +20,7 @@ Blockly.JavaScript.sound = function() {
     Blockly.JavaScript.sound.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(filename) {');
-    func.push('  play("public/media/" + filename);');
+    func.push('  if (!playing) { var playing = true; play("public/media/" + filename).on("end", function () { playing = false }); console.log("play"); }');
     func.push('}');
     Blockly.JavaScript.definitions_['sound'] = func.join('\n');
   }
@@ -56,9 +56,10 @@ Blockly.JavaScript.light = function() {
       'light', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.light.functionName = functionName;
     var func = [];
-    func.push('var lightTimeout; function ' + functionName + '(delay) {');
-    func.push('  clearTimeout(lightTimeout); a_light.on();');
-    func.push('  lightTimeout= setTimeout(function() { a_light.off(); }, delay);');
+    func.push('function ' + functionName + '(delay) {');
+    func.push('  arduino.light.on();');
+    func.push('  if (lightTimeout) clearTimeout(lightTimeout);');
+    func.push('  var lightTimeout = setTimeout(function() { arduino.light.off(); }, delay);'); 
     func.push('}');
     Blockly.JavaScript.definitions_['light'] = func.join('\n');
   }
@@ -124,11 +125,11 @@ Blockly.JavaScript.shock = function() {
 
     Blockly.JavaScript.shock.functionName = functionName;
     var func = [];
-    func.push('function ' + functionName + '(current, delay) {');
-    func.push('  shocking = current;');
-    func.push('  a_light.on();');
-    func.push('  board.wait(delay, function() { a_light.off(); shocking = 0; });');
-    func.push('  console.log("shock: " + current + "mA, delay: " + delay);');
+    func.push('var shockingTimeout; function ' + functionName + '(current, delay) {');
+    func.push('  actualFrame.actions.shocking = current;');
+    func.push('  arduino.light.on();');
+    func.push('  if (shockingTimeout) clearTimeout(shockingTimeout);');
+    func.push('  shockingTimeout = setTimeout(function() { arduino.light.off(); actualFrame.actions.shocking = 0; }, delay);');
     func.push('}');
     Blockly.JavaScript.definitions_['shock'] = func.join('\n');
   }
@@ -158,7 +159,7 @@ Blockly.JavaScript.feeder = function() {
     var func = [];
     func.push('function ' + functionName + '() {');
     func.push('  if (!feeding) { a_feeder.max(); feeding = true; ');
-    func.push('  board.wait(1000, function() { if (feeding) { a_feeder.min(); feeding = false }}); }');
+    func.push('  board.wait(1000, function() { if (feeding) { arduino.feeder.min(); feeding = false }}); }');
     func.push('}');
     Blockly.JavaScript.definitions_['feeder'] = func.join('\n');
   }

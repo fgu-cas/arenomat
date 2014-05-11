@@ -14,18 +14,21 @@ $(document).ready(function() {
   socket = io.connect(window.location.host);
 
   socket.on('frame', function(frame) {
-if (location.hash == '#tcamera') {
+//if (location.hash == '#tcamera') {
     var now = Date.now();
     var fps = (1000 / (now - oldtime)).toFixed(0);
     $('#fps').text(fps).css('color', (fps < 15) ? 'red' : 'green');
     oldtime = now;
 
-    $('#shocking').text(shocking / 10).css('background', (shocking > 0) ? 'red !important' : 'black !important');
 
     $('#cam_counter').text(cam_counter);
     $('#cv_counter').text(cv_counter);
+    $('#elapsedTime').text(frame.elapsedTime.toFixed(2) + 's').css('background', (frame.isRunning) ? 'red' : 'green');
 
-    $('#elapsedTime').text(frame.elapsedTime.toFixed(2));
+    $('#isShocking span').text(frame.actions.shocking / 10 + 'mA')
+    $('#isShocking i').css('color', (frame.actions.shocking > 0) ? 'red' : 'green');
+    $('#isArduino i').css({ color: (frame.isArduino) ? 'green' : 'red' });
+    $('#isWebcam i').css({ color: (frame.isWebcam) ? 'green' : 'red' });
 
     actualFrame = frame.webcam;
 
@@ -33,7 +36,7 @@ if (location.hash == '#tcamera') {
     if (frame.tracked) cv_counter++;
 
     $('#vision').arena('setData', frame);
-}
+//}
   });
 
   setInterval(function() {
