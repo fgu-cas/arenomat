@@ -30,7 +30,6 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 
 var routes = require('./routes');
 
-
 // Set View Engine
 app.engine('html', require('hogan-express'));
 app.set('view options', {layout: true});
@@ -165,7 +164,7 @@ try {
 }
 
 var stream = vc.toStream();
-
+var mLoop, mSetup;
 stream.read();
 
 stream.on("data", function(im) {
@@ -179,12 +178,18 @@ stream.on("data", function(im) {
     frame.elapsedTime = (new Date().getTime() / 1000) - startTime;
 
     if (first) {
-	s = 'setup(); ';
 	first = false;
+	eval(code);
+
+	mLoop = loop;
+	mSetup = setup;
+	mSetup();
     }
-    eval('function go() { ' + code + ' ' + s + ' loop(); }');
-    setTimeout(go, 1);
+    setTimeout(mLoop, 1);
   }
+
+// global variable for client side scripts
+    actualFrame = frame;
 
   io.set('log level', 2);
   io.sockets.emit('frame', frame);
@@ -250,5 +255,22 @@ function blobDetector(check) {
   }
   return frame;
 }
+
+var five = require("johnny-five");
+var board = new five.Board();
+board.on('error', function() {
+  console.log('not ready!');
+});
+board.on("ready", function() {
+    console.log('board ready');
+
+ a_light = new five.Led(13);
+ a_feeder = new five.Servo({
+  pin: 12,
+  range: [ 0, 180 ],
+  startAt: 0
+ });
+var a_shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
+});
 
 exports = module.exports = app

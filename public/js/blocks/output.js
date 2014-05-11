@@ -56,9 +56,9 @@ Blockly.JavaScript.light = function() {
       'light', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.light.functionName = functionName;
     var func = [];
-    func.push('function ' + functionName + '(delay) {');
-    func.push('  a_light.on();');
-    func.push('  board.wait(delay, function() { a_light.off(); });');
+    func.push('var lightTimeout; function ' + functionName + '(delay) {');
+    func.push('  clearTimeout(lightTimeout); a_light.on();');
+    func.push('  lightTimeout= setTimeout(function() { a_light.off(); }, delay);');
     func.push('}');
     Blockly.JavaScript.definitions_['light'] = func.join('\n');
   }
@@ -187,7 +187,7 @@ Blockly.JavaScript.message = function() {
     Blockly.JavaScript.message.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(message) {');
-    func.push('  console.log(message)');
+    func.push('  console.log(message);');
     func.push('}');
     Blockly.JavaScript.definitions_['message'] = func.join('\n');
   }

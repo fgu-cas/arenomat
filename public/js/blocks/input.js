@@ -13,85 +13,28 @@ Blockly.Language.zone = {
     this.setTooltip('return zone activity');
   }
 };
+
 Blockly.JavaScript.zone = function() {
-  var argument0 = this.getTitleValue('PIN') || '0';
+  var argument0 = this.getTitleValue('object') || '0';
+  var argument1 = this.getTitleValue('zone') || '0';
 
   if (!Blockly.JavaScript.definitions_['zone']) {
     var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
       'zone', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.zone.functionName = functionName;
     var func = [];
-    func.push('function ' + functionName + '(zone) {');
-    func.push(' return true; // activeZone[zone - 1]; ');
+    func.push('function ' + functionName + '(object, zone) {');
+    func.push(' if (actualFrame.cv[zone] && actualFrame.cv[zone].zones) {'); 
+    func.push('    return actualFrame.cv[zone].zones[zone] || false; ');
+    func.push(' }');
+    func.push(' return false;');
     func.push('}');
     Blockly.JavaScript.definitions_['zone'] = func.join('\n');
   }
   var code = Blockly.JavaScript.zone.functionName +
-    '(' + argument0 + ')';
+    '(' + argument0 + ', ' + argument1 + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
-
-
-Blockly.Language.subject = {
-  init: function() {
-    this.setColour(10);
-    this.appendDummyInput("")
-      .appendTitle(new Blockly.FieldImage("img/subject.png", 16, 16))
-      .appendTitle("subject")
-
-    this.setOutput(true, "Position");
-    this.setTooltip('return subject activity');
-  }
-};
-Blockly.JavaScript.subject = function() {
-  var argument0 = this.getTitleValue('PIN') || '0';
-
-  if (!Blockly.JavaScript.definitions_['subject']) {
-    var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
-      'subject', Blockly.Generator.NAME_TYPE);
-    Blockly.JavaScript.subject.functionName = functionName;
-    var func = [];
-    func.push('function ' + functionName + '(subject) {');
-    func.push(' return activesubject[subject - 1]; ');
-    func.push('}');
-    Blockly.JavaScript.definitions_['subject'] = func.join('\n');
-  }
-  var code = Blockly.JavaScript.subject.functionName +
-    '(' + argument0 + ')';
-  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
-};
-
-
-Blockly.Language.robot = {
-  init: function() {
-    this.setColour(10);
-    this.appendDummyInput("")
-      .appendTitle(new Blockly.FieldImage("img/robot.png", 16, 16))
-      .appendTitle("robot")
-
-    this.setOutput(true, "Position");
-    this.setTooltip('return robot activity');
-  }
-};
-Blockly.JavaScript.robot = function() {
-  var argument0 = this.getTitleValue('PIN') || '0';
-
-  if (!Blockly.JavaScript.definitions_['robot']) {
-    var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
-      'robot', Blockly.Generator.NAME_TYPE);
-    Blockly.JavaScript.robot.functionName = functionName;
-    var func = [];
-    func.push('function ' + functionName + '(robot) {');
-    func.push(' return activerobot[robot - 1]; ');
-    func.push('}');
-    Blockly.JavaScript.definitions_['robot'] = func.join('\n');
-  }
-  var code = Blockly.JavaScript.robot.functionName +
-    '(' + argument0 + ')';
-  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
-};
-
-
 
 Blockly.Language.time = {
   init: function() {
