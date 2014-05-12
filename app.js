@@ -22,7 +22,6 @@ var cv = require('opencv');
 var fs = require('fs');
 
 var lame = require('lame');
-var wav = require('wav');
 var Speaker = require('speaker');
 
 process.addListener('uncaughtException', function (err, stack) {

@@ -30,6 +30,14 @@ $(document).ready(function() {
     $('#isArduino i').css({ color: (frame.isArduino) ? 'green' : 'red' });
     $('#isWebcam i').css({ color: (frame.isWebcam) ? 'green' : 'red' });
 
+var tbody = $('#custom_variables').empty();
+if (frame.output) {
+    tbody.append('<tr><th>name</th><th>value</th></tr>');
+$.each( frame.output, function( key, value ) {
+    tbody.append('<tr><td>' + key + '</td><td>' + value + '</td></tr>');
+});
+}
+
     actualFrame = frame.webcam;
 
     cam_counter++;

@@ -40,7 +40,7 @@
 
 		<div id="tcamera" class="tab-pane fade">
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-9">
 					<div id="vision" style="width: {{ camWidth }}px; height: {{ camHeight }}px">
 						<canvas id="webcam"  width="{{ camWidth }}" height="{{ camHeight }}"></canvas>
 					</div>
@@ -52,6 +52,16 @@
 					<a href="5" class="change">5</a>
 					frames: <span id="cam_counter">0</span>, recognized: <span id="cv_counter">0</span>, fps: <span id="fps">0</span>
 				</div>
+<div class="col-md-3">
+<div class="table-responsive">
+<table id="custom_variables" class="table table-striped table-hover">
+<tr>
+    <th>name</th>
+    <th>value</th>
+</tr>
+</table>
+</div>
+</div>
 			</div>
 		</div>
 
