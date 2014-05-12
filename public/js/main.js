@@ -24,7 +24,7 @@ $(document).ready(function() {
     $('#cam_counter').text(cam_counter);
     $('#cv_counter').text(cv_counter);
     $('#elapsedTime').text(frame.elapsedTime.toFixed(2) + 's').css('background', (frame.isRunning) ? 'red' : 'green');
-
+//console.log(frame.output);
     $('#isShocking span').text(frame.actions.shocking / 10 + 'mA')
     $('#isShocking i').css('color', (frame.actions.shocking > 0) ? 'red' : 'green');
     $('#isArduino i').css({ color: (frame.isArduino) ? 'green' : 'red' });

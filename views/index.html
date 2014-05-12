@@ -67,6 +67,10 @@ object 3 <span id="object_3">0,1</span><br />
 object 4 <span id="object_4">0,1</span><br />
 object 5 <span id="object_5">0,1</span><br />
 object 6 <span id="object_6">0,1</span><br />
+<div id="output"></div>
+<br />
+<br />
+<br />
 <script>
 var timer;
 var oldValue;
@@ -82,6 +86,8 @@ for(var n = 0; n < 7; n++) {
     t = data.cv[n].position.x + ', ' + data.cv[n].position.y;
   }
 		$('#object_' + (n+1)).text(t);
+
+		$('#output').text(JSON.stringify(data.output));
 //}
 }
              $("#image").attr("src",  'data:image/jpeg;base64,' + data.webcam);

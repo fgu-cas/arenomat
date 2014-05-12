@@ -63,8 +63,6 @@ Blockly.Language.subject = {
   }
 };
 Blockly.JavaScript.subject = function() {
-  var argument0 = this.getTitleValue('PIN') || '0';
-
   if (!Blockly.JavaScript.definitions_['subject']) {
     var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
       'subject', Blockly.Generator.NAME_TYPE);
@@ -75,8 +73,7 @@ Blockly.JavaScript.subject = function() {
     func.push('}');
     Blockly.JavaScript.definitions_['subject'] = func.join('\n');
   }
-  var code = Blockly.JavaScript.subject.functionName +
-    '(' + argument0 + ')';
+  var code = Blockly.JavaScript.subject.functionName + '()';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
@@ -93,8 +90,6 @@ Blockly.Language.robot = {
   }
 };
 Blockly.JavaScript.robot = function() {
-  var argument0 = this.getTitleValue('PIN') || '0';
-
   if (!Blockly.JavaScript.definitions_['robot']) {
     var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
       'robot', Blockly.Generator.NAME_TYPE);
@@ -105,7 +100,33 @@ Blockly.JavaScript.robot = function() {
     func.push('}');
     Blockly.JavaScript.definitions_['robot'] = func.join('\n');
   }
-  var code = Blockly.JavaScript.robot.functionName +
-    '(' + argument0 + ')';
+  var code = Blockly.JavaScript.robot.functionName + '()';
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+
+Blockly.Language.center = {
+  init: function() {
+    this.setColour(10);
+    this.appendDummyInput("")
+      .appendTitle(new Blockly.FieldImage("img/center.png", 16, 16))
+      .appendTitle("center")
+
+    this.setOutput(true, "Position");
+    this.setTooltip('return center activity');
+  }
+};
+Blockly.JavaScript.center = function() {
+  if (!Blockly.JavaScript.definitions_['center']) {
+    var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
+      'center', Blockly.Generator.NAME_TYPE);
+    Blockly.JavaScript.center.functionName = functionName;
+    var func = [];
+    func.push('function ' + functionName + '(center) {');
+    func.push(' return -1; ');
+    func.push('}');
+    Blockly.JavaScript.definitions_['center'] = func.join('\n');
+  }
+  var code = Blockly.JavaScript.center.functionName + '()';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };

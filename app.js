@@ -1,4 +1,7 @@
-var camWidth = 800, camHeight = 600;
+var camWidth = 640, camHeight = 480;
+
+var five = require("johnny-five");
+var board = new five.Board();
 
 var express = require('express');
 var path = require('path');
@@ -19,15 +22,17 @@ var cv = require('opencv');
 var fs = require('fs');
 
 var lame = require('lame');
+var wav = require('wav');
 var Speaker = require('speaker');
-
-
-var debounce = require('debounce');
 
 process.addListener('uncaughtException', function (err, stack) {
     console.log('Caught exception: '+err+'\n'+err.stack);
     console.log('\u0007'); // Terminal bell
 });
+
+
+
+
 
 var mongoose = require('mongoose-paginate');
 var modelsPath = __dirname + '/models';
@@ -196,7 +201,7 @@ stream.on("data", function(im) {
 
   if (isRunning && code) {
     actualFrame.elapsedTime = (new Date().getTime() / 1000) - startTime;
-
+    actualFrame.output = {};
     if (first) {
 	first = false;
 	eval(code);
@@ -207,7 +212,7 @@ stream.on("data", function(im) {
     }
     mLoop();
   }
-
+//console.log(actualFrame.output);
 //  new Frame(actualFrame).save();
 
   // no need to save in db
@@ -269,8 +274,30 @@ function blobDetector(check) {
   }
 }
 
-var five = require("johnny-five");
-var board = new five.Board();
+
+function play(mp3) { 
+console.log('play: ' + mp3);
+return fs.createReadStream(mp3)
+  .pipe(new lame.Decoder())
+  .on('format', function (format) {
+    this.pipe(new Speaker(format));
+  });
+}
+function playWav(file) { 
+var file = fs.createReadStream(file);
+var reader = new wav.Reader();
+
+// the "format" event gets emitted at the end of the WAVE header
+reader.on('format', function (format) {
+
+  // the WAVE header is stripped from the output of the reader
+  reader.pipe(new Speaker(format));
+});
+
+// pipe the WAVE file to the Reader instance
+return file.pipe(reader);
+
+}
 
 board.on('error', function() {
   console.log('not ready!');
@@ -289,13 +316,5 @@ board.on("ready", function() {
  arduino.shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 });
 
-function play(mp3) { 
-console.log('play: ' + mp3);
-return fs.createReadStream(mp3)
-  .pipe(new lame.Decoder())
-  .on('format', function (format) {
-    this.pipe(new Speaker(format));
-  });
-}
 
 exports = module.exports = app

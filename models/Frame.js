@@ -2,11 +2,13 @@ var mongoose = require("mongoose-paginate");
 
 var FrameSchema = new mongoose.Schema({
   session_id: String,
+  timestamp: Number,
   tracked: Boolean,
   cv: [],
-  output: [],
+  actions: {},
+  elapsedTime: Number,
+  output: {},
   webcam: String,
-  date: {type: Date, default: Date.now}
 });
 
 mongoose.model('Frame', FrameSchema);

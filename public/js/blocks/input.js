@@ -15,8 +15,8 @@ this.setInputsInline(true);
 };
 
 Blockly.JavaScript.zone = function() {
-  var argument0 = this.getTitleValue('object') || '0';
-  var argument1 = this.getTitleValue('zone') || '0';
+  var argument0 = Blockly.JavaScript.valueToCode(this, 'object', Blockly.JavaScript.ORDER_COMMA) || 0;
+  var argument1 = Blockly.JavaScript.valueToCode(this, 'zone', Blockly.JavaScript.ORDER_COMMA) || 0;
 
   if (!Blockly.JavaScript.definitions_['zone']) {
     var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
@@ -24,8 +24,8 @@ Blockly.JavaScript.zone = function() {
     Blockly.JavaScript.zone.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(object, zone) {');
-    func.push(' if (actualFrame.cv[zone] && actualFrame.cv[zone].zones) {'); 
-    func.push('    return actualFrame.cv[zone].zones[zone] || false; ');
+    func.push(' if (actualFrame.cv[object] && actualFrame.cv[object].zones) { '); 
+    func.push('    return actualFrame.cv[object].zones[zone] || false; ');
     func.push(' }');
     func.push(' return false;');
     func.push('}');
@@ -35,6 +35,46 @@ Blockly.JavaScript.zone = function() {
     '(' + argument0 + ', ' + argument1 + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
+
+
+Blockly.Language.position = {
+  init: function() {
+    this.setColour(10);
+    this.appendValueInput("object")
+      .appendTitle(new Blockly.FieldImage("img/position.png", 16, 16))
+
+this.setInputsInline(true);
+    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["x", "x"], ["y", "y"]]), "axis");
+    this.setOutput(true, "Number");
+    this.setTooltip('return position activity');
+  }
+};
+
+Blockly.JavaScript.position = function() {
+  var argument0 = Blockly.JavaScript.valueToCode(this, 'object', Blockly.JavaScript.ORDER_COMMA) || 0;
+  var argument1 = this.getTitleValue('axis') || 'x';
+
+  if (!Blockly.JavaScript.definitions_['position']) {
+    var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
+      'position', Blockly.Generator.NAME_TYPE);
+    Blockly.JavaScript.position.functionName = functionName;
+    var func = [];
+    func.push('function ' + functionName + '(object, position) {');
+    func.push(' if (object == -1) { return (position == "x") ? camWidth/2 : camHeight/2; }');
+    func.push(' if (actualFrame.cv[object] && actualFrame.cv[object].position) { '); 
+    func.push('    return actualFrame.cv[object].position[position] || false; ');
+    func.push(' }');
+    func.push(' return false;');
+    func.push('}');
+    Blockly.JavaScript.definitions_['position'] = func.join('\n');
+  }
+  var code = Blockly.JavaScript.position.functionName +
+    '(' + argument0 + ', "' + argument1 + '")';
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+
+
 
 Blockly.Language.time = {
   init: function() {

@@ -19,8 +19,8 @@ Blockly.JavaScript.sound = function() {
     var functionName = Blockly.JavaScript.variableDB_.getDistinctName('sound', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.sound.functionName = functionName;
     var func = [];
-    func.push('function ' + functionName + '(filename) {');
-    func.push('  if (!playing) { var playing = true; play("public/media/" + filename).on("end", function () { playing = false }); console.log("play"); }');
+    func.push('var playing; function ' + functionName + '(filename) {');
+    func.push('  if (!playing) { playing = true; play("public/media/" + filename).on("end", function () { playing = false; });  }');
     func.push('}');
     Blockly.JavaScript.definitions_['sound'] = func.join('\n');
   }
@@ -197,6 +197,44 @@ Blockly.JavaScript.message = function() {
   return code;
 
 };
+
+
+
+Blockly.Language.out = {
+  helpUrl: 'http://www.example.com/',
+  init: function() {
+    this.setColour(190);
+    this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/out.png", 16, 16)).appendTitle("out")
+
+    this.appendDummyInput("       ").appendTitle(new Blockly.FieldTextInput(""), "key");
+
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.appendValueInput("value", Text)
+    this.setTooltip('out');
+  }
+};
+Blockly.JavaScript.out = function() {
+  var argument0 = this.getTitleValue('key') || '0';
+  var argument1 = Blockly.JavaScript.valueToCode(this, 'value', Blockly.JavaScript.ORDER_COMMA) || 'false';
+
+  if (!Blockly.JavaScript.definitions_['out']) {
+    var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
+      'out', Blockly.Generator.NAME_TYPE);
+    Blockly.JavaScript.out.functionName = functionName;
+    var func = [];
+    func.push('function ' + functionName + '(key, value) {');
+    func.push('  actualFrame.output[key] = value;');
+    func.push('}');
+    Blockly.JavaScript.definitions_['out'] = func.join('\n');
+  }
+  var code = Blockly.JavaScript.out.functionName +
+    '("' + argument0 + '", ' + argument1 + ');\n';
+  return code;
+
+};
+
+
 
 Blockly.Language.projector = {
   helpUrl: 'http://www.example.com/',
