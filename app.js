@@ -135,7 +135,7 @@ io.sockets.on('connection', function(socket) {
     console.log('codeSave: ' + data);
   });
   socket.on('area', function(data) {
-//          console.log('area: ' + data);
+          console.log('area: ' + data);
     zones = data;
   });
 });
@@ -281,21 +281,6 @@ return fs.createReadStream(mp3)
   .on('format', function (format) {
     this.pipe(new Speaker(format));
   });
-}
-function playWav(file) { 
-var file = fs.createReadStream(file);
-var reader = new wav.Reader();
-
-// the "format" event gets emitted at the end of the WAVE header
-reader.on('format', function (format) {
-
-  // the WAVE header is stripped from the output of the reader
-  reader.pipe(new Speaker(format));
-});
-
-// pipe the WAVE file to the Reader instance
-return file.pipe(reader);
-
 }
 
 board.on('error', function() {

@@ -20,7 +20,7 @@ Blockly.JavaScript.sound = function() {
     Blockly.JavaScript.sound.functionName = functionName;
     var func = [];
     func.push('var playing; function ' + functionName + '(filename) {');
-    func.push('  if (!playing) { playing = true; play("public/media/" + filename).on("end", function () { playing = false; });  }');
+    func.push('  if (!playing) { playing = true; play("public/media/" + filename).on("end", function () { setTimeout(function () { playing = false; }, 1000); });  }');
     func.push('}');
     Blockly.JavaScript.definitions_['sound'] = func.join('\n');
   }

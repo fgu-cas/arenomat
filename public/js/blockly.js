@@ -125,11 +125,11 @@ $(document).ready(function() {
   // init load event
   // fake input file
   // TODO: jquery style
-  var loadInput = document.getElementById('import');
-  loadInput.addEventListener('change', codeImport, false);
-  document.getElementById('codeImport').onclick = function() {
+  var loadInput = $('#import');
+  loadInput.on('change', codeImport, false);
+  $('#codeImport').click(function() {
     loadInput.click();
-  }
+  });
 
   $("#codeStart").click(function() {
     var code = Blockly.Generator.workspaceToCode('JavaScript');

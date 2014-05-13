@@ -14,3 +14,7 @@ sudo npm install -g node-gyp
 git clone http://git.michalvondracek.cz/arenomat.git
 cd arenomat
 npm install
+
+
+# advaced Firmata
+# https://github.com/soundanalogous/AdvancedFirmata
