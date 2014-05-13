@@ -292,10 +292,13 @@ board.on("ready", function() {
  isArduino = true;
 
  arduino.light = new five.Led(13);
- arduino.feeder = new five.Servo({
-  pin: 12,
-  range: [ 0, 180 ],
-  startAt: 0
+ arduino.feeder = five.Stepper({
+  type: five.Stepper.TYPE.DRIVER,
+  stepsPerRev: 200,
+  pins: {
+    step: 11,
+    dir: 12
+  }
  });
  arduino.shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
 });

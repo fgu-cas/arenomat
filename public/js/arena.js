@@ -81,9 +81,6 @@
       }
       $(this.element).append(controls);
 
-
-      // $(document).ready(function () {
-      // alert('ready');
       $('#zones')
         .bind('mousedown', this, this.mousedown)
         .bind('contextmenu', this, this.rightclick)
@@ -97,8 +94,9 @@
         that.changeZone($(this).attr('href'));
         $('.change').removeClass('active');
         $(this).addClass('active');
-      });
-      //});
+    });
+
+    if (window.localStorage && window.localStorage.zones) this.zones = JSON.parse(window.localStorage.zones);
 
 
       this.drawArena();
@@ -292,7 +290,7 @@ that.moving = true;
       return false;
     },
     record: function() {
-      localStorage.setItem('zones', this.zones);
+      localStorage.setItem('zones', JSON.stringify(this.zones));
       socket.emit('area', this.zones);
 
     }
