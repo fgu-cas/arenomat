@@ -184,7 +184,7 @@
         ctx.fillStyle = 'rgba(' + this.colors[n] + ',0.2)';
         if (n == this.activeZone)
           ctx.fillStyle = 'rgba(' + this.colors[n] + ',0.3)';
-        if (this.inZones[n])
+	if (this.inZones && this.inZones[n])
           ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
         ctx.fill();
         ctx.stroke();

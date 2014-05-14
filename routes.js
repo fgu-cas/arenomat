@@ -5,6 +5,8 @@ var mongoose = require('mongoose-paginate');
 var Experiment = mongoose.model('Experiment');
 var Frame = mongoose.model('Frame');
 
+var fs = require('fs');
+
 /* GET home page. */
 router.get('/', function(req, res) {
   var fc;
@@ -81,5 +83,13 @@ router.get('/frames/:id', function(req, res) {
   });
 });
 
+router.get('/soundfiles', function(req, res) {
+var modelsPath = __dirname + '/sounds';
+var files = [];
+fs.readdirSync(modelsPath).forEach(function(file) {
+  files.push([file, file]);
+});
+        res.json(files);
+});
 
 module.exports = router;

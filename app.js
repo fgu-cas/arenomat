@@ -291,7 +291,7 @@ board.on("ready", function() {
  console.log('board ready');
  isArduino = true;
 
- arduino.light = new five.Led(13);
+ arduino.light = new five.Led(12);
  arduino.feeder = five.Stepper({
   type: five.Stepper.TYPE.DRIVER,
   stepsPerRev: 200,
