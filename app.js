@@ -172,12 +172,14 @@ try {
   console.log('no webcam');
 }
 
+var stream = vc.toStream();
+
+
 if (vc) {
     isWebcam = true;
     console.log('webcam: ok');
 
 
-var stream = vc.toStream();
 stream.read();
 }
 
@@ -297,10 +299,10 @@ board.on("ready", function() {
   stepsPerRev: 200,
   pins: {
     step: 11,
-    dir: 12
+    dir: 10
   }
  });
- arduino.shock = [ new five.Led(8), new five.Led(9), new five.Led(10) ];
+ arduino.shock = new five.Led(13);
 });
 
 

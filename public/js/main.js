@@ -48,8 +48,9 @@ $.each( frame.output, function( key, value ) {
   });
 
   setInterval(function() {
-    if (actualFrame && (window.location.hash == '#tcamera')) {
+    if ((actualFrame.length > 0) && (window.location.hash == '#tcamera')) {
       image.src = 'data:image/jpeg;base64,' + actualFrame;
+
       webcamctx.drawImage(image, 0, 0);
     }
   }, 40);

@@ -131,26 +131,32 @@ $(document).ready(function() {
     loadInput.click();
   });
 
-  $("#codeStart").click(function() {
+  $(".codeStart").click(function(e) {
+    e.preventDefault();
     var code = Blockly.Generator.workspaceToCode('JavaScript');
     socket.emit('codeStart', code);
   });
 
-  $("#codeExport").click(function() {
+  $("#codeExport").click(function(e) {
+    e.preventDefault();
     codeExport();
   });
-  $("#codeSave").click(function() {
+  $("#codeSave").click(function(e) {
+    e.preventDefault();
     codeSave();
   });
 
-  $("#codeImport").click(function() {
+  $("#codeImport").click(function(e) {
+    e.preventDefault();
     codeImport();
   });
-  $("#codeClear").click(function() {
+  $("#codeClear").click(function(e) {
+    e.preventDefault();
     codeClear();
   });
 
-  $("#codeStop, #elapsedTime").click(function() {
+  $(".codeStop").click(function(e) {
+    e.preventDefault();
     socket.emit('codeStop');
   });
 

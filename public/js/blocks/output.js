@@ -4,7 +4,7 @@ Blockly.Language.sound = {
     this.setColour(190);
 
     this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/sound.png", 16, 16)).appendTitle("Sound")
-    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["beep.mp3", "beep.mp3"], ["click.mp3", "click.mp3"], ["delete.mp3", "delete.mp3"]]), "filename")
+    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["dog.mp3", "dog.mp3"], ["click.mp3", "click.mp3"], ["delete.mp3", "delete.mp3"]]), "filename")
 
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -20,7 +20,7 @@ Blockly.JavaScript.sound = function() {
     Blockly.JavaScript.sound.functionName = functionName;
     var func = [];
     func.push('var playing; function ' + functionName + '(filename) {');
-    func.push('  if (!playing) { playing = true; play("public/media/" + filename).on("end", function () { setTimeout(function () { playing = false; }, 1000); });  }');
+    func.push('  if (!playing) { playing = true; play(__dirname + "/sounds/" + filename).on("end", function () { setTimeout(function () { playing = false; }, 1000); });  }');
     func.push('}');
     Blockly.JavaScript.definitions_['sound'] = func.join('\n');
   }
@@ -127,9 +127,9 @@ Blockly.JavaScript.shock = function() {
     var func = [];
     func.push('var shockingTimeout; function ' + functionName + '(current, delay) {');
     func.push('  actualFrame.actions.shocking = current;');
-    func.push('  arduino.light.on();');
+    func.push('  arduino.shock.on();');
     func.push('  if (shockingTimeout) clearTimeout(shockingTimeout);');
-    func.push('  shockingTimeout = setTimeout(function() { arduino.light.off(); actualFrame.actions.shocking = 0; }, delay);');
+    func.push('  shockingTimeout = setTimeout(function() { arduino.shock.off(); actualFrame.actions.shocking = 0; }, delay);');
     func.push('}');
     Blockly.JavaScript.definitions_['shock'] = func.join('\n');
   }
