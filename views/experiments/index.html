@@ -13,8 +13,8 @@
 {{#experiments}}
 <tr>
     <td align=top>{{name}}</td>
-    <td><a href="#" class="del" data="{{name}}">del</a></td>
-    <td><a href="#" class="load" data="{{name}}">load</a></td>
+    <td><a href="#" class="del" data-experiment="{{name}}">del</a></td>
+    <td><a href="#" class="load" data-experiment="{{name}}">load</a></td>
 </tr>
 {{/experiments}}
 </table>
@@ -22,3 +22,19 @@
 </div>  
 
 
+<script>
+
+$(document).ready(function() {
+ $(".load").click(function(e) {
+    $.get('/experiments/' + $(this).data('experiment'), function (data) {
+      Blockly.mainWorkspace.clear();
+      var xml = Blockly.Xml.textToDom(data.xml);
+      Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+      e.preventDefault();
+
+    $('#modal').modal('hide')
+    });
+  });
+});
+
+</script>

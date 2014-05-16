@@ -11,11 +11,29 @@
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav nav-tabs">
+
+	    <li class="dropdown">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Experiment<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a id="codeLoad" href="/experiments" data-toggle="modal" data-target="#modal">Load</a></li>
+                    <li><a href="#" id="codeSave">Save</a></li>
+                    <li><a href="#" id="codeClear">Clear</a></li>
+                    <li class="divider"></li>
+                    <li>
+			<a href="#" id="codeImport">Import</a>
+                        <input type="file" id="import" style="display: none;"/>
+		    </li>
+                    <li><a href="#" id="codeExport">Export</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#" id="codeClear">Clear</a></li>
+                </ul>
+            </li>
+
+
 				<li class="active"><a data-toggle="tab" href="#tlogic">Logic</a></li>
 				<li><a data-toggle="tab" href="#tcamera">Camera</a></li>
 				<li><a data-toggle="tab" href="#tanalyze">Analyze</a></li>
 				<li><a data-toggle="tab" href="#tsettings">Settings</a></li>
-				<li>
 			</ul>
 			<ul class="nav navbar-nav">
 				<li class="active"><div style="padding: 10px"><a class="codeStart btn btn-success" title="Start the experiment" href="#"><i class="fa fa-play fa-lg"></i></a></div></li>

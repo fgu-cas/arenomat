@@ -45,9 +45,9 @@ router.param('name', function(req, res, next, name) {
   });
 });
 
-//experiments page show
+//experiment load
 router.get('/experiments/:name', function(req, res) {
-
+      res.json(req.experiment);
 });
 
 //edit experiments

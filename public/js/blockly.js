@@ -118,24 +118,16 @@ $(document).ready(function() {
 
 
     $.post("/experiments", data, function(data) {
-      alert('ok');
+      alert(name + ' has been sucessfully saved.');
     });
   }
 
-  // init load event
-  // fake input file
-  // TODO: jquery style
   var loadInput = $('#import');
   loadInput.on('change', codeImport, false);
   $('#codeImport').click(function() {
     loadInput.click();
   });
 
-  $(".codeStart").click(function(e) {
-    e.preventDefault();
-    var code = Blockly.Generator.workspaceToCode('JavaScript');
-    socket.emit('codeStart', code);
-  });
 
   $("#codeExport").click(function(e) {
     e.preventDefault();
@@ -155,6 +147,11 @@ $(document).ready(function() {
     codeClear();
   });
 
+  $(".codeStart").click(function(e) {
+    e.preventDefault();
+    var code = Blockly.Generator.workspaceToCode('JavaScript');
+    socket.emit('codeStart', code);
+  });
   $(".codeStop").click(function(e) {
     e.preventDefault();
     socket.emit('codeStop');
