@@ -16,16 +16,15 @@
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">Experiment<b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li><a id="codeLoad" href="/experiments" data-toggle="modal" data-target="#modal">Load</a></li>
-                    <li><a href="#" id="codeSave">Save</a></li>
-                    <li><a href="#" id="codeClear">Clear</a></li>
+                    <li><a href="#save" id="codeSave">Save</a></li>
                     <li class="divider"></li>
                     <li>
-			<a href="#" id="codeImport">Import</a>
+			<a href="#import" id="codeImport">Import</a>
                         <input type="file" id="import" style="display: none;"/>
 		    </li>
-                    <li><a href="#" id="codeExport">Export</a></li>
+                    <li><a href="#export" id="codeExport">Export</a></li>
                     <li class="divider"></li>
-                    <li><a href="#" id="codeClear">Clear</a></li>
+                    <li><a href="#clear" id="codeClear">Clear</a></li>
                 </ul>
             </li>
 
@@ -35,18 +34,22 @@
 				<li><a data-toggle="tab" href="#tanalyze">Analyze</a></li>
 				<li><a data-toggle="tab" href="#tsettings">Settings</a></li>
 			</ul>
-			<ul class="nav navbar-nav">
-				<li class="active"><div style="padding: 10px"><a class="codeStart btn btn-success" title="Start the experiment" href="#"><i class="fa fa-play fa-lg"></i></a></div></li>
-				<li class="active"><div style="padding: 10px"><a class="codeStop btn btn-danger" title="Stop the experiment" href="#"><i class="fa fa-stop fa-lg"></i></a></div></li>
+
+
+
+
+
+			<ul class="nav navbar-nav navbar-right">
+				<li class="active"><div style="padding: 8px"><a class="codeStart btn btn-success" title="Start the experiment" href="#"><i class="fa fa-play fa-lg"></i></a></div></li>
+				<li class="active"><div style="padding: 8px"><a class="codeStop btn btn-danger" title="Stop the experiment" href="#"><i class="fa fa-stop fa-lg"></i></a></div></li>
 			</ul>
-
-
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav">
 				<li class="active"><a href="#"  id="isWebcam"><i class="fa fa-video-camera fa-lg"></i></a></li>
 				<li class="active"><a href="#"  id="isArduino"><i class="fa fa-code-fork fa-lg"></i></a></li>
 				<li class="active"><a href="#"  id="isShocking"><i class="fa fa-bolt fa-lg"></i><span>0.0mA</span></a></li>
 				<li class="active"><a href="#" class="codeStop" id="elapsedTime">0s</a></li>
             </ul>
+
 		</div>
 	</div>
 </nav>

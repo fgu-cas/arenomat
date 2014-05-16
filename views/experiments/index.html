@@ -13,8 +13,8 @@
 {{#experiments}}
 <tr>
     <td align=top>{{name}}</td>
-    <td><a href="#" class="del" data-experiment="{{name}}">del</a></td>
-    <td><a href="#" class="load" data-experiment="{{name}}">load</a></td>
+    <td><a href="#del" class="del" data-experiment="{{name}}">del</a></td>
+    <td><a href="#load" class="load" data-experiment="{{name}}">load</a></td>
 </tr>
 {{/experiments}}
 </table>
@@ -25,16 +25,27 @@
 <script>
 
 $(document).ready(function() {
- $(".load").click(function(e) {
+
+  $(".load").click(function(e) {
     $.get('/experiments/' + $(this).data('experiment'), function (data) {
       Blockly.mainWorkspace.clear();
       var xml = Blockly.Xml.textToDom(data.xml);
       Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
-      e.preventDefault();
-
-    $('#modal').modal('hide')
+      $('#modal').modal('hide')
     });
+    e.preventDefault();
   });
+
+  $(".del").click(function(e) {
+    var name = $(this).data('experiment');
+    bootbox.confirm("Do you really want to delete: " + name + "?", function(result) {
+console.log(result);
+     if (result) 
+      $.ajax({url: "/experiments/" + name, type: "DELETE"});     
+    });
+    e.preventDefault();
+  });
+
 });
 
 </script>

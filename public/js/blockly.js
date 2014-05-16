@@ -111,11 +111,16 @@ $(document).ready(function() {
   function codeSave() {
     var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
     var name = $(xml).find('value[name="name"]')[0].innerText;
-    var xml = Blockly.Xml.domToText(xml);
+//               $(xml).find('value[name="day"]')[0].innerText;
+
+    var textxml = Blockly.Xml.domToText(xml);
     var code = Blockly.Generator.workspaceToCode('JavaScript');
 
-    data = {name: name, xml: xml, code: code};
+    var data = {name: name, xml: textxml, code: code};
 
+    $.get("/experiments/" + name, function(data) {
+
+    });
 
     $.post("/experiments", data, function(data) {
       alert(name + ' has been sucessfully saved.');

@@ -50,22 +50,38 @@ router.get('/experiments/:name', function(req, res) {
       res.json(req.experiment);
 });
 
-//edit experiments
-router.get('/experiments/:name/edit', function(req, res) {
+//put experiments
+router.get('/experiments/:name', function(req, res) {
   res.render("experiments/edit", {experiment: req.experiment});
 });
 
+router.delete('/experiments/:name', function (req, res){
+console.log(req.params);
+  return Experiment.findById(req.params.id, function (err, experiment) {
+console.log(err, experiment);
+experiment.remove();
+      if (!err) {
+        console.log("removed");
+        return res.send('');
+      } else {
+        console.log(err);
+      }
+        res.redirect("/experiments/");
+  });
+});
 
 //handle updates
 router.post('/experiments/:name', function(req, res) {
   var b = req.body;
-  Experiment.update(
-    {name: req.params.name},
-  {name: b.name, code: b.code, xml: b.xml},
-  function(err) {
-    res.redirect("/experiments/" + b.name);
-  }
-  );
+  return Experiment.findById(req.params.id, function (err, experiment) {
+    Experiment.update(
+      {name: req.params.name},
+      {name: b.name, code: b.code, xml: b.xml},
+      function(err) {
+        res.redirect("/experiments/" + b.name);
+      }
+    );
+  });
 });
 
 
