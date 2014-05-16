@@ -1,4 +1,5 @@
-var camWidth = 640, camHeight = 480;
+camWidth = 640, camHeight = 480;
+zones = [];
 
 var five = require("johnny-five");
 var board = new five.Board();
@@ -157,7 +158,6 @@ var arduino = {
     shock: {}
 }
 
-var zones = [];
 var actualFrame;
 var first = true;
 

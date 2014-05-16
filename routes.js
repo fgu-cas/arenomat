@@ -101,4 +101,60 @@ router.get('/settings/:control/:value', function(req, res) {
   });
 });
 
+router.get('/projector', function(req, res) {
+
+var Canvas = require('canvas')
+  , canvas = new Canvas(camWidth, camHeight)
+  , ctx = canvas.getContext('2d');
+
+
+
+this.zones = zones;
+
+      ctx.fillStyle = "rgba(0, 0, 0, 1)";
+      ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.fill();
+
+      // mask
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.beginPath();
+      ctx.arc(ctx.canvas.width / 2, ctx.canvas.height / 2, ctx.canvas.height / 2, 0, 2 * Math.PI);
+      ctx.stroke();
+
+
+
+      for (var n = 0; n < this.zones.length; n++) {
+        var points = this.zones[n];
+        if (points.length < 1) {
+          return false;
+        }
+
+        ctx.fillStyle = 'rgb(255, 255, 255)';
+        ctx.strokeStyle = 'rgb(255, 255, 255)';
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+
+        ctx.moveTo(points[0].x, points[0].y);
+        var width = 10;
+        for (var i = 0; i < points.length; i++) {
+          if (points.length > 1 && i > 0) {
+            ctx.lineTo(points[i].x, points[i].y);
+          }
+        }
+
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+     }
+
+
+
+
+  canvas.toBuffer(function(err, buf){
+    res.writeHead(200, { 'Content-Type': 'image/png', 'Content-Length': buf.length });
+    res.end(buf);
+  });
+});
+
 module.exports = router;
