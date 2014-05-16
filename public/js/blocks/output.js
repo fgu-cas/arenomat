@@ -158,8 +158,17 @@ Blockly.JavaScript.feeder = function() {
     Blockly.JavaScript.feeder.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '() {');
-    func.push('  if (!feeding) { a_feeder.max(); feeding = true; ');
-    func.push('  board.wait(1000, function() { if (feeding) { arduino.feeder.min(); feeding = false }}); }');
+    func.push('    arduino.feeder.rpm(18000).ccw().step(620, function() {');
+    func.push('      console.log("Done moving CW");');
+    func.push('  });');
+
+    func.push('  board.wait(1000, function() { '); 
+
+    func.push('    arduino.feeder.rpm(18000).ccw().step(620, function() {');
+    func.push('      console.log("Done moving CW");');
+    func.push('  });');
+
+    func.push('  });');
     func.push('}');
     Blockly.JavaScript.definitions_['feeder'] = func.join('\n');
   }
@@ -206,7 +215,7 @@ Blockly.Language.out = {
     this.setColour(190);
     this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/out.png", 16, 16)).appendTitle("out")
 
-    this.appendDummyInput("       ").appendTitle(new Blockly.FieldTextInput(""), "key");
+    this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput(""), "key");
 
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);

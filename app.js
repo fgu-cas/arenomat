@@ -298,8 +298,8 @@ board.on("ready", function() {
   type: five.Stepper.TYPE.DRIVER,
   stepsPerRev: 200,
   pins: {
-    step: 11,
-    dir: 10
+    step: 54,
+    dir: 55
   }
  });
  arduino.shock = new five.Led(13);

@@ -44,9 +44,9 @@ Blockly.Language.position = {
       .appendTitle(new Blockly.FieldImage("img/position.png", 16, 16))
 
 this.setInputsInline(true);
-    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["x", "x"], ["y", "y"]]), "axis");
+    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["x", "x"], ["y", "y"], ["area", "area"]]), "axis");
     this.setOutput(true, "Number");
-    this.setTooltip('return position activity');
+    this.setTooltip('return position attribute');
   }
 };
 
@@ -59,10 +59,10 @@ Blockly.JavaScript.position = function() {
       'position', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.position.functionName = functionName;
     var func = [];
-    func.push('function ' + functionName + '(object, position) {');
+    func.push('function ' + functionName + '(object, attr) {');
     func.push(' if (object == -1) { return (position == "x") ? camWidth/2 : camHeight/2; }');
     func.push(' if (actualFrame.cv[object] && actualFrame.cv[object].position) { '); 
-    func.push('    return actualFrame.cv[object].position[position] || false; ');
+    func.push('    return actualFrame.cv[object].position[attr] || false; ');
     func.push(' }');
     func.push(' return false;');
     func.push('}');
