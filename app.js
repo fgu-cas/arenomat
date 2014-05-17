@@ -135,7 +135,7 @@ io.sockets.on('connection', function(socket) {
   socket.on('codeSave', function(data) {
     console.log('codeSave: ' + data);
   });
-  socket.on('area', function(data) {
+  socket.on('zones', function(data) {
           console.log('area: ' + data);
     zones = data;
   });
@@ -197,7 +197,8 @@ stream.on("data", function(im) {
     isWebcam: isWebcam,
     cv: [],
     actions: { shocking: 0 },
-    webcam: small.toBuffer().toString('base64')
+    webcam: small.toBuffer().toString('base64'),
+    zones: zones
   }
 
   actualFrame.cv[-1] = { position : { x: camHeight / 2, y: camHeight / 2 } };

@@ -47,6 +47,8 @@
     setData: function(frame) {
       if (frame.tracked) {
         this.inZones = frame.cv[0].zones;
+if (!this.moving)
+	this.zones = frame.zones;
 
     for(var n = 0; n < frame.cv.length; n++) {
         if (frame.cv[n]) {
@@ -291,7 +293,7 @@ that.moving = true;
     },
     record: function() {
       localStorage.setItem('zones', JSON.stringify(this.zones));
-      socket.emit('area', this.zones);
+      socket.emit('zones', this.zones);
 
     }
 
