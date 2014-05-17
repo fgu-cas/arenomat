@@ -194,9 +194,7 @@ for(var n = 0; n < 7; n++) {
 
 $("#ex6").slider({
     tooltip: 'always'
-});
-
-$("#ex6").on('slide', function(slideEvt) {
+}).on('slide', function(slideEvt) {
     if (oldValue !== slideEvt.value) {
 	oldValue = slideEvt.value;
         delayShow(slideEvt.value);

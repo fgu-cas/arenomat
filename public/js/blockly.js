@@ -155,10 +155,14 @@ $(document).ready(function() {
   $(".codeStart").click(function(e) {
     e.preventDefault();
     var code = Blockly.Generator.workspaceToCode('JavaScript');
+    $(".codeStart").attr('disabled', true);
+    $(".codeStop").attr('disabled', false);
     socket.emit('codeStart', code);
   });
   $(".codeStop").click(function(e) {
     e.preventDefault();
+    $(".codeStop").attr('disabled', true);
+    $(".codeStart").attr('disabled', false);
     socket.emit('codeStop');
   });
 

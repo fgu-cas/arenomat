@@ -163,7 +163,7 @@ if (!this.moving)
           return false;
         }
         ctx.globalCompositeOperation = 'destination-over';
-        ctx.fillStyle = 'rgb(255,255,255)';
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
         ctx.strokeStyle = 'rgb(' + this.colors[n] + ')';
         ctx.lineWidth = 1;
 

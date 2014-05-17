@@ -10,6 +10,7 @@ Blockly.Language.experiment = {
     this.appendValueInput("person").appendTitle('person');
     this.appendValueInput("goal").appendTitle('goal');
     this.appendValueInput("subject").appendTitle('subject');
+    this.appendDummyInput("").appendTitle('zone type').appendTitle(new Blockly.FieldDropdown([["circle", "circle"], ["square", "square"]]), "zonetype");
     this.appendValueInput("length").setCheck('Number').appendTitle('length');
     this.appendValueInput("day").setCheck('Number').appendTitle('day');
     this.appendValueInput("comment").appendTitle('comment');
@@ -179,6 +180,8 @@ Blockly.Language.rotatezone = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
 
+    this.setInputsInline(true);
+
     this.appendValueInput("zone").setCheck('Number').appendTitle('zone');
     this.appendValueInput("angle").setCheck('Number').appendTitle('deg');
     this.setTooltip('rotatezone');
@@ -194,7 +197,8 @@ Blockly.JavaScript.rotatezone = function() {
     Blockly.JavaScript.rotatezone.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(zone, angle) {');
-    func.push(' for(var n = 0; n < actualFrame.zones[zone].length; n++) actualFrame.zones[zone][n] = rotate_point(actualFrame.zones[zone][n], center, 1);');
+func.push('console.log(zone, angle);');
+    func.push(' if (actualFrame.zones && actualFrame.zones[zone]) for(var n = 0; n < actualFrame.zones[zone].length; n++) actualFrame.zones[zone][n] = rotate_point(actualFrame.zones[zone][n], center, angle);');
     func.push('}');
     Blockly.JavaScript.definitions_['rotatezone'] = func.join('\n');
   }

@@ -20,7 +20,7 @@ Blockly.JavaScript.sound = function() {
     Blockly.JavaScript.sound.functionName = functionName;
     var func = [];
     func.push('var playing; function ' + functionName + '(filename) {');
-    func.push('  if (!playing) { playing = true; play(__dirname + "/sounds/" + filename).on("end", function () { setTimeout(function () { playing = false; }, 1000); });  }');
+    func.push('  if (!playing) { playing = true; arduino.play(__dirname + "/sounds/" + filename).on("end", function () { setTimeout(function () { playing = false; }, 1000); });  }');
     func.push('}');
     Blockly.JavaScript.definitions_['sound'] = func.join('\n');
   }
@@ -35,11 +35,7 @@ Blockly.Language.light = {
   init: function() {
     this.setColour(190);
 
-
-
-
     this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/light.png", 16, 16)).appendTitle("Light");
-
     this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("100"), "delay").appendTitle('ms');
 
     this.setPreviousStatement(true, null);
@@ -52,8 +48,7 @@ Blockly.JavaScript.light = function() {
   var argument0 = this.getTitleValue('delay') || '0';
 
   if (!Blockly.JavaScript.definitions_['light']) {
-    var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
-      'light', Blockly.Generator.NAME_TYPE);
+    var functionName = Blockly.JavaScript.variableDB_.getDistinctName('light', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.light.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(delay) {');
@@ -63,8 +58,7 @@ Blockly.JavaScript.light = function() {
     func.push('}');
     Blockly.JavaScript.definitions_['light'] = func.join('\n');
   }
-  var code = Blockly.JavaScript.light.functionName +
-    '(' + argument0 + ');\n';
+  var code = Blockly.JavaScript.light.functionName + '(' + argument0 + ');\n';
   return code;
 };
 
@@ -72,6 +66,7 @@ Blockly.Language.turntable = {
   helpUrl: 'http://www.example.com/',
   init: function() {
     this.setColour(190);
+
     this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/turntable.png", 16, 16)).appendTitle("Turntable")
     this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["CW", "CW"], ["CCW", "CCW"]]), "direction")
     this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["0.25 RPM", "0.25"], ["0.5 RPM", "0.5"], ["0.25 RPM", "0.25"], ["1 RPM", "1"], ["2 RPM", "2"]]), "velocity")
@@ -90,13 +85,13 @@ Blockly.JavaScript.turntable = function() {
       'turntable', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.turntable.functionName = functionName;
     var func = [];
-    func.push('function ' + functionName + '(velocity) {');
+    func.push('function ' + functionName + '(direction, velocity) {');
     func.push('  console.log("motor: " + velocity);');
+    func.push('  arduino.turntable.run(direction, velocity);');
     func.push('}');
     Blockly.JavaScript.definitions_['turntable'] = func.join('\n');
   }
-  var code = Blockly.JavaScript.turntable.functionName +
-    '(' + argument0 + ');\n';
+  var code = Blockly.JavaScript.turntable.functionName + '("' + argument0 + '", ' + argument1 + ');\n';
   return code;
 };
 
@@ -160,26 +155,11 @@ Blockly.Language.feeder = {
 
 Blockly.JavaScript.feeder = function() {
   if (!Blockly.JavaScript.definitions_['feeder']) {
-    var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
-      'feeder', Blockly.Generator.NAME_TYPE);
+    var functionName = Blockly.JavaScript.variableDB_.getDistinctName('feeder', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.feeder.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '() {');
-    func.push('    arduino.feeder.enable.low();');
-    func.push('    arduino.feeder.motor.rpm(18000).ccw().step(620, function() {');
-    func.push('      console.log("Done moving CW");');
-    func.push('      arduino.feeder.enable.high();');
-    func.push('  });');
-
-    func.push('  board.wait(1000, function() { '); 
-
-    func.push('    arduino.feeder.enable.low();');
-    func.push('    arduino.feeder.motor.rpm(18000).ccw().step(620, function() {');
-    func.push('      console.log("Done moving CW");');
-    func.push('      arduino.feeder.enable.high();');
-    func.push('  });');
-
-    func.push('  });');
+    func.push('    arduino.feeder.set();');
     func.push('}');
     Blockly.JavaScript.definitions_['feeder'] = func.join('\n');
   }
@@ -203,8 +183,7 @@ Blockly.JavaScript.message = function() {
   var argument0 = Blockly.JavaScript.valueToCode(this, 'value', Blockly.JavaScript.ORDER_COMMA) || 'false';
 
   if (!Blockly.JavaScript.definitions_['message']) {
-    var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
-      'message', Blockly.Generator.NAME_TYPE);
+    var functionName = Blockly.JavaScript.variableDB_.getDistinctName('message', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.message.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(message) {');
@@ -239,8 +218,7 @@ Blockly.JavaScript.out = function() {
   var argument1 = Blockly.JavaScript.valueToCode(this, 'value', Blockly.JavaScript.ORDER_COMMA) || 'false';
 
   if (!Blockly.JavaScript.definitions_['out']) {
-    var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
-      'out', Blockly.Generator.NAME_TYPE);
+    var functionName = Blockly.JavaScript.variableDB_.getDistinctName('out', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.out.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(key, value) {');
@@ -248,8 +226,7 @@ Blockly.JavaScript.out = function() {
     func.push('}');
     Blockly.JavaScript.definitions_['out'] = func.join('\n');
   }
-  var code = Blockly.JavaScript.out.functionName +
-    '("' + argument0 + '", ' + argument1 + ');\n';
+  var code = Blockly.JavaScript.out.functionName + '("' + argument0 + '", ' + argument1 + ');\n';
   return code;
 
 };

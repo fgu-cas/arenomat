@@ -292,14 +292,6 @@ function blobDetector(check) {
 }
 
 
-function play(mp3) { 
-console.log('play: ' + mp3);
-return fs.createReadStream(mp3)
-  .pipe(new lame.Decoder())
-  .on('format', function (format) {
-    this.pipe(new Speaker(format));
-  });
-}
 
 board.on('error', function() {
   console.log('not ready!');
@@ -309,9 +301,21 @@ board.on("ready", function() {
  console.log('board ready');
  isArduino = true;
 
+/**
+* Arduino class
+*/
 arduino = {
+    // sound stimulation
+    play: function(mp3) { 
+      return fs.createReadStream(mp3).pipe(new lame.Decoder()).on('format', function (format) {
+        this.pipe(new Speaker(format));
+      });
+    },
+
+    // light stimulation
     light: new five.Led(12),
 
+    // nesquik feeder
     feeder: {
       motor: five.Stepper({
         type: five.Stepper.TYPE.DRIVER,
@@ -321,20 +325,57 @@ arduino = {
            dir: 55
         }
       }),
-      enable: new five.Pin(38).low(),
+      en: new five.Pin(38).low(),
       sensor: new five.Sensor({
         pin: "A13",
         freq: 250
       }),
+      ena: function () {
+        this.en.low();
+      },
+      dis: function () {
+        this.en.high();
+      },
+      step: function(callback) {
+        this.ena(); 
+        var that = this;
+        this.motor.rpm(18000).ccw().step(620, function(that) {
+          console.log("Done moving CW");
+          //that.dis();
+
+	  callback(); 
+        });
+      },
+      set: function() {
+	this.step(function () {
+         // if (!this.check()) {
+	//    this.step();
+         // }
+        });
+      }
     },
+
+    // shocker (2 - 7 = 0.2mA - 0.7mA, 9 = relay) - pins 32, 47, 45
     shock: {
 	pins: [ new five.Pin(32).low(), new five.Pin(47).low(), new five.Pin(45).low() ],
 	set: function (current) {
 	    var bin = ("00" + (current - 1).toString(2)).slice(-3);
-	    console.log(current, bin);
 	    for(var i = 0; i < 3; i++) this.pins[i][bin[i] == "1" ? "high" : "low"]();
 	}
-    }
+    },
+
+    // arena turntable
+    turntable: new five.Motor({
+      pins: {
+        pwm: 9,
+        dir: 8,
+        cdir: 11
+      },
+      set: function (dir, speed) {
+	if (dir == 'CCW') this.reverse(speed);
+        else this.forward(-speed);
+      }
+    })
 }
 /*
   photoresistor.on("data", function() {
