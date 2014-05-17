@@ -130,7 +130,7 @@ router.get('/settings/:control/:value', function(req, res) {
 router.get('/projector', function(req, res) {
 
 var Canvas = require('canvas')
-  , canvas = new Canvas(camWidth, camHeight)
+  , canvas = new Canvas(camHeight, camHeight)
   , ctx = canvas.getContext('2d');
 
 
@@ -173,9 +173,6 @@ this.zones = zones;
         ctx.fill();
         ctx.stroke();
      }
-
-
-
 
   canvas.toBuffer(function(err, buf){
     res.writeHead(200, { 'Content-Type': 'image/png', 'Content-Length': buf.length });
