@@ -19,8 +19,8 @@
 		<div id="tcamera" class="tab-pane fade">
 			<div class="row">
 				<div class="col-md-9">
-					<div id="vision" style="width: {{ camWidth }}px; height: {{ camHeight }}px">
-						<canvas id="webcam"  width="{{ camWidth }}" height="{{ camHeight }}"></canvas>
+					<div id="vision" style="width: {{ camHeight }}px; height: {{ camHeight }}px">
+						<canvas id="webcam" width="{{ halfCamHeight }}" height="{{ halfCamHeight }}" style="width: {{ camHeight }}px; height: {{ camHeight }}px"></canvas>
 					</div>
 					<a href="0" class="active change">0</a>
 					<a href="1" class="change">1</a>
@@ -90,31 +90,31 @@ object 6 <span id="object_6">0,1</span><br />
 				<div class="form-group">
 					<label for="height" class="col-sm-2 control-label">Brightness</label>
 					<div class="col-sm-10">
-					    <input id="brightness" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
+					    <input id="brightness" data-webcam="Brightness" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="height" class="col-sm-2 control-label">Exposure</label>
 					<div class="col-sm-10">
-					    <input id="exposure" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
+					    <input id="exposure" data-webcam="Exposure auto" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="height" class="col-sm-2 control-label">Gain</label>
 					<div class="col-sm-10">
-					    <input id="gain" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
+					    <input id="gain" data-webcam="Gain" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="height" class="col-sm-2 control-label">Contrast</label>
 					<div class="col-sm-10">
-					    <input id="contrast" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
+					    <input id="contrast" data-webcam="Contrast" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="height" class="col-sm-2 control-label">Focus</label>
 					<div class="col-sm-10">
-					    <input id="focus" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
+					    <input id="focus" data-webcam="Focus, absolute" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
 					</div>
 				</div>
 
@@ -141,10 +141,10 @@ var oldValue;
 var brightnesstimer;
 var brightnessoldValue;
 
-function delayBrightness(value) {
+function delayBrightness(control, value) {
     clearTimeout(brightnesstimer);
     brightnesstimer = setTimeout(function () {
-	$.get('/settings/brightness/' + value, function( data ) {
+	$.get('/settings/' + control + '/' + value, function( data ) {
 	});
     }, 200);
 }
@@ -181,18 +181,16 @@ $("#ex6").on('slide', function(slideEvt) {
 });
 
 
-$("#contrast, #gain, #exposure, #focus").slider({
+$(".webcam-control")
+  .slider({
     tooltip: 'always'
-});
-
-$("#brightness").slider({
-    tooltip: 'always'
-}).on('slide', function(slideEvt) {
+  })
+  .on('slide', function(slideEvt) {
     if (brightnessoldValue !== slideEvt.value) {
 	brightnessoldValue = slideEvt.value;
-        delayBrightness(slideEvt.value);
+        delayBrightness($(this).data('webcam'), slideEvt.value);
     }
-});
+  });
 
     delayShow(1);
 

@@ -52,6 +52,7 @@ $.each( frame.output, function( key, value ) {
       image.src = 'data:image/jpeg;base64,' + actualFrame;
 
       webcamctx.drawImage(image, 0, 0);
+      actualFrame = null;
     }
   }, 40);
 

@@ -49,3 +49,7 @@
 .slider-track {
     height: 20px !important;
 }
+
+.slider-selection {
+    background: blue !important;
+}

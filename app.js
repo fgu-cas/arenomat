@@ -1,4 +1,4 @@
-camWidth = 640, camHeight = 480;
+camWidth = 1280, camHeight = 720;
 zones = [];
 
 var five = require("johnny-five");
@@ -165,9 +165,7 @@ var Frame = mongoose.model('Frame');
 
 // WEBCAM
 try {
-  var vc = new cv.VideoCapture(0);
-//	vc.setWidth(camWidth);
-//	vc.setHeigh(camHeight);
+  var vc = new cv.VideoCapture(0, camWidth, camHeight);
 } catch (e) {
   console.log('no webcam');
 }
@@ -188,6 +186,10 @@ stream.read();
 stream.on("data", function(im) {
   stream.pause();
 
+  var cropped = im.roi((camWidth - camHeight)/2, 0, camHeight, camHeight)
+  var small = im.copy();
+  small.resize(camHeight / 2, camHeight / 2);
+
  actualFrame = {
     timestamp: new Date(),
     elapsedTime: 0,
@@ -195,10 +197,10 @@ stream.on("data", function(im) {
     isWebcam: isWebcam,
     cv: [],
     actions: { shocking: 0 },
-    webcam: im.toBuffer().toString('base64')
+    webcam: small.toBuffer().toString('base64')
   }
 
-  blobDetector(im);
+  blobDetector(cropped);
 
   if (isRunning && code) {
     actualFrame.elapsedTime = (new Date().getTime() / 1000) - startTime;
@@ -239,7 +241,6 @@ function blobDetector(check) {
     return c;
   }
 
-
   // matrix clone for image processing
   check.convertGrayscale();
   check = check.threshold(240, 255);
@@ -260,6 +261,8 @@ function blobDetector(check) {
     points.sort(function(a, b) {
       return a.area - b.area;
     });
+
+    points = points.slice(0, 2); // only the 2 biggest areas
 
     for (var n = 0; n < points.length; n++) {
       if (!actualFrame.cv[n])

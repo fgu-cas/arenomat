@@ -11,7 +11,7 @@ var fs = require('fs');
 router.get('/', function(req, res) {
   var fc;
   Frame.count({}, function(err, frameCount) {
-    res.render('index', {camWidth: 640, camHeight: 480, frameCount: frameCount});
+    res.render('index', {halfCamWidth: camWidth/2, halfCamHeight: camHeight/2, camWidth: camWidth, camHeight: camHeight, frameCount: frameCount});
   });
 });
 
@@ -108,12 +108,22 @@ fs.readdirSync(modelsPath).forEach(function(file) {
         res.json(files);
 });
 
+router.get('/settings', function(req, res) {
+  var sys = require('sys')
+  var exec = require('child_process').exec; 
+  
+  exec("uvcdynctrl -c -v", function (error, stdout, stderr) { 
+    res.json({status: stdout});
+  });
+});
+
+
 router.get('/settings/:control/:value', function(req, res) {
   var sys = require('sys')
   var exec = require('child_process').exec; 
   
-  exec("uvcdynctrl -g '" + req.params.control + "' " + req.params.value, function (error, stdout, stderr) { 
-    res.json({status: 'ok'});
+  exec("uvcdynctrl -g '" + req.params.control + "' " + req.params.value + ' && v4l2-ctl -l', function (error, stdout, stderr) { 
+    res.json({status: stdout});
   });
 });
 
