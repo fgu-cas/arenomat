@@ -108,7 +108,7 @@ Blockly.Language.shock = {
     this.appendDummyInput("")
       .appendTitle(new Blockly.FieldImage("img/shock.png", 16, 16)).appendTitle("Shock")
     this.appendDummyInput("")
-      .appendTitle(new Blockly.FieldDropdown([["0.2mA", "2"], ["0.3mA", "3"], ["0.4mA", "4"], ["0.5mA", "5"], ["0.6mA", "6"], ["0.7mA", "7"]]), "current")
+      .appendTitle(new Blockly.FieldDropdown([["0.2mA", "2"], ["0.3mA", "3"], ["0.4mA", "4"], ["0.5mA", "5"], ["0.6mA", "6"], ["0.7mA", "7"], ["rele", "1"]]), "current")
       .appendTitle(new Blockly.FieldDropdown([["300ms", "300"], ["500ms", "500"], ["1s", "1000"]]), "delay")
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -126,10 +126,17 @@ Blockly.JavaScript.shock = function() {
     Blockly.JavaScript.shock.functionName = functionName;
     var func = [];
     func.push('var shockingTimeout; function ' + functionName + '(current, delay) {');
-    func.push('  actualFrame.actions.shocking = current;');
-    func.push('  arduino.shock.on();');
+    func.push('    console.log(current, delay);');
     func.push('  if (shockingTimeout) clearTimeout(shockingTimeout);');
-    func.push('  shockingTimeout = setTimeout(function() { arduino.shock.off(); actualFrame.actions.shocking = 0; }, delay);');
+
+    func.push('  actualFrame.actions.shocking = current;');
+
+    func.push('    arduino.shock.set(current);');
+
+    func.push('  shockingTimeout = setTimeout(function() { ');
+    func.push('    arduino.shock.set(0);');
+    func.push('    actualFrame.actions.shocking = 0;');
+    func.push(' }, delay);');
     func.push('}');
     Blockly.JavaScript.definitions_['shock'] = func.join('\n');
   }
@@ -158,14 +165,18 @@ Blockly.JavaScript.feeder = function() {
     Blockly.JavaScript.feeder.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '() {');
-    func.push('    arduino.feeder.rpm(18000).ccw().step(620, function() {');
+    func.push('    arduino.feeder.enable.low();');
+    func.push('    arduino.feeder.motor.rpm(18000).ccw().step(620, function() {');
     func.push('      console.log("Done moving CW");');
+    func.push('      arduino.feeder.enable.high();');
     func.push('  });');
 
     func.push('  board.wait(1000, function() { '); 
 
-    func.push('    arduino.feeder.rpm(18000).ccw().step(620, function() {');
+    func.push('    arduino.feeder.enable.low();');
+    func.push('    arduino.feeder.motor.rpm(18000).ccw().step(620, function() {');
     func.push('      console.log("Done moving CW");');
+    func.push('      arduino.feeder.enable.high();');
     func.push('  });');
 
     func.push('  });');

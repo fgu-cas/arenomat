@@ -298,16 +298,38 @@ board.on("ready", function() {
  console.log('board ready');
  isArduino = true;
 
- arduino.light = new five.Led(12);
- arduino.feeder = five.Stepper({
-  type: five.Stepper.TYPE.DRIVER,
-  stepsPerRev: 200,
-  pins: {
-    step: 54,
-    dir: 55
-  }
- });
- arduino.shock = new five.Led(13);
+arduino = {
+    light: new five.Led(12),
+
+    feeder: {
+      motor: five.Stepper({
+        type: five.Stepper.TYPE.DRIVER,
+        stepsPerRev: 200,
+          pins: {
+           step: 54,
+           dir: 55
+        }
+      }),
+      enable: new five.Pin(38).low(),
+      sensor: new five.Sensor({
+        pin: "A13",
+        freq: 250
+      }),
+    },
+    shock: {
+	pins: [ new five.Pin(32).low(), new five.Pin(47).low(), new five.Pin(45).low() ],
+	set: function (current) {
+	    var bin = ("00" + (current - 1).toString(2)).slice(-3);
+	    console.log(current, bin);
+	    for(var i = 0; i < 3; i++) this.pins[i][bin[i] == "1" ? "high" : "low"]();
+	}
+    }
+}
+/*
+  photoresistor.on("data", function() {
+    console.log(this.value);
+  });
+*/
 });
 
 
