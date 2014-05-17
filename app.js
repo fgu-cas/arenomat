@@ -187,7 +187,7 @@ stream.on("data", function(im) {
   stream.pause();
 
   var cropped = im.roi((camWidth - camHeight)/2, 0, camHeight, camHeight)
-  var small = im.copy();
+  var small = cropped.copy();
   small.resize(camHeight / 2, camHeight / 2);
 
  actualFrame = {

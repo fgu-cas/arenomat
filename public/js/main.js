@@ -8,6 +8,7 @@ $(document).ready(function() {
   var actualFrame = {};
   var image = new Image();
   var webcamctx = $('#webcam').get(0).getContext("2d");
+  var miniwebcamctx = $('#miniwebcam').get(0).getContext("2d");
   var vision = $('#vision').arena();
 
   // websockets
@@ -48,11 +49,17 @@ $.each( frame.output, function( key, value ) {
   });
 
   setInterval(function() {
-    if (actualFrame && (actualFrame.length > 0) && (window.location.hash == '#tcamera')) {
-      image.src = 'data:image/jpeg;base64,' + actualFrame;
-
-      webcamctx.drawImage(image, 0, 0);
-      actualFrame = null;
+    if (actualFrame && (actualFrame.length > 0)) {
+	if (window.location.hash == '#tcamera') {
+          image.src = 'data:image/jpeg;base64,' + actualFrame;
+          webcamctx.drawImage(image, 0, 0);
+          actualFrame = null;
+	}
+	if (window.location.hash == '#tsettings') {
+          image.src = 'data:image/jpeg;base64,' + actualFrame;
+          miniwebcamctx.drawImage(image, 0, 0);
+          actualFrame = null;
+	}
     }
   }, 40);
 
@@ -65,6 +72,7 @@ $.each( frame.output, function( key, value ) {
   $(document.body).on("click", "a[data-toggle]", function(event) {
     location.hash = this.getAttribute("href");
   });
+
 });
 
 // load tab via hash
