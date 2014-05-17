@@ -181,6 +181,13 @@ if (vc) {
 stream.read();
 }
 
+function rotate_point(point, origin, angle) {
+    angle = angle * Math.PI / 180.0;
+    return {
+        x: Math.cos(angle) * (point.x-origin.x) - Math.sin(angle) * (point.y-origin.y) + origin.x,
+        y: Math.sin(angle) * (point.x-origin.x) + Math.cos(angle) * (point.y-origin.y) + origin.y
+    };
+}
 
 
 stream.on("data", function(im) {
@@ -188,7 +195,9 @@ stream.on("data", function(im) {
 
   var cropped = im.roi((camWidth - camHeight)/2, 0, camHeight, camHeight)
   var small = cropped.copy();
+  var center = { x: camHeight / 2, y: camHeight / 2 };
   small.resize(camHeight / 2, camHeight / 2);
+
 
  actualFrame = {
     timestamp: new Date(),
@@ -201,7 +210,8 @@ stream.on("data", function(im) {
     zones: zones
   }
 
-  actualFrame.cv[-1] = { position : { x: camHeight / 2, y: camHeight / 2 } };
+  actualFrame.cv[-1] = { position : center };
+
 
   blobDetector(cropped);
 
