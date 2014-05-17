@@ -200,6 +200,8 @@ stream.on("data", function(im) {
     webcam: small.toBuffer().toString('base64')
   }
 
+  actualFrame.cv[-1] = { position : { x: camHeight / 2, y: camHeight / 2 } };
+
   blobDetector(cropped);
 
   if (isRunning && code) {

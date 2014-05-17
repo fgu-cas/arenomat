@@ -30,11 +30,6 @@
     z-index: -1;
 }
 .change {
-    display: block;
-    padding: 5px;
-    border: 1px solid black;
-    margin: 5px;
-    float: left;
 }
 
 #vision canvas {

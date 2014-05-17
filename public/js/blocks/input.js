@@ -60,7 +60,6 @@ Blockly.JavaScript.position = function() {
     Blockly.JavaScript.position.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(object, attr) {');
-    func.push(' if (object == -1) { return (position == "x") ? camWidth/2 : camHeight/2; }');
     func.push(' if (actualFrame.cv[object] && actualFrame.cv[object].position) { '); 
     func.push('    return actualFrame.cv[object].position[attr] || false; ');
     func.push(' }');
