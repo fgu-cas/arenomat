@@ -20,7 +20,7 @@ Blockly.JavaScript.sound = function() {
     Blockly.JavaScript.sound.functionName = functionName;
     var func = [];
     func.push('var playing; function ' + functionName + '(filename) {');
-    func.push('  if (!playing) { playing = true; arduino.play(__dirname + "/sounds/" + filename).on("end", function () { setTimeout(function () { playing = false; }, 1000); });  }');
+    func.push('  arduino.mp3.set(filename);');
     func.push('}');
     Blockly.JavaScript.definitions_['sound'] = func.join('\n');
   }
@@ -52,9 +52,7 @@ Blockly.JavaScript.light = function() {
     Blockly.JavaScript.light.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(delay) {');
-    func.push('  arduino.light.on();');
-    func.push('  if (lightTimeout) clearTimeout(lightTimeout);');
-    func.push('  var lightTimeout = setTimeout(function() { arduino.light.off(); }, delay);'); 
+    func.push('  arduino.light.set(delay);'); 
     func.push('}');
     Blockly.JavaScript.definitions_['light'] = func.join('\n');
   }
@@ -87,7 +85,7 @@ Blockly.JavaScript.turntable = function() {
     var func = [];
     func.push('function ' + functionName + '(direction, velocity) {');
     func.push('  console.log("motor: " + velocity);');
-    func.push('  arduino.turntable.run(direction, velocity);');
+    func.push('  arduino.turntable.set(direction, velocity);');
     func.push('}');
     Blockly.JavaScript.definitions_['turntable'] = func.join('\n');
   }
@@ -120,18 +118,9 @@ Blockly.JavaScript.shock = function() {
 
     Blockly.JavaScript.shock.functionName = functionName;
     var func = [];
-    func.push('var shockingTimeout; function ' + functionName + '(current, delay) {');
-    func.push('    console.log(current, delay);');
-    func.push('  if (shockingTimeout) clearTimeout(shockingTimeout);');
-
-    func.push('  actualFrame.actions.shocking = current;');
-
-    func.push('    arduino.shock.set(current);');
-
-    func.push('  shockingTimeout = setTimeout(function() { ');
-    func.push('    arduino.shock.set(0);');
-    func.push('    actualFrame.actions.shocking = 0;');
-    func.push(' }, delay);');
+    func.push('function ' + functionName + '(current, delay) {');
+    func.push('  console.log(current, delay);');
+    func.push('  arduino.shock.set(current);');
     func.push('}');
     Blockly.JavaScript.definitions_['shock'] = func.join('\n');
   }

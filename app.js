@@ -198,7 +198,6 @@ stream.on("data", function(im) {
   var center = { x: camHeight / 2, y: camHeight / 2 };
   small.resize(camHeight / 2, camHeight / 2);
 
-
  actualFrame = {
     timestamp: new Date(),
     elapsedTime: 0,
@@ -233,7 +232,15 @@ stream.on("data", function(im) {
 
   // no need to save in db
 //  actualFrame.isRunning = isRunning;
-
+/*
+  if (actualFrame.zones && actualFrame.zones.length) {
+    actualFrame.zones.filter(function(e){
+      return  (e.length && (e[0].x > 0) && (e[0].y > 0));
+    });
+  }
+  zones = actualFrame.zones;
+*/
+//console.log(zones);
   io.set('log level', 2);
   io.sockets.emit('frame', actualFrame);
   io.set('log level', 5); // logging level to 5
@@ -306,30 +313,57 @@ board.on("ready", function() {
 */
 arduino = {
     // sound stimulation
-    play: function(mp3) { 
-      return fs.createReadStream(mp3).pipe(new lame.Decoder()).on('format', function (format) {
-        this.pipe(new Speaker(format));
-      });
+    mp3: {
+      playing: false,
+      set: function(filename) { 
+        var that = this;
+	if (!this.playing) { 
+          this.playing = true; 
+
+          fs.createReadStream(__dirname + "/sounds/" + filename).pipe(new lame.Decoder()).on('format', function (format) {
+            this.pipe(
+              new Speaker(format).on("close", function () { 
+console.log('end'); 
+                that.playing = false 
+              })
+            )
+          })
+        }
+      }
     },
 
     // light stimulation
-    light: new five.Led(12),
+    light: {
+      timeout: null,
+      led: new five.Led(12),
+      set: function (delay) {
+        if (this.timeout) clearTimeout(this.timeout);
+
+	this.led.on();
+
+        var that = this;
+        this.timeout = setTimeout(function() { 
+          that.led.off(); 
+        }, delay);
+      }
+    },
 
     // nesquik feeder
     feeder: {
       motor: five.Stepper({
         type: five.Stepper.TYPE.DRIVER,
-        stepsPerRev: 200,
+        stepsPerRev: 3200,
           pins: {
            step: 54,
            dir: 55
         }
       }),
-      en: new five.Pin(38).low(),
+      en: new five.Pin(38).high(),
       sensor: new five.Sensor({
         pin: "A13",
         freq: 250
       }),
+      ping: new five.Ping(7),
       ena: function () {
         this.en.low();
       },
@@ -339,43 +373,63 @@ arduino = {
       step: function(callback) {
         this.ena(); 
         var that = this;
-        this.motor.rpm(18000).ccw().step(620, function(that) {
-          console.log("Done moving CW");
-          //that.dis();
+        this.motor.rpm(180).ccw().accel(1600).decel(1600).step(620, function() {
+          that.dis();
 
 	  callback(); 
         });
       },
+      // is a nesquik ready?
+      check: function() {
+	  //console.log('check');
+          return true;
+      },
       set: function() {
+        var that = this;
 	this.step(function () {
-         // if (!this.check()) {
-	//    this.step();
-         // }
+          if (!that.check()) {
+	    that.step();
+          }
         });
       }
     },
 
     // shocker (2 - 7 = 0.2mA - 0.7mA, 9 = relay) - pins 32, 47, 45
     shock: {
+        shockigTimeout: null,
 	pins: [ new five.Pin(32).low(), new five.Pin(47).low(), new five.Pin(45).low() ],
+        setCurrent: function (current) {
+          var bin = ("00" + (current - 1).toString(2)).slice(-3); // padded binary string 3bits
+	  for(var i = 0; i < 3; i++) this.pins[i][bin[i] == "1" ? "high" : "low"](); // calling Pin.high() = 1 or Pin.low() = 0
+        },
 	set: function (current) {
-	    var bin = ("00" + (current - 1).toString(2)).slice(-3);
-	    for(var i = 0; i < 3; i++) this.pins[i][bin[i] == "1" ? "high" : "low"]();
-	}
+	  if (shockingTimeout) clearTimeout(shockingTimeout);
+
+	  actualFrame.actions.shocking = current;
+	  this.setCurrent(current);
+
+	  var that = this;
+          shockingTimeout = setTimeout(function() { 
+            that.setCurrent(0);
+            actualFrame.actions.shocking = 0;
+          }, delay);
+        }
     },
 
     // arena turntable
-    turntable: new five.Motor({
-      pins: {
-        pwm: 9,
-        dir: 8,
-        cdir: 11
-      },
+    turntable: {
+      motor: new five.Motor({
+        pins: {
+          pwm: 9,
+          dir: 8,
+          cdir: 11
+        }
+      }),
       set: function (dir, speed) {
 	if (dir == 'CCW') this.reverse(speed);
         else this.forward(-speed);
       }
-    })
+    }
 }
 /*
   photoresistor.on("data", function() {

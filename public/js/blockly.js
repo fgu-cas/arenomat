@@ -28,6 +28,7 @@ $(document).ready(function() {
     console.log('backup');
     if ('localStorage' in window) {
       var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+console.log(xml);
       window.localStorage.setItem('arenomat', Blockly.Xml.domToText(xml));
     }
   }
