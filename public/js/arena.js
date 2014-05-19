@@ -22,6 +22,7 @@
     this.activeZone = 0;
     this.activePoint = 0;
     this.moving = false;
+    this.overMe = false;
 
     this.inZones = []; // TODO: get the rid of this
 
@@ -82,12 +83,19 @@ if (!this.moving)
         controls.append($('<br />'));
       }
       $(this.element).append(controls);
-
+      var that = this;
       $('#zones')
         .bind('mousedown', this, this.mousedown)
         .bind('contextmenu', this, this.rightclick)
         .bind('mouseup', this, this.stopdrag)
-	.bind('mousemove', this, this.move);
+	.bind('mousemove', this, this.move)
+	.hover(function () { 
+           that.overMe = true; 
+           that.drawZones(); 
+         }, function () { 
+           that.overMe = false; 
+           that.drawZones(); 
+        });
 
       $('.change').on('click', this, function(e) {
         var that = e.data;
@@ -106,7 +114,7 @@ if (!this.moving)
     },
     changeZone: function(zone) {
       this.activeZone = zone;
-
+this.overMe = true;
       this.drawZones();
     },
     drawArena: function() {
@@ -172,7 +180,7 @@ if (!this.moving)
         ctx.moveTo(points[0].x, points[0].y);
         var width = 10;
         for (var i = 0; i < points.length; i++) {
-          if (n == this.activeZone) {
+          if ((n == this.activeZone) && this.overMe) {
             ctx.fillRect(points[i].x - width / 2, points[i].y - width / 2, width, width);
             ctx.strokeRect(points[i].x - width / 2, points[i].y - width / 2, width, width);
           }
@@ -184,14 +192,19 @@ if (!this.moving)
 
         ctx.closePath();
         ctx.fillStyle = 'rgba(' + this.colors[n] + ',0.2)';
-        if (n == this.activeZone)
+        if ((n == this.activeZone) && this.overMe) {
           ctx.fillStyle = 'rgba(' + this.colors[n] + ',0.3)';
+        }
 	if (this.inZones && this.inZones[n])
           ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
         ctx.fill();
         ctx.stroke();
       }
 //             this.record();
+    },
+    over: function (e) {
+      var that = e.data;
+      that.overMe = true;
     },
     move: function(e) {
       var that = e.data;
