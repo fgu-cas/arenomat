@@ -323,7 +323,6 @@ arduino = {
           fs.createReadStream(__dirname + "/sounds/" + filename).pipe(new lame.Decoder()).on('format', function (format) {
             this.pipe(
               new Speaker(format).on("close", function () { 
-console.log('end'); 
                 that.playing = false 
               })
             )
@@ -335,7 +334,7 @@ console.log('end');
     // light stimulation
     light: {
       timeout: null,
-      led: new five.Led(8),
+      led: new five.Led(10),
       set: function (delay) {
         if (this.timeout) clearTimeout(this.timeout);
 
@@ -360,36 +359,25 @@ console.log('end');
         }
       }),
       en: new five.Pin(38).high(),
-      sensor: new five.Sensor({
-        pin: "A13",
-        freq: 250
-      }),
+      sensor: new five.Pin("A13"),
       //ping: new five.Ping(7),
-      ena: function () {
-        this.en.low();
-      },
-      dis: function () {
-        this.en.high();
-      },
-
       set: function() {
-        this.sensor.on('data', function() {
-          console.log(this.value);
-        });
-
+          this.en.low();
+        var that = this;
+console.log('feeding: ' + this.feeding);
         if (!this.feeding) {
-          this.ena(); 
           this.feeding = true;
 
-          var that = this;
-
-          this.motor.rpm(180).cw().accel(1600).decel(1600).step(600, function() {
-  	    that.sensor.within([ 0, 950 ], function() {
-	      that.set();
-            });
-
+console.log('go');
+          this.motor.rpm(60).cw().step(680, function() {
+console.log('stop');
             that.feeding = false;
-            that.dis();
+            that.en.high();
+var val = that.sensor.value;
+console.log(val);
+  	    //if (val < 950)
+	      //that.set();
+            //else
           });
         }
       },
@@ -421,9 +409,9 @@ console.log('end');
     turntable: {
       motor: new five.Motor({
         pins: {
-          pwm: 9,
-          dir: 8,
-          cdir: 11
+          pwm: 26,
+          dir: 28,
+          cdir: 24
         }
       }),
       set: function (dir, speed) {
@@ -432,11 +420,7 @@ console.log('end');
       }
     }
 }
-/*
-  photoresistor.on("data", function() {
-    console.log(this.value);
-  });
-*/
+
 });
 
 
