@@ -362,21 +362,28 @@ arduino = {
       sensor: new five.Pin("A13"),
       //ping: new five.Ping(7),
       set: function() {
-          this.en.low();
-        var that = this;
 console.log('feeding: ' + this.feeding);
+
         if (!this.feeding) {
+          this.en.low();
           this.feeding = true;
 
 console.log('go');
-          this.motor.rpm(60).cw().step(680, function() {
+        var that = this;
+          this.motor.rpm(60).cw().step(3200/25*47/9, function() { // 200 steps, 16 microstepp = 3200 / per round ... 25 holes per round, 47/9 = 47 big wheel, 9 small wheel
 console.log('stop');
-            that.feeding = false;
+
+var delay= 1000;
+	  if (this.timeout) clearTimeout(this.timeout);
+          this.timeout = setTimeout(function() { 
+    	    that.feeding = false;
             that.en.high();
+          }, delay);
+
 var val = that.sensor.value;
 console.log(val);
-  	    //if (val < 950)
-	      //that.set();
+  	    if (val < 950)
+	      that.set();
             //else
           });
         }
@@ -398,10 +405,6 @@ console.log(val);
 	  this.setCurrent(current);
 
 	  var that = this;
-          this.timeout = setTimeout(function() { 
-            that.setCurrent(0);
-            actualFrame.actions.shocking = 0;
-          }, delay);
         }
     },
 
