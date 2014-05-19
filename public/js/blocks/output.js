@@ -119,8 +119,7 @@ Blockly.JavaScript.shock = function() {
     Blockly.JavaScript.shock.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(current, delay) {');
-    func.push('  console.log(current, delay);');
-    func.push('  arduino.shock.set(current);');
+    func.push('  arduino.shock.set(current, delay);');
     func.push('}');
     Blockly.JavaScript.definitions_['shock'] = func.join('\n');
   }

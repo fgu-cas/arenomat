@@ -335,7 +335,7 @@ console.log('end');
     // light stimulation
     light: {
       timeout: null,
-      led: new five.Led(12),
+      led: new five.Led(8),
       set: function (delay) {
         if (this.timeout) clearTimeout(this.timeout);
 
@@ -350,6 +350,7 @@ console.log('end');
 
     // nesquik feeder
     feeder: {
+      feeding: false,
       motor: five.Stepper({
         type: five.Stepper.TYPE.DRIVER,
         stepsPerRev: 3200,
@@ -363,53 +364,53 @@ console.log('end');
         pin: "A13",
         freq: 250
       }),
-      ping: new five.Ping(7),
+      //ping: new five.Ping(7),
       ena: function () {
         this.en.low();
       },
       dis: function () {
         this.en.high();
       },
-      step: function(callback) {
-        this.ena(); 
-        var that = this;
-        this.motor.rpm(180).ccw().accel(1600).decel(1600).step(620, function() {
-          that.dis();
 
-	  callback(); 
-        });
-      },
-      // is a nesquik ready?
-      check: function() {
-	  //console.log('check');
-          return true;
-      },
       set: function() {
-        var that = this;
-	this.step(function () {
-          if (!that.check()) {
-	    that.step();
-          }
+        this.sensor.on('data', function() {
+          console.log(this.value);
         });
-      }
+
+        if (!this.feeding) {
+          this.ena(); 
+          this.feeding = true;
+
+          var that = this;
+
+          this.motor.rpm(180).cw().accel(1600).decel(1600).step(600, function() {
+  	    that.sensor.within([ 0, 950 ], function() {
+	      that.set();
+            });
+
+            that.feeding = false;
+            that.dis();
+          });
+        }
+      },
     },
 
     // shocker (2 - 7 = 0.2mA - 0.7mA, 9 = relay) - pins 32, 47, 45
     shock: {
-        shockigTimeout: null,
+        timeout: null,
 	pins: [ new five.Pin(32).low(), new five.Pin(47).low(), new five.Pin(45).low() ],
         setCurrent: function (current) {
           var bin = ("00" + (current - 1).toString(2)).slice(-3); // padded binary string 3bits
 	  for(var i = 0; i < 3; i++) this.pins[i][bin[i] == "1" ? "high" : "low"](); // calling Pin.high() = 1 or Pin.low() = 0
         },
-	set: function (current) {
-	  if (shockingTimeout) clearTimeout(shockingTimeout);
+	set: function (current, delay) {
+	  if (this.timeout) clearTimeout(this.timeout);
 
 	  actualFrame.actions.shocking = current;
 	  this.setCurrent(current);
 
 	  var that = this;
-          shockingTimeout = setTimeout(function() { 
+          this.timeout = setTimeout(function() { 
             that.setCurrent(0);
             actualFrame.actions.shocking = 0;
           }, delay);
