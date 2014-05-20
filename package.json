@@ -26,7 +26,7 @@
     "nodemon": "*"
   },
   "scripts": {
-    "start": "forever app.js",
+    "start": "nodemon app.js",
     "preinstall": "npm i -g forever"
   },
   "author": "Majkl",

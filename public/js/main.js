@@ -77,6 +77,11 @@ $('#addZone').click(function () {
     location.hash = this.getAttribute("href");
   });
 
+$(document).on( 'shown.bs.tab', 'a#blogic', function (e) {
+   Blockly.mainWorkspace.render();
+//   console.log(e.target) // activated tab
+})
+
 });
 
 // load tab via hash
