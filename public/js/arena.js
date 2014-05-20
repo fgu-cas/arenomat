@@ -45,17 +45,23 @@
 
   Plugin.prototype = {
     addZone: function (no) {
-	this.zones.push([]);
+	if (no > 0) this.zones.push([]);
 	var next = $('#zonelist tr').length;
-       $('#zonelist').append('<tr><td><a href="' + next + '" class="change">' + next + '</a></td><td><button href="' + next + '" class="deleteZone btn btn-danger btn-xs">x</button></td></tr>');
+            $('.change').removeClass('activeZone');
+       $('#zonelist').append('<tr><td><a href="' + next + '" class="activeZone change">' + next + '</a></td><td><button href="' + next + '" class="deleteZone btn btn-danger btn-xs">x</button></td></tr>');
+	this.changeZone(next);
 	this.record();
     },
     deleteZone: function (no) {
+	if (no == -1) no = this.zones.length - 1;
 console.log('deleteZone  ' + no);
 	this.zones[no] = null;
         if (no == (this.zones.length - 1)) { 
 	    this.zones.splice(-1,1);
 	    $('#zonelist tr:last-child').remove();
+	    this.changeZone(this.zones.length - 1);
+            $('.change').removeClass('activeZone');
+	    $('#zonelist tr:last-child a.change').addClass('activeZone');
 	} 
 	this.record();
     },
@@ -64,6 +70,10 @@ console.log('deleteZone  ' + no);
         this.inZones = frame.cv[0].zones;
 if (!this.moving)
 	this.zones = frame.zones;
+
+    var diff = this.zones.length - $('#zonelist tr').length;
+    if (diff > 0) for (var n = 0; n < diff; n++) this.addZone(-1);
+    if (diff < 0 && (this.zones.length > 1)) for (var n = 0; n < -diff - 1; n++) this.deleteZone(-1);
 
     for(var n = 0; n < frame.cv.length; n++) {
         if (frame.cv[n]) {
@@ -121,6 +131,7 @@ if (!this.moving)
             $(e.target).addClass('activeZone')
           })
           .on('click', '.deleteZone', function (e) {
+            e.preventDefault();
             that.deleteZone($(e.target).attr('href'));
           });
 
