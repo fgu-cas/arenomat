@@ -21,14 +21,18 @@
 }
 
 #zones {
-    z-index: 1000;
+    z-index: 10;
 }
 #arena {
-    z-index: 998;
+    z-index: 6;
 }
 #webcam {
-    z-index: -1;
+    z-index: 5;
 }
+#objects {
+    z-index: 7;
+}
+
 .activeZone {
     color: red !important;
 }

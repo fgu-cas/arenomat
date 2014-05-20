@@ -48,7 +48,7 @@
 	if (no > 0) this.zones.push([]);
 	var next = $('#zonelist tr').length;
             $('.change').removeClass('activeZone');
-       $('#zonelist').append('<tr><td><a href="' + next + '" class="activeZone change">' + next + '</a></td><td><button href="' + next + '" class="deleteZone btn btn-danger btn-xs">x</button></td></tr>');
+       $('#zonelist').append('<tr><td><a href="' + next + '" class="activeZone change">' + next + '</a></td><td align=right><button href="' + next + '" class="deleteZone btn btn-danger btn-xs"><i class="fa fa-ban"></button></td></tr>');
 	this.changeZone(next);
 	this.record();
     },
