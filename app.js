@@ -19,6 +19,9 @@ io.enable('browser client minification');  // send minified client
 io.enable('browser client gzip');          // gzip the file
 io.set('log level', 1);                    // reduce logging
 
+
+var Fun = require("function-enhancements");
+
 var cv = require('opencv');
 var fs = require('fs');
 
@@ -65,7 +68,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-
 
 http.listen(80, function() {
   console.log('Listening on port %d', http.address().port);
@@ -364,31 +366,30 @@ arduino = {
       //ping: new five.Ping(7),
       set: function(force) {
 console.log('feeding: ' + this.feeding);
+        var that = this;
 
-        if (!this.feeding || force) {
+        if (!this.feeding) {
           this.en.low();
           this.feeding = true;
 
-console.log('go');
-        var that = this;
           this.motor.rpm(60).cw().step(3200/25*47/9, function() { // 200 steps, 16 microstepp = 3200 / per round ... 25 holes per round, 47/9 = 47 big wheel, 9 small wheel
-console.log('stop');
+setTimeout(function () {
+    	      that.feeding = false;
+              that.en.high();
+}, 1000);
 
-var delay= 1000;
-	  if (this.timeout) clearTimeout(this.timeout);
-
-var val = that.sensor.value;
-console.log(val);
-  	    if (val < 950)
+  	    if (val < 950) {
+              console.log('searching for a pellet');
 	      that.set(true);
-            else {
-//          this.timeout = setTimeout(function() { 
-    	    that.feeding = false;
-            that.en.high();
-//          }, delay);
+            }
 
-	    }
-          });
+/*
+            var val = that.sensor.value;
+            console.log(val);
+
+
+*/
+           });
         }
       },
     },
@@ -426,7 +427,9 @@ console.log(val);
       }
     }
 }
+console.log(' Arduino object - init ');
 
+arduino.feeder.en.high();
 });
 
 

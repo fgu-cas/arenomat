@@ -33,8 +33,13 @@
     z-index: 7;
 }
 
+
+.change {
+    color: black;
+}
+
 .activeZone {
-    color: red !important;
+    color: #3276b1 !important;
 }
 
 #vision canvas {
