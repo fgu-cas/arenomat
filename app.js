@@ -292,7 +292,8 @@ function blobDetector(check) {
       for (var i = 0; i < zones.length; i++) {
         if (!actualFrame.cv[n].zones)
           actualFrame.cv[n].zones = {};
-        actualFrame.cv[n].zones[i] = in_poly(zones[i], points[n]);
+        if (zones[i])
+          actualFrame.cv[n].zones[i] = in_poly(zones[i], points[n]);
       }
     }
   }
@@ -361,10 +362,10 @@ arduino = {
       en: new five.Pin(38).high(),
       sensor: new five.Pin("A13"),
       //ping: new five.Ping(7),
-      set: function() {
+      set: function(force) {
 console.log('feeding: ' + this.feeding);
 
-        if (!this.feeding) {
+        if (!this.feeding || force) {
           this.en.low();
           this.feeding = true;
 
@@ -375,16 +376,18 @@ console.log('stop');
 
 var delay= 1000;
 	  if (this.timeout) clearTimeout(this.timeout);
-          this.timeout = setTimeout(function() { 
-    	    that.feeding = false;
-            that.en.high();
-          }, delay);
 
 var val = that.sensor.value;
 console.log(val);
   	    if (val < 950)
-	      that.set();
-            //else
+	      that.set(true);
+            else {
+//          this.timeout = setTimeout(function() { 
+    	    that.feeding = false;
+            that.en.high();
+//          }, delay);
+
+	    }
           });
         }
       },

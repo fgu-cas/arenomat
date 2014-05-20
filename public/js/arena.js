@@ -44,7 +44,21 @@
   }
 
   Plugin.prototype = {
-    // more objects
+    addZone: function (no) {
+	this.zones.push([]);
+	var next = $('#zonelist tr').length;
+       $('#zonelist').append('<tr><td><a href="' + next + '" class="change">' + next + '</a></td><td><button href="' + next + '" class="deleteZone btn btn-danger btn-xs">x</button></td></tr>');
+	this.record();
+    },
+    deleteZone: function (no) {
+console.log('deleteZone  ' + no);
+	this.zones[no] = null;
+        if (no == (this.zones.length - 1)) { 
+	    this.zones.splice(-1,1);
+	    $('#zonelist tr:last-child').remove();
+	} 
+	this.record();
+    },
     setData: function(frame) {
       if (frame.tracked) {
         this.inZones = frame.cv[0].zones;
@@ -83,7 +97,9 @@ if (!this.moving)
         controls.append($('<br />'));
       }
       $(this.element).append(controls);
+
       var that = this;
+
       $('#zones')
         .bind('mousedown', this, this.mousedown)
         .bind('contextmenu', this, this.rightclick)
@@ -95,26 +111,26 @@ if (!this.moving)
          }, function () { 
            that.overMe = false; 
            that.drawZones(); 
-        });
-
-      $('.change').on('click', this, function(e) {
-        var that = e.data;
-        e.preventDefault();
-
-        that.changeZone($(this).attr('href'));
-        $('.change').removeClass('active');
-        $(this).addClass('active');
-    });
+        })
+        
+	$('#zonelist')
+          .on('click', '.change', function(e) {
+            e.preventDefault();
+            that.changeZone($(e.target).attr('href'));
+            $('.change').removeClass('activeZone');
+            $(e.target).addClass('activeZone')
+          })
+          .on('click', '.deleteZone', function (e) {
+            that.deleteZone($(e.target).attr('href'));
+          });
 
     if (window.localStorage && window.localStorage.zones) this.zones = JSON.parse(window.localStorage.zones);
-
-
       this.drawArena();
       this.drawObjects();
     },
     changeZone: function(zone) {
       this.activeZone = zone;
-this.overMe = true;
+      this.overMe = true;
       this.drawZones();
     },
     drawArena: function() {
@@ -167,8 +183,8 @@ this.overMe = true;
       ctx.canvas.width = ctx.canvas.width;
       for (var n = 0; n < this.zones.length; n++) {
         var points = this.zones[n];
-        if (points.length < 1) {
-          return false;
+        if (!points || (points.length < 1)) {
+          continue;
         }
         ctx.globalCompositeOperation = 'destination-over';
         ctx.fillStyle = 'rgba(255,255,255,0.8)';

@@ -48,6 +48,10 @@ $.each( frame.output, function( key, value ) {
 //}
   });
 
+$('#addZone').click(function () { 
+  $('#vision').arena('addZone', 0); 
+}); 
+
   setInterval(function() {
     if (actualFrame && (actualFrame.length > 0)) {
 	if (window.location.hash == '#tcamera') {

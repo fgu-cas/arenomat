@@ -29,7 +29,8 @@
 #webcam {
     z-index: -1;
 }
-.change {
+.activeZone {
+    color: red !important;
 }
 
 #vision canvas {
