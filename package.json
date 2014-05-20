@@ -26,7 +26,8 @@
     "nodemon": "*"
   },
   "scripts": {
-    "start": "nodemon --debug app.js"
+    "start": "forever app.js",
+    "preinstall": "npm i -g forever"
   },
   "author": "Majkl",
   "license": "MIT",
