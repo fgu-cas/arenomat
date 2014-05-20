@@ -48,7 +48,7 @@
 	if (no > 0) this.zones.push([]);
 	var next = $('#zonelist tr').length;
             $('.change').removeClass('activeZone');
-       $('#zonelist').append('<tr><td><a href="' + next + '" class="activeZone change">' + next + '</a></td><td align=right><button href="' + next + '" class="deleteZone btn btn-danger btn-xs"><i class="fa fa-ban"></button></td></tr>');
+       $('#zonelist').append('<tr><td><a href="' + next + '" class="activeZone change">Zone ' + next + '</a></td><td align=right><button href="' + next + '" class="deleteZone btn btn-danger btn-xs"><i class="fa fa-ban"></button></td></tr>');
 	this.changeZone(next);
 	this.record();
     },
@@ -131,8 +131,10 @@ if (!this.moving)
             $(e.target).addClass('activeZone')
           })
           .on('click', '.deleteZone', function (e) {
-            e.preventDefault();
+	    if(!$(e.target).attr('href')) e.target = $(e.target).parent(); 
+console.log($(e.target), $(e.target).attr('href'));
             that.deleteZone($(e.target).attr('href'));
+            e.preventDefault();
           });
 
     if (window.localStorage && window.localStorage.zones) this.zones = JSON.parse(window.localStorage.zones);

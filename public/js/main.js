@@ -49,6 +49,7 @@ $.each( frame.output, function( key, value ) {
   });
 
 $('#addZone').click(function () { 
+console.log('add');
   $('#vision').arena('addZone', 0); 
 }); 
 
