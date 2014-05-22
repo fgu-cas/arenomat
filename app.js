@@ -1,8 +1,6 @@
 camWidth = 1280, camHeight = 720;
 zones = [];
 
-var five = require("johnny-five");
-var board = new five.Board();
 
 var express = require('express');
 var path = require('path');
@@ -152,7 +150,7 @@ var mLoop, mSetup; // global copy of custom script functions
 var isArduino = false, isWebcam = false;
 
 var isRunning = false;
-var startTime = 0;
+var startTime = 0, loopTime = 0;
 
 var arduino = {
     light: {},
@@ -175,13 +173,6 @@ try {
 var stream = vc.toStream();
 
 
-if (vc) {
-    isWebcam = true;
-    console.log('webcam: ok');
-
-
-stream.read();
-}
 
 function rotate_point(point, origin, angle) {
     angle = angle * Math.PI / 180.0;
@@ -217,7 +208,9 @@ stream.on("data", function(im) {
   blobDetector(cropped);
 
   if (isRunning && code) {
-    actualFrame.elapsedTime = (new Date().getTime() / 1000) - startTime;
+    var now = new Date().getTime() / 1000;
+
+    actualFrame.elapsedTime = now - startTime;
     actualFrame.output = {};
     if (first) {
 	first = false;
@@ -229,25 +222,10 @@ stream.on("data", function(im) {
     }
     mLoop();
   }
-//console.log(actualFrame.output);
-//  new Frame(actualFrame).save();
 
-  // no need to save in db
-//  actualFrame.isRunning = isRunning;
-/*
-  if (actualFrame.zones && actualFrame.zones.length) {
-    actualFrame.zones.filter(function(e){
-      return  (e.length && (e[0].x > 0) && (e[0].y > 0));
-    });
-  }
-  zones = actualFrame.zones;
-*/
-//console.log(zones);
   io.set('log level', 2);
   io.sockets.emit('frame', actualFrame);
   io.set('log level', 5); // logging level to 5
- 
-
 
   process.nextTick(function() { stream.resume(); });
 });
@@ -302,6 +280,8 @@ function blobDetector(check) {
 }
 
 
+var five = require("johnny-five");
+var board = new five.Board();
 
 board.on('error', function() {
   console.log('not ready!');
@@ -326,8 +306,8 @@ arduino = {
           fs.createReadStream(__dirname + "/sounds/" + filename).pipe(new lame.Decoder()).on('format', function (format) {
             this.pipe(
               new Speaker(format).on("close", function () { 
-                that.playing = false 
-              })
+                this.playing = false 
+              }.bind(this))
             )
           })
         }
@@ -336,17 +316,16 @@ arduino = {
 
     // light stimulation
     light: {
-      timeout: null,
-      led: new five.Led(10),
+      timeout: false,
+      led: new five.Led(9),
       set: function (delay) {
-        if (this.timeout) clearTimeout(this.timeout);
+	this.led.on(); 
 
-	this.led.on();
-
-        var that = this;
-        this.timeout = setTimeout(function() { 
-          that.led.off(); 
-        }, delay);
+          console.log('light: on', this.state);
+        this.board.wait(delay, function() { 
+          console.log('light: off', this.state);
+            this.led.off(); 
+        }.bind(this));
       }
     },
 
@@ -366,22 +345,19 @@ arduino = {
       //ping: new five.Ping(7),
       set: function(force) {
 console.log('feeding: ' + this.feeding);
-        var that = this;
 
         if (!this.feeding) {
           this.en.low();
           this.feeding = true;
 
-          this.motor.rpm(60).cw().step(3200/25*47/9, function() { // 200 steps, 16 microstepp = 3200 / per round ... 25 holes per round, 47/9 = 47 big wheel, 9 small wheel
-setTimeout(function () {
-    	      that.feeding = false;
-              that.en.high();
-}, 1000);
+          this.motor.rpm(40).cw().step(3200/25*47/9*100, function() { // 200 steps, 16 microstepp = 3200 / per round ... 25 holes per round, 47/9 = 47 big wheel, 9 small wheel
+    	      this.feeding = false;
+//              this.en.high();
 
-  	    if (val < 950) {
-              console.log('searching for a pellet');
-	      that.set(true);
-            }
+//  	    if (val < 950) {
+//              console.log('searching for a pellet');
+//	      this.set(true);
+//            }
 
 /*
             var val = that.sensor.value;
@@ -389,7 +365,7 @@ setTimeout(function () {
 
 
 */
-           });
+           }.bind(this));
         }
       },
     },
@@ -398,17 +374,26 @@ setTimeout(function () {
     shock: {
         timeout: null,
 	pins: [ new five.Pin(32).low(), new five.Pin(47).low(), new five.Pin(45).low() ],
-        setCurrent: function (current) {
+        on: function (current) {
           var bin = ("00" + (current - 1).toString(2)).slice(-3); // padded binary string 3bits
+
+          console.log('shock: ' + bin, current);
+
 	  for(var i = 0; i < 3; i++) this.pins[i][bin[i] == "1" ? "high" : "low"](); // calling Pin.high() = 1 or Pin.low() = 0
-        },
-	set: function (current, delay) {
-	  if (this.timeout) clearTimeout(this.timeout);
 
 	  actualFrame.actions.shocking = current;
-	  this.setCurrent(current);
+        },
+        off: function () {
+	    this.on(1); // 1 - 1 = 0 :)
+        },
+	set: function (current, delay) {
+          if (this.timeout) clearTimeout(this.timeout);
 
-	  var that = this;
+          this.on(current);
+
+          this.timeout = setTimeout(function() { 
+             this.off();
+          }.bind(this), delay);
         }
     },
 
@@ -416,20 +401,40 @@ setTimeout(function () {
     turntable: {
       motor: new five.Motor({
         pins: {
-          pwm: 26,
-          dir: 28,
-          cdir: 24
+          pwm: 11,
+          dir: 6,
+          cdir: 5,
+          threshold: 1
         }
       }),
       set: function (dir, speed) {
-	if (dir == 'CCW') this.reverse(speed);
-        else this.forward(-speed);
+        if (speed == 0) {
+          this.motor.stop();	
+          return;
+        }
+
+	if (dir == 'CCW') {
+          this.motor.reverse(speed);
+        }
+        else {
+          this.motor.forward(speed);
+        }
       }
     }
 }
-console.log(' Arduino object - init ');
 
 arduino.feeder.en.high();
+
+if (vc) {
+  isWebcam = true;
+  console.log('webcam: ok');
+  stream.read();
+}
+
+
+  this.repl.inject({
+    arduino: arduino
+  });
 });
 
 

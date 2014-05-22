@@ -67,7 +67,7 @@ Blockly.Language.turntable = {
 
     this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/turntable.png", 16, 16)).appendTitle("Turntable")
     this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["CW", "CW"], ["CCW", "CCW"]]), "direction")
-    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["0.25 RPM", "0.25"], ["0.5 RPM", "0.5"], ["0.25 RPM", "0.25"], ["1 RPM", "1"], ["2 RPM", "2"]]), "velocity")
+    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["stop", 0], ["0.25 RPM", 30], ["0.5 RPM", 90], ["0.75 RPM", 150], ["1 RPM", 210], ["2 RPM", 255]]), "velocity")
 
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -76,7 +76,8 @@ Blockly.Language.turntable = {
 };
 
 Blockly.JavaScript.turntable = function() {
-  var argument0 = this.getTitleValue('velocity') || '0';
+  var argument0 = this.getTitleValue('direction') || '0';
+  var argument1 = this.getTitleValue('velocity') || '0';
 
   if (!Blockly.JavaScript.definitions_['turntable']) {
     var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
