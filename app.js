@@ -152,11 +152,7 @@ var isArduino = false, isWebcam = false;
 var isRunning = false;
 var startTime = 0, loopTime = 0;
 
-var arduino = {
-    light: {},
-    feeder: {},
-    shock: {}
-}
+var arduino;
 
 var actualFrame;
 var first = true;
@@ -167,11 +163,11 @@ var Frame = mongoose.model('Frame');
 try {
   var vc = new cv.VideoCapture(0, camWidth, camHeight);
 } catch (e) {
-try {
-  var vc = new cv.VideoCapture(1, camWidth, camHeight);
-} catch (e) {
-  console.log('no webcam');
-}
+  try {
+    var vc = new cv.VideoCapture(1, camWidth, camHeight);
+  } catch (e) {
+    console.log('no webcam');
+  }
 }
 
 var stream = vc.toStream();

@@ -52,7 +52,7 @@ Blockly.JavaScript.light = function() {
     Blockly.JavaScript.light.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(delay) {');
-    func.push('  arduino.light.set(delay);'); 
+    func.push('  if (delay > 0) arenomat.light.on(); else arenomat.light.off(); '); 
     func.push('}');
     Blockly.JavaScript.definitions_['light'] = func.join('\n');
   }
