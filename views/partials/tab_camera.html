@@ -1,0 +1,80 @@
+                <div id="tcamera" class="tab-pane fade">
+                        <div class="row">
+                                <div class="col-md-9">
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Arena</h3>
+  </div>
+  <div class="panel-body">
+<div class="row">
+                                        <div id="vision" style="margin: 0 auto; width: {{ camHeight }}px; height: {{ camHeight }}px; position: relative">
+                                                <canvas id="webcam" width="{{ halfCamHeight }}" height="{{ halfCamHeight }}" style="width: 100%"></canvas>
+                                        </div>
+</div>
+<br clear="all" />
+  </div>
+</div>
+
+
+                                </div>
+<div class="col-md-3">
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Zones</h3>
+  </div>
+  <div class="panel-body">
+
+<div class="table-responsive">
+<table id="zonelist" class="table table-striped table-hover table-condensed">
+<tr>
+    <td><a href="0" class="activeZone change">Zone 0</a></td><td></td>
+</tr>
+</table>
+
+<button id="addZone" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> add zone</button>
+</div>
+
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Frames</h3>
+  </div>
+  <div class="panel-body">
+
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed">
+<tr><th>frames:</th><td align=right> <span id="cam_counter">0</span></td></tr>
+<tr><th>recognized:</th><td align=right> <span id="cv_counter">0</span></td></tr>
+<tr><th>fps:</th><td align=right> <span id="fps">0</span></td></tr>
+</table>
+</div>
+
+  </div>
+</div>
+
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Custom variables</h3>
+  </div>
+  <div class="panel-body">
+
+   <div class="table-responsive">
+    <table id="custom_variables" class="table table-striped table-hover">
+     <tr>
+      <th>name</th>
+      <th>value</th>
+     </tr>
+    </table>
+   </div>
+</div>
+                        </div>
+                </div>
+</div>

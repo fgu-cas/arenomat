@@ -11,7 +11,15 @@ var fs = require('fs');
 router.get('/', function(req, res) {
   var fc;
   Frame.count({}, function(err, frameCount) {
-    res.render('index', {halfCamWidth: camWidth/2, halfCamHeight: camHeight/2, camWidth: camWidth, camHeight: camHeight, frameCount: frameCount});
+    res.render('index', {
+	partials: { 
+	    tabLogic:  'partials/tab_logic',
+	    tabCamera: 'partials/tab_camera',
+	    tabAnalyze: 'partials/tab_analyze',
+	    tabSettings: 'partials/tab_settings',
+	},
+	halfCamWidth: camWidth/2, halfCamHeight: camHeight/2, camWidth: camWidth, camHeight: camHeight, frameCount: frameCount
+    });
   });
 });
 

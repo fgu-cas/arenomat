@@ -1,4 +1,10 @@
 @import url(//fonts.googleapis.com/css?family=Leckerli+One);
+
+
+html, body {
+  height: 100%;
+}
+
 .navbar-brand {
 	font-family: 'Leckerli One';
 	font-size: 35px;

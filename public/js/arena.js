@@ -93,8 +93,8 @@ if (!this.moving)
         // arena image
         var canvas = $('<canvas/>').attr({
           id: sets[n],
-          width: $(this.element).width(),
-          height: $(this.element).height()
+          width: $(this.element).outerWidth(),
+          height: $(this.element).outerHeight()
         }).css('position', 'absolute');
 
         $(this.element).append(canvas);
