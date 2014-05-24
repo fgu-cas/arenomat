@@ -281,13 +281,26 @@ function blobDetector(check) {
 
 
 var five = require("johnny-five");
-var board = new five.Board();
+//    sp = require("serialport");
 
+var board, port;
+/*
+port = new sp.SerialPort("/dev/rfcomm0", {
+    baudrate: 57600, // No other boud rate works
+    buffersize: 128 // Firmata uses 1
+});
+*/
+board = new five.Board({
+//    port: port
+});
 board.on('error', function() {
   console.log('not ready!');
 });
 
 board.on("ready", function() {
+  board.io.setSamplingInterval(999);
+
+
  console.log('board ready');
  isArduino = true;
 
