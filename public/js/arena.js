@@ -132,7 +132,6 @@ if (!this.moving)
           })
           .on('click', '.deleteZone', function (e) {
 	    if(!$(e.target).attr('href')) e.target = $(e.target).parent(); 
-console.log($(e.target), $(e.target).attr('href'));
             that.deleteZone($(e.target).attr('href'));
             e.preventDefault();
           });

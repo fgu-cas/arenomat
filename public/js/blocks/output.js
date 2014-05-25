@@ -20,7 +20,7 @@ Blockly.JavaScript.sound = function() {
     Blockly.JavaScript.sound.functionName = functionName;
     var func = [];
     func.push('var playing; function ' + functionName + '(filename) {');
-    func.push('  arduino.mp3.set(filename);');
+    func.push('  arenomat.mp3.set(filename);');
     func.push('}');
     Blockly.JavaScript.definitions_['sound'] = func.join('\n');
   }
@@ -86,7 +86,7 @@ Blockly.JavaScript.turntable = function() {
     var func = [];
     func.push('function ' + functionName + '(direction, velocity) {');
     func.push('  console.log("motor: " + velocity);');
-    func.push('  arduino.turntable.set(direction, velocity);');
+    func.push('  arenomat.turntable.rotate(direction, velocity);');
     func.push('}');
     Blockly.JavaScript.definitions_['turntable'] = func.join('\n');
   }
@@ -120,7 +120,7 @@ Blockly.JavaScript.shock = function() {
     Blockly.JavaScript.shock.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(current, delay) {');
-    func.push('  arduino.shock.set(current, delay);');
+    func.push('  arenomat.shock.set(current, delay);');
     func.push('}');
     Blockly.JavaScript.definitions_['shock'] = func.join('\n');
   }
@@ -148,7 +148,7 @@ Blockly.JavaScript.feeder = function() {
     Blockly.JavaScript.feeder.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '() {');
-    func.push('    arduino.feeder.set();');
+    func.push('    arenomat.feed.it();');
     func.push('}');
     Blockly.JavaScript.definitions_['feeder'] = func.join('\n');
   }

@@ -1,6 +1,8 @@
-camWidth = 1920, camHeight = 1080;
+camWidth = 1600, camHeight = 896;
 zones = [];
 
+var five = require("johnny-five");
+var board = new five.Board();
 
 var express = require('express');
 var path = require('path');
@@ -67,9 +69,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 
-http.listen(80, function() {
-  console.log('Listening on port %d', http.address().port);
-});
 
 //mongoose
 //mongoose.set('debug', true)
@@ -280,19 +279,7 @@ function blobDetector(check) {
 }
 
 
-var five = require("johnny-five");
-//    sp = require("serialport");
 
-var board, port;
-/*
-port = new sp.SerialPort("/dev/rfcomm0", {
-    baudrate: 57600, // No other boud rate works
-    buffersize: 128 // Firmata uses 1
-});
-*/
-board = new five.Board({
-//    port: port
-});
 board.on('error', function() {
   console.log('not ready!');
 });
@@ -300,6 +287,9 @@ board.on('error', function() {
 board.on("ready", function() {
   board.io.setSamplingInterval(1024);
 
+http.listen(80, function() {
+  console.log('Listening on port %d', http.address().port);
+});
 
  console.log('board ready');
  isArduino = true;
