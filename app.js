@@ -58,7 +58,7 @@ app.set('partials', {
   foot: 'foot'
 });
 
-app.enable('view cache');
+//app.enable('view cache');
 
 app.use(favicon());
 app.use(logger('dev'));

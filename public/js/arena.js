@@ -92,10 +92,10 @@ if (!this.moving)
       for (var n = 0; n < sets.length; n++) {
         // arena image
         var canvas = $('<canvas/>').attr({
-          id: sets[n],
-          width: $(this.element).outerWidth(),
-          height: $(this.element).outerHeight()
-        }).css('position', 'absolute');
+            id: sets[n],
+          width: 848,
+          height: 848
+        }).css({width: '100%', position: 'absolute'});
 
         $(this.element).append(canvas);
         ctxs[sets[n]] = canvas.get(0).getContext("2d");
