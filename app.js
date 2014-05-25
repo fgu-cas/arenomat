@@ -298,7 +298,7 @@ board.on('error', function() {
 });
 
 board.on("ready", function() {
-  board.io.setSamplingInterval(999);
+  board.io.setSamplingInterval(1024);
 
 
  console.log('board ready');
