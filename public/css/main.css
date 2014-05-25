@@ -34,7 +34,6 @@ html, body {
 }
 #webcam {
     z-index: 5;
-    position: relative !important;
 }
 #objects {
     z-index: 7;
@@ -64,4 +63,8 @@ html, body {
 
 .slider-selection {
     background: blue !important;
+}
+
+.webcam-panel-body {
+padding: 0 15px !important;
 }
