@@ -118,7 +118,8 @@ Blockly.JavaScript.motor_position = function() {
     Blockly.JavaScript.motor_position.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(PIN) {');
-    func.push('  // return motorposition');
+//    func.push('  console.log(arenomat.turntable.position());');
+    func.push('  return arenomat.turntable.position();');
     func.push('}');
     Blockly.JavaScript.definitions_['motor_position'] = func.join('\n');
   }

@@ -33,10 +33,6 @@ process.addListener('uncaughtException', function (err, stack) {
     console.log('\u0007'); // Terminal bell
 });
 
-
-
-
-
 var mongoose = require('mongoose-paginate');
 var modelsPath = __dirname + '/models';
 fs.readdirSync(modelsPath).forEach(function(file) {
@@ -285,11 +281,8 @@ board.on('error', function() {
 });
 
 board.on("ready", function() {
-  board.io.setSamplingInterval(1024);
+  board.io.setSamplingInterval(40);
 
-http.listen(80, function() {
-  console.log('Listening on port %d', http.address().port);
-});
 
  console.log('board ready');
  isArduino = true;
@@ -301,10 +294,15 @@ http.listen(80, function() {
   });
 });
 
+http.listen(80, function() {
+  console.log('Listening on port %d', http.address().port);
+});
+
 if (vc) {
   isWebcam = true;
   console.log('webcam: ok');
   stream.read();
 }
+
 
 exports = module.exports = app

@@ -1,0 +1,4 @@
+117c117
+<   if (this.io.firmware.name.indexOf("AdvancedFirmata") === -1) {
+---
+>   if (this.io.firmware.name.indexOf("ConfigurableFirmata") === -1) && (this.io.firmware.name.indexOf("AdvancedFirmata") === -1) {
