@@ -66,10 +66,8 @@ console.log('deleteZone  ' + no);
 	this.record();
     },
     setData: function(frame) {
-      if (frame.tracked) {
-        this.inZones = frame.cv[0].zones;
-if (!this.moving)
-	this.zones = frame.zones;
+      if (frame.tracked) this.inZones = frame.cv[0].zones;
+      if (!this.moving) this.zones = frame.zones;
 
     var diff = this.zones.length - $('#zonelist tr').length;
     if (diff > 0) for (var n = 0; n < diff; n++) this.addZone(-1);
@@ -82,7 +80,7 @@ if (!this.moving)
           if (this.positions[n].length > 50) this.positions[n].shift();
         }
       }
-}
+
       this.drawZones();
       this.drawObjects(frame.tracked);
     },

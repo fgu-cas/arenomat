@@ -102,7 +102,7 @@ Blockly.Language.shock = {
     this.appendDummyInput("")
       .appendTitle(new Blockly.FieldImage("img/shock.png", 16, 16)).appendTitle("Shock")
     this.appendDummyInput("")
-      .appendTitle(new Blockly.FieldDropdown([["0.2mA", "2"], ["0.3mA", "3"], ["0.4mA", "4"], ["0.5mA", "5"], ["0.6mA", "6"], ["0.7mA", "7"], ["rele", "1"]]), "current")
+      .appendTitle(new Blockly.FieldDropdown([["0.2mA", "2"], ["0.3mA", "3"], ["0.4mA", "4"], ["0.5mA", "5"], ["0.6mA", "6"], ["0.7mA", "7"]]), "current")
       .appendTitle(new Blockly.FieldDropdown([["300ms", "300"], ["500ms", "500"], ["1s", "1000"]]), "delay")
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -120,7 +120,7 @@ Blockly.JavaScript.shock = function() {
     Blockly.JavaScript.shock.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(current, delay) {');
-    func.push('  arenomat.shock.set(current, delay);');
+    func.push('  arenomat.shock.pulse(current, delay);');
     func.push('}');
     Blockly.JavaScript.definitions_['shock'] = func.join('\n');
   }

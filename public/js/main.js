@@ -26,8 +26,8 @@ $(document).ready(function() {
     $('#cv_counter').text(cv_counter);
     $('#elapsedTime').text(frame.elapsedTime.toFixed(2) + 's').css('background', (frame.isRunning) ? 'red' : 'green');
 //console.log(frame.output);
-    $('#isShocking span').text(frame.actions.shocking / 10 + 'mA');
-    $('#isShocking i').css('color', (frame.actions.shocking > 0) ? 'red' : 'green');
+    $('#isShocking span').text((frame.actions.shocking) / 10 + 'mA');
+    $('#isShocking i').css('color', (frame.actions.shocking > 1) ? 'red' : 'green');
     $('#isArduino i').css({ color: (frame.isArduino) ? 'green' : 'red' });
     $('#isWebcam i').css({ color: (frame.isWebcam) ? 'green' : 'red' });
 

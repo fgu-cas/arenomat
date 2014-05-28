@@ -1,5 +1,6 @@
 camWidth = 800, camHeight = 600;
 zones = [];
+actualFrame = {};
 
 var five = require("johnny-five");
 var board = new five.Board();
@@ -125,6 +126,9 @@ io.sockets.on('connection', function(socket) {
   socket.on('codeStop', function() {
     isRunning = false;
     shocking = 0;
+
+    arenomat.shock.off();
+
     console.log('codeStop');
   });
   socket.on('codeSave', function(data) {
@@ -149,7 +153,6 @@ var startTime = 0, loopTime = 0;
 
 var arduino;
 
-var actualFrame;
 var first = true;
 
 var Frame = mongoose.model('Frame');
