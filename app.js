@@ -1,4 +1,4 @@
-camWidth = 1600, camHeight = 896;
+camWidth = 800, camHeight = 600;
 zones = [];
 
 var five = require("johnny-five");

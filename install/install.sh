@@ -15,6 +15,7 @@ git clone http://git.michalvondracek.cz/arenomat.git
 cd arenomat
 npm install
 
-
-# advaced Firmata
-# https://github.com/soundanalogous/AdvancedFirmata
+# Configurable-dev Firmata
+# git clone -b configurable_dev --single-branch https://github.com/firmata/arduino.git 
+#https://github.com/firmata/arduino.git
+#https://github.com/nicolaspanel/firmatajs
