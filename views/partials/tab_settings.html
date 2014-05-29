@@ -4,53 +4,33 @@
 
                         <form class="form-horizontal" role="form">
                                 <div class="form-group">
-                                        <label for="dev" class="col-sm-2 control-label">Video device</label>
-                                        <div class="col-sm-10">
-                                                <input type="number" class="form-control" id="dev" placeholder="0">
-                                        </div>
-                                </div>
-
-                                <div class="form-group">
-                                        <label for="width" class="col-sm-2 control-label">Width</label>
-                                        <div class="col-sm-10">
-                                                <input type="number" class="form-control" id="width" placeholder="{{ camWidth }}">
-                                        </div>
-                                </div>
-                                <div class="form-group">
-                                        <label for="height" class="col-sm-2 control-label">Height</label>
-                                        <div class="col-sm-10">
-                                                <input type="number" class="form-control" id="height" placeholder="{{ camHeight }}">
-                                        </div>
-                                </div>
-
-                                <div class="form-group">
                                         <label for="height" class="col-sm-2 control-label">Brightness</label>
                                         <div class="col-sm-10">
-                                            <input id="brightness" data-webcam="Brightness" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
+                                            <input id="brightness" data-webcam="Brightness" class="webcam-control form-control" type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="1" />
                                         </div>
                                 </div>
                                 <div class="form-group">
                                         <label for="height" class="col-sm-2 control-label">Exposure</label>
                                         <div class="col-sm-10">
-                                            <input id="exposure" data-webcam="Exposure auto" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
+                                            <input id="exposure" data-webcam="Exposure (Absolute)" class="webcam-control form-control" type="text" data-slider-min="3" data-slider-max="2047" data-slider-step="1" data-slider-value="1" />
                                         </div>
                                 </div>
                                 <div class="form-group">
                                         <label for="height" class="col-sm-2 control-label">Gain</label>
                                         <div class="col-sm-10">
-                                            <input id="gain" data-webcam="Gain" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
+                                            <input id="gain" data-webcam="Gain" class="webcam-control form-control" type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="1" />
                                         </div>
                                 </div>
                                 <div class="form-group">
                                         <label for="height" class="col-sm-2 control-label">Contrast</label>
                                         <div class="col-sm-10">
-                                            <input id="contrast" data-webcam="Contrast" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
+                                            <input id="contrast" data-webcam="Contrast" class="webcam-control form-control" type="text" data-slider-min="0" data-slider-max="255" data-slider-step="1" data-slider-value="1" />
                                         </div>
                                 </div>
                                 <div class="form-group">
                                         <label for="height" class="col-sm-2 control-label">Focus</label>
                                         <div class="col-sm-10">
-                                            <input id="focus" data-webcam="Focus, absolute" class="webcam-control form-control" type="text" data-slider-min="1" data-slider-max="254" data-slider-step="1" data-slider-value="1" />
+                                            <input id="focus" data-webcam="Focus (absolute)" class="webcam-control form-control" type="text" data-slider-min="0" data-slider-max="250" data-slider-step="5" data-slider-value="1" />
                                         </div>
                                 </div>
 

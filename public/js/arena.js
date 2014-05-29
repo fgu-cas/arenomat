@@ -26,10 +26,7 @@
 
     this.inZones = []; // TODO: get the rid of this
 
-    this.positions = {
-      subject: [{x: 0, y: 0}],
-      robot: [{x: 0, y: 0}],
-    }
+    this.positions = {}
 
     this.colors = [
       [30, 221, 47],
@@ -91,8 +88,8 @@ console.log('deleteZone  ' + no);
         // arena image
         var canvas = $('<canvas/>').attr({
             id: sets[n],
-          width: 848,
-          height: 848
+          width: 600,
+          height: 600
         }).css({width: '100%', position: 'absolute'});
 
         $(this.element).append(canvas);

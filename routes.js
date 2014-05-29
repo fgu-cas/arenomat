@@ -129,8 +129,8 @@ router.get('/settings', function(req, res) {
 router.get('/settings/:control/:value', function(req, res) {
   var sys = require('sys')
   var exec = require('child_process').exec; 
-  
-  exec("uvcdynctrl -g '" + req.params.control + "' " + req.params.value + ' && v4l2-ctl -l', function (error, stdout, stderr) { 
+console.log("uvcdynctrl -g '" + req.params.control + "' " + req.params.value);
+  exec("/usr/bin/uvcdynctrl -s '" + req.params.control + "' " + req.params.value, function (error, stdout, stderr) { 
     res.json({status: stdout});
   });
 });
