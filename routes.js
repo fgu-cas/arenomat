@@ -1,11 +1,24 @@
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose-paginate');
+var express = require('express')
+  , router = express.Router()
+  , mongoose = require('mongoose-paginate')
 
-var Experiment = mongoose.model('Experiment');
-var Frame = mongoose.model('Frame');
+  , Experiment = mongoose.model('Experiment')
+  , Frame = mongoose.model('Frame')
 
-var fs = require('fs');
+  , fs = require('fs')
+  , partialsPath = __dirname + '/views/partials'
+  , partials = []
+  , files = [];
+
+
+var camelize = function () {
+    return this.replace (/(?:^|[-_])(\w)/g, function (_, c) {
+      return c ? c.toUpperCase () : '';
+    })
+  }
+fs.readdirSync(partialsPath).forEach(function(file) {
+  partials[camelize(file)] = 'partials/' + file;
+});
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -18,7 +31,11 @@ router.get('/', function(req, res) {
         tabAnalyze: 'partials/tab_analyze',
         tabSettings: 'partials/tab_settings',
       },
-      halfCamWidth: camWidth / 2, halfCamHeight: camHeight / 2, camWidth: camWidth, camHeight: camHeight, frameCount: frameCount
+      halfCamWidth: camWidth / 2,
+      halfCamHeight: camHeight / 2,
+      camWidth: camWidth,
+      camHeight: camHeight,
+      frameCount: frameCount
     });
   });
 });
@@ -129,7 +146,7 @@ router.get('/settings', function(req, res) {
 router.get('/settings/:control/:value', function(req, res) {
   var sys = require('sys')
   var exec = require('child_process').exec;
-  console.log("uvcdynctrl -g '" + req.params.control + "' " + req.params.value);
+
   exec("/usr/bin/uvcdynctrl -s '" + req.params.control + "' " + req.params.value, function(error, stdout, stderr) {
     res.json({status: stdout});
   });
