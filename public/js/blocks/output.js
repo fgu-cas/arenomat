@@ -52,7 +52,7 @@ Blockly.JavaScript.light = function() {
     Blockly.JavaScript.light.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(delay) {');
-    func.push('  arenomat.light.pulse(delay);'); 
+    func.push('  arenomat.light.pulse(delay);');
     func.push('}');
     Blockly.JavaScript.definitions_['light'] = func.join('\n');
   }

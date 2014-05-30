@@ -114,7 +114,7 @@ function Stepper(opts) {
     this, opts = Board.Options(opts)
   );
 
-  if (this.io.firmware.name.indexOf("ConfigurableFirmata") === -1) && (this.io.firmware.name.indexOf("AdvancedFirmata") === -1) {
+  if ((this.io.firmware.name.indexOf("ConfigurableFirmata") === -1) && (this.io.firmware.name.indexOf("AdvancedFirmata") === -1)) {
     throw new Error(
       "Stepper requires AdvancedFirmata. https://github.com/soundanalogous/AdvancedFirmata"
     );

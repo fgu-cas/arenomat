@@ -29,9 +29,9 @@ var fs = require('fs');
 var lame = require('lame');
 var Speaker = require('speaker');
 
-process.addListener('uncaughtException', function (err, stack) {
-    console.log('Caught exception: '+err+'\n'+err.stack);
-    console.log('\u0007'); // Terminal bell
+process.addListener('uncaughtException', function(err, stack) {
+  console.log('Caught exception: ' + err + '\n' + err.stack);
+  console.log('\u0007'); // Terminal bell
 });
 
 var mongoose = require('mongoose-paginate');
@@ -71,11 +71,11 @@ app.use('/', routes);
 //mongoose.set('debug', true)
 var URI = "mongodb://localhost/arenomat";
 mongoose.connect(URI, function(err) {
-    if (err) {
-      throw err;
-    }
-    return console.log('Connected to database');
-  });
+  if (err) {
+    throw err;
+  }
+  return console.log('Connected to database');
+});
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -135,7 +135,7 @@ io.sockets.on('connection', function(socket) {
     console.log('codeSave: ' + data);
   });
   socket.on('zones', function(data) {
-          console.log('area: ' + data);
+    console.log('area: ' + data);
     zones = data;
   });
 });
@@ -173,34 +173,34 @@ var stream = vc.toStream();
 
 
 function rotate_point(point, origin, angle) {
-    angle = angle * Math.PI / 180.0;
-    return {
-        x: Math.cos(angle) * (point.x-origin.x) - Math.sin(angle) * (point.y-origin.y) + origin.x,
-        y: Math.sin(angle) * (point.x-origin.x) + Math.cos(angle) * (point.y-origin.y) + origin.y
-    };
+  angle = angle * Math.PI / 180.0;
+  return {
+    x: Math.cos(angle) * (point.x - origin.x) - Math.sin(angle) * (point.y - origin.y) + origin.x,
+    y: Math.sin(angle) * (point.x - origin.x) + Math.cos(angle) * (point.y - origin.y) + origin.y
+  };
 }
 
 
 stream.on("data", function(im) {
   stream.pause();
 
-  var cropped = im.roi((camWidth - camHeight)/2, 0, camHeight, camHeight)
+  var cropped = im.roi((camWidth - camHeight) / 2, 0, camHeight, camHeight)
   var small = cropped.copy();
-  var center = { x: camHeight / 2, y: camHeight/2 };
+  var center = {x: camHeight / 2, y: camHeight / 2};
   small.resize(camHeight / 2, camHeight / 2);
 
- actualFrame = {
+  actualFrame = {
     timestamp: new Date(),
     elapsedTime: 0,
     isArduino: isArduino,
     isWebcam: isWebcam,
     cv: [],
-    actions: { shocking: 0 },
+    actions: {shocking: 0},
     webcam: small.toBuffer().toString('base64'),
     zones: zones
   }
 
-  actualFrame.cv[-1] = { position : center };
+  actualFrame.cv[-1] = {position: center};
 
 
   blobDetector(cropped);
@@ -211,12 +211,12 @@ stream.on("data", function(im) {
     actualFrame.elapsedTime = now - startTime;
     actualFrame.output = {};
     if (first) {
-	first = false;
-	eval(code);
+      first = false;
+      eval(code);
 
-	mLoop = loop;
-	mSetup = setup;
-	mSetup();
+      mLoop = loop;
+      mSetup = setup;
+      mSetup();
     }
     mLoop();
   }
@@ -225,7 +225,9 @@ stream.on("data", function(im) {
   io.sockets.emit('frame', actualFrame);
   io.set('log level', 5); // logging level to 5
 
-  process.nextTick(function() { stream.resume(); });
+  process.nextTick(function() {
+    stream.resume();
+  });
 });
 
 function blobDetector(check) {
@@ -287,10 +289,10 @@ board.on("ready", function() {
   board.io.setSamplingInterval(40);
 
 
- console.log('board ready');
- isArduino = true;
+  console.log('board ready');
+  isArduino = true;
 
- arenomat = require('./lib/arenomat.js');
+  arenomat = require('./lib/arenomat.js');
 
   this.repl.inject({
     arenomat: arenomat

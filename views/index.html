@@ -8,73 +8,73 @@
 
 <div class="container">
 	<div class="tab-content">
-            {{> tabLogic }}
-            {{> tabCamera }}
-            {{> tabAnalyze }}
-            {{> tabSettings }}
+		{{> tabLogic }}
+		{{> tabCamera }}
+		{{> tabAnalyze }}
+		{{> tabSettings }}
 	</div>
 </div>
 
 <script>
-$( document ).ready(function() {
-var timer;
-var oldValue;
+	$(document).ready(function() {
+		var timer;
+		var oldValue;
 
-var brightnesstimer;
-var brightnessoldValue;
+		var brightnesstimer;
+		var brightnessoldValue;
 
-function delayBrightness(control, value) {
-    clearTimeout(brightnesstimer);
-    brightnesstimer = setTimeout(function () {
-	$.get('/settings/' + control + '/' + value, function( data ) {
-	});
-    }, 200);
-}
+		function delayBrightness(control, value) {
+			clearTimeout(brightnesstimer);
+			brightnesstimer = setTimeout(function() {
+				$.get('/settings/' + control + '/' + value, function(data) {
+				});
+			}, 200);
+		}
 
-function delayShow(value) {
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-	$.get('/frames/' + value, function( data ) {
+		function delayShow(value) {
+			clearTimeout(timer);
+			timer = setTimeout(function() {
+				$.get('/frames/' + value, function(data) {
 //	    if (data.tracked) {
-for(var n = 0; n < 7; n++) {
-    var t = '';
-  if (data.cv[n]) {
-    t = data.cv[n].position.x + ', ' + data.cv[n].position.y;
-  }
-		$('#object_' + (n+1)).text(t);
+					for (var n = 0; n < 7; n++) {
+						var t = '';
+						if (data.cv[n]) {
+							t = data.cv[n].position.x + ', ' + data.cv[n].position.y;
+						}
+						$('#object_' + (n + 1)).text(t);
 
-		$('#output').text(JSON.stringify(data.output));
+						$('#output').text(JSON.stringify(data.output));
 //}
-}
-             $("#image").attr("src",  'data:image/jpeg;base64,' + data.webcam);
+					}
+					$("#image").attr("src", 'data:image/jpeg;base64,' + data.webcam);
+				});
+			}, 200);
+		}
+
+		$("#ex6").slider({
+			tooltip: 'always'
+		}).on('slide', function(slideEvt) {
+			if (oldValue !== slideEvt.value) {
+				oldValue = slideEvt.value;
+				delayShow(slideEvt.value);
+			}
+		});
+
+
+		$(".webcam-control")
+		  .slider({
+			  tooltip: 'always'
+		  })
+		  .on('slide', function(slideEvt) {
+			  if (brightnessoldValue !== slideEvt.value) {
+				  brightnessoldValue = slideEvt.value;
+				  delayBrightness($(this).data('webcam'), slideEvt.value);
+			  }
+		  });
+
+		delayShow(1);
+
 	});
-    }, 200);
-}
-
-$("#ex6").slider({
-    tooltip: 'always'
-}).on('slide', function(slideEvt) {
-    if (oldValue !== slideEvt.value) {
-	oldValue = slideEvt.value;
-        delayShow(slideEvt.value);
-    }
-});
-
-
-$(".webcam-control")
-  .slider({
-    tooltip: 'always'
-  })
-  .on('slide', function(slideEvt) {
-    if (brightnessoldValue !== slideEvt.value) {
-	brightnessoldValue = slideEvt.value;
-        delayBrightness($(this).data('webcam'), slideEvt.value);
-    }
-  });
-
-    delayShow(1);
-
-});
 </script>
 
 

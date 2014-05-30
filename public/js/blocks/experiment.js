@@ -143,7 +143,7 @@ Blockly.Language.distance = {
       .appendTitle("distance of")
     this.appendValueInput("object2")//.setCheck('Number')
       .appendTitle("from")
-this.setInputsInline(true);
+    this.setInputsInline(true);
     this.setOutput(true, "Number");
     this.setTooltip('return distance activity');
   }

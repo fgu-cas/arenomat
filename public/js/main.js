@@ -28,43 +28,44 @@ $(document).ready(function() {
 //console.log(frame.output);
     $('#isShocking span').text((frame.actions.shocking) / 10 + 'mA');
     $('#isShocking i').css('color', (frame.actions.shocking > 1) ? 'red' : 'green');
-    $('#isArduino i').css({ color: (frame.isArduino) ? 'green' : 'red' });
-    $('#isWebcam i').css({ color: (frame.isWebcam) ? 'green' : 'red' });
+    $('#isArduino i').css({color: (frame.isArduino) ? 'green' : 'red'});
+    $('#isWebcam i').css({color: (frame.isWebcam) ? 'green' : 'red'});
 
-var tbody = $('#custom_variables').empty();
-if (frame.output) {
-    tbody.append('<tr><th>name</th><th>value</th></tr>');
-$.each( frame.output, function( key, value ) {
-    tbody.append('<tr><td>' + key + '</td><td>' + value + '</td></tr>');
-});
-}
+    var tbody = $('#custom_variables').empty();
+    if (frame.output) {
+      tbody.append('<tr><th>name</th><th>value</th></tr>');
+      $.each(frame.output, function(key, value) {
+        tbody.append('<tr><td>' + key + '</td><td>' + value + '</td></tr>');
+      });
+    }
 
     actualFrame = frame.webcam;
 
     cam_counter++;
-    if (frame.tracked) cv_counter++;
+    if (frame.tracked)
+      cv_counter++;
 
     $('#vision').arena('setData', frame);
 //}
   });
 
-$('#addZone').click(function () { 
-console.log('add');
-  $('#vision').arena('addZone', 0); 
-}); 
+  $('#addZone').click(function() {
+    console.log('add');
+    $('#vision').arena('addZone', 0);
+  });
 
   setInterval(function() {
     if (actualFrame && (actualFrame.length > 0)) {
-	if (window.location.hash == '#tcamera') {
-          image.src = 'data:image/jpeg;base64,' + actualFrame;
-          webcamctx.drawImage(image, 0, 0);
-          actualFrame = null;
-	}
-	if (window.location.hash == '#tsettings') {
-          image.src = 'data:image/jpeg;base64,' + actualFrame;
-          miniwebcamctx.drawImage(image, 0, 0);
-          actualFrame = null;
-	}
+      if (window.location.hash == '#tcamera') {
+        image.src = 'data:image/jpeg;base64,' + actualFrame;
+        webcamctx.drawImage(image, 0, 0);
+        actualFrame = null;
+      }
+      if (window.location.hash == '#tsettings') {
+        image.src = 'data:image/jpeg;base64,' + actualFrame;
+        miniwebcamctx.drawImage(image, 0, 0);
+        actualFrame = null;
+      }
     }
   }, 40);
 
@@ -78,10 +79,10 @@ console.log('add');
     location.hash = this.getAttribute("href");
   });
 
-$(document).on( 'shown.bs.tab', 'a#blogic', function (e) {
-   Blockly.mainWorkspace.render();
+  $(document).on('shown.bs.tab', 'a#blogic', function(e) {
+    Blockly.mainWorkspace.render();
 //   console.log(e.target) // activated tab
-});
+  });
 
 });
 

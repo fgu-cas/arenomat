@@ -7,7 +7,7 @@ Blockly.Language.zone = {
 
     this.appendValueInput("zone").setCheck('Number')
       .appendTitle("is in zone")
-this.setInputsInline(true);
+    this.setInputsInline(true);
     //.appendTitle(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"]]), "PIN");
     this.setOutput(true, "Boolean");
     this.setTooltip('return zone activity');
@@ -24,7 +24,7 @@ Blockly.JavaScript.zone = function() {
     Blockly.JavaScript.zone.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(object, zone) {');
-    func.push(' if (actualFrame.cv[object] && actualFrame.cv[object].zones) { '); 
+    func.push(' if (actualFrame.cv[object] && actualFrame.cv[object].zones) { ');
     func.push('    return actualFrame.cv[object].zones[zone] || false; ');
     func.push(' }');
     func.push(' return false;');
@@ -43,7 +43,7 @@ Blockly.Language.position = {
     this.appendValueInput("object")
       .appendTitle(new Blockly.FieldImage("img/position.png", 16, 16))
 
-this.setInputsInline(true);
+    this.setInputsInline(true);
     this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["x", "x"], ["y", "y"], ["area", "area"]]), "axis");
     this.setOutput(true, "Number");
     this.setTooltip('return position attribute');
@@ -60,7 +60,7 @@ Blockly.JavaScript.position = function() {
     Blockly.JavaScript.position.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(object, attr) {');
-    func.push(' if (actualFrame.cv[object] && actualFrame.cv[object].position) { '); 
+    func.push(' if (actualFrame.cv[object] && actualFrame.cv[object].position) { ');
     func.push('    return actualFrame.cv[object].position[attr] || false; ');
     func.push(' }');
     func.push(' return false;');

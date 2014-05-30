@@ -41,40 +41,50 @@
   }
 
   Plugin.prototype = {
-    addZone: function (no) {
-	if (no > 0) this.zones.push([]);
-	var next = $('#zonelist tr').length;
-            $('.change').removeClass('activeZone');
-       $('#zonelist').append('<tr><td><a href="' + next + '" class="activeZone change">Zone ' + next + '</a></td><td align=right><button href="' + next + '" class="deleteZone btn btn-danger btn-xs"><i class="fa fa-ban"></button></td></tr>');
-	this.changeZone(next);
-	this.record();
+    addZone: function(no) {
+      if (no > 0)
+        this.zones.push([]);
+      var next = $('#zonelist tr').length;
+      $('.change').removeClass('activeZone');
+      $('#zonelist').append('<tr><td><a href="' + next + '" class="activeZone change">Zone ' + next + '</a></td><td align=right><button href="' + next + '" class="deleteZone btn btn-danger btn-xs"><i class="fa fa-ban"></button></td></tr>');
+      this.changeZone(next);
+      this.record();
     },
-    deleteZone: function (no) {
-	if (no == -1) no = this.zones.length - 1;
-console.log('deleteZone  ' + no);
-	this.zones[no] = null;
-        if (no == (this.zones.length - 1)) { 
-	    this.zones.splice(-1,1);
-	    $('#zonelist tr:last-child').remove();
-	    this.changeZone(this.zones.length - 1);
-            $('.change').removeClass('activeZone');
-	    $('#zonelist tr:last-child a.change').addClass('activeZone');
-	} 
-	this.record();
+    deleteZone: function(no) {
+      if (no == -1)
+        no = this.zones.length - 1;
+      console.log('deleteZone  ' + no);
+      this.zones[no] = null;
+      if (no == (this.zones.length - 1)) {
+        this.zones.splice(-1, 1);
+        $('#zonelist tr:last-child').remove();
+        this.changeZone(this.zones.length - 1);
+        $('.change').removeClass('activeZone');
+        $('#zonelist tr:last-child a.change').addClass('activeZone');
+      }
+      this.record();
     },
     setData: function(frame) {
-      if (frame.tracked) this.inZones = frame.cv[0].zones;
-      if (!this.moving) this.zones = frame.zones;
+      if (frame.tracked)
+        this.inZones = frame.cv[0].zones;
+      if (!this.moving)
+        this.zones = frame.zones;
 
-    var diff = this.zones.length - $('#zonelist tr').length;
-    if (diff > 0) for (var n = 0; n < diff; n++) this.addZone(-1);
-    if (diff < 0 && (this.zones.length > 1)) for (var n = 0; n < -diff - 1; n++) this.deleteZone(-1);
+      var diff = this.zones.length - $('#zonelist tr').length;
+      if (diff > 0)
+        for (var n = 0; n < diff; n++)
+          this.addZone(-1);
+      if (diff < 0 && (this.zones.length > 1))
+        for (var n = 0; n < - diff - 1; n++)
+          this.deleteZone(-1);
 
-    for(var n = 0; n < frame.cv.length; n++) {
+      for (var n = 0; n < frame.cv.length; n++) {
         if (frame.cv[n]) {
-	  if (!this.positions[n]) this.positions[n] = [];
+          if (!this.positions[n])
+            this.positions[n] = [];
           this.positions[n].push(frame.cv[n].position);
-          if (this.positions[n].length > 50) this.positions[n].shift();
+          if (this.positions[n].length > 50)
+            this.positions[n].shift();
         }
       }
 
@@ -87,7 +97,7 @@ console.log('deleteZone  ' + no);
       for (var n = 0; n < sets.length; n++) {
         // arena image
         var canvas = $('<canvas/>').attr({
-            id: sets[n],
+          id: sets[n],
           width: 600,
           height: 600
         }).css({width: '100%', position: 'absolute'});
@@ -109,29 +119,31 @@ console.log('deleteZone  ' + no);
         .bind('mousedown', this, this.mousedown)
         .bind('contextmenu', this, this.rightclick)
         .bind('mouseup', this, this.stopdrag)
-	.bind('mousemove', this, this.move)
-	.hover(function () { 
-           that.overMe = true; 
-           that.drawZones(); 
-         }, function () { 
-           that.overMe = false; 
-           that.drawZones(); 
+        .bind('mousemove', this, this.move)
+        .hover(function() {
+          that.overMe = true;
+          that.drawZones();
+        }, function() {
+          that.overMe = false;
+          that.drawZones();
         })
-        
-	$('#zonelist')
-          .on('click', '.change', function(e) {
-            e.preventDefault();
-            that.changeZone($(e.target).attr('href'));
-            $('.change').removeClass('activeZone');
-            $(e.target).addClass('activeZone')
-          })
-          .on('click', '.deleteZone', function (e) {
-	    if(!$(e.target).attr('href')) e.target = $(e.target).parent(); 
-            that.deleteZone($(e.target).attr('href'));
-            e.preventDefault();
-          });
 
-    if (window.localStorage && window.localStorage.zones) this.zones = JSON.parse(window.localStorage.zones);
+      $('#zonelist')
+        .on('click', '.change', function(e) {
+          e.preventDefault();
+          that.changeZone($(e.target).attr('href'));
+          $('.change').removeClass('activeZone');
+          $(e.target).addClass('activeZone')
+        })
+        .on('click', '.deleteZone', function(e) {
+          if (!$(e.target).attr('href'))
+            e.target = $(e.target).parent();
+          that.deleteZone($(e.target).attr('href'));
+          e.preventDefault();
+        });
+
+      if (window.localStorage && window.localStorage.zones)
+        this.zones = JSON.parse(window.localStorage.zones);
       this.drawArena();
       this.drawObjects();
     },
@@ -179,7 +191,8 @@ console.log('deleteZone  ' + no);
           ctx.arc(this.positions[n][i].x, this.positions[n][i].y, radius, 0, Math.PI * 2, true);
           ctx.fillStyle = 'rgba(' + this.colors[c] + ', 1)';
 
-	if (!tracked) ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+          if (!tracked)
+            ctx.fillStyle = 'rgba(255, 0, 0, 1)';
 
           ctx.fill();
           c++;
@@ -218,36 +231,36 @@ console.log('deleteZone  ' + no);
         if ((n == this.activeZone) && this.overMe) {
           ctx.fillStyle = 'rgba(' + this.colors[n] + ',0.3)';
         }
-	if (this.inZones && this.inZones[n])
+        if (this.inZones && this.inZones[n])
           ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
         ctx.fill();
         ctx.stroke();
       }
 //             this.record();
     },
-    over: function (e) {
+    over: function(e) {
       var that = e.data;
       that.overMe = true;
     },
     move: function(e) {
       var that = e.data;
 
-    if (that.moving) {
-      if (!e.offsetX) {
-        e.offsetX = (e.pageX - $(e.target).offset().left);
-        e.offsetY = (e.pageY - $(e.target).offset().top);
+      if (that.moving) {
+        if (!e.offsetX) {
+          e.offsetX = (e.pageX - $(e.target).offset().left);
+          e.offsetY = (e.pageY - $(e.target).offset().top);
+        }
+        that.zones[that.activeZone][that.activePoint].x = Math.round(e.offsetX);
+        that.zones[that.activeZone][that.activePoint].y = Math.round(e.offsetY);
+        that.drawZones();
       }
-      that.zones[that.activeZone][that.activePoint].x = Math.round(e.offsetX);
-      that.zones[that.activeZone][that.activePoint].y = Math.round(e.offsetY);
-      that.drawZones();
-     }
     },
     stopdrag: function(e) {
       var that = e.data;
       //$(that).unbind('mousemove');
       that.record();
       that.activePoint = null;
-that.moving = false;
+      that.moving = false;
       that.drawZones();
     },
     rightclick: function(e) {
@@ -294,7 +307,7 @@ that.moving = false;
         dis = Math.sqrt(Math.pow(x - that.zones[that.activeZone][i].x, 2) + Math.pow(y - that.zones[that.activeZone][i].y, 2));
         if (dis < 6) {
           that.activePoint = i;
-	    that.moving = true;
+          that.moving = true;
           console.log('move');
           //that.bind('mousemove', that, that.move);
           return false;
@@ -319,7 +332,7 @@ that.moving = false;
         y: Math.round(y)
       });
       that.activePoint = insertAt;
-that.moving = true;
+      that.moving = true;
 //      $('vision').bind('mousemove', that, that.move);
 
       that.drawZones();

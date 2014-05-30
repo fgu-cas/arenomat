@@ -1,36 +1,36 @@
 {
-  "name": "arenomat",
-  "version": "0.0.2",
-  "description": "Arena automat",
-  "main": "app.js",
-  "dependencies": {
-    "body-parser": "~1.0.0",
-    "canvas": "^1.1.3",
-    "cookie-parser": "~1.0.1",
-    "debug": "~0.7.4",
-    "express": "~4.0.0",
-    "function-enhancements": "^0.1.0",
-    "hjs": "~0.0.6",
-    "hogan-express": "^0.5.2",
-    "johnny-five": "rwaldron/johnny-five",
-    "lame": "~1.0.3",
-    "less-middleware": "0.1.15",
-    "mongoose": "3.8.x",
-    "mongoose-paginate": "^2.2.0",
-    "morgan": "~1.0.0",
-    "opencv": "peterbraden/node-opencv",
-    "socket.io": "^0.9.16",
-    "speaker": "0.1.0",
-    "static-favicon": "~1.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "*"
-  },
-  "scripts": {
-    "start": "nodemon app.js",
-    "preinstall": "npm i -g forever"
-  },
-  "author": "Majkl",
-  "license": "MIT",
-  "homepage": "http://git.michalvondracek.cz/arenomat.git"
+	"name": "arenomat",
+	"version": "0.0.2",
+	"description": "Arena automat",
+	"main": "app.js",
+	"dependencies": {
+		"body-parser": "~1.0.0",
+		"canvas": "^1.1.3",
+		"cookie-parser": "~1.0.1",
+		"debug": "~0.7.4",
+		"express": "~4.0.0",
+		"function-enhancements": "^0.1.0",
+		"hjs": "~0.0.6",
+		"hogan-express": "^0.5.2",
+		"johnny-five": "rwaldron/johnny-five",
+		"lame": "~1.0.3",
+		"less-middleware": "0.1.15",
+		"mongoose": "3.8.x",
+		"mongoose-paginate": "^2.2.0",
+		"morgan": "~1.0.0",
+		"opencv": "peterbraden/node-opencv",
+		"socket.io": "^0.9.16",
+		"speaker": "0.1.0",
+		"static-favicon": "~1.0.0"
+	},
+	"devDependencies": {
+		"nodemon": "*"
+	},
+	"scripts": {
+		"start": "nodemon app.js",
+		"preinstall": "npm i -g forever"
+	},
+	"author": "Majkl",
+	"license": "MIT",
+	"homepage": "http://git.michalvondracek.cz/arenomat.git"
 }
