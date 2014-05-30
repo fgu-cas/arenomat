@@ -1,6 +1,11 @@
 camWidth = 800, camHeight = 600;
 
-var Arena = {}
+var Arena = {
+}
+
+function Arena() {
+    this.blobs = [];
+}
 
 Arena.prototype.rotatePoint = function (point, origin, angle) {
     var angle = angle * Math.PI / 180.0;
@@ -8,6 +13,14 @@ Arena.prototype.rotatePoint = function (point, origin, angle) {
         x: Math.cos(angle) * (point.x-origin.x) - Math.sin(angle) * (point.y-origin.y) + origin.x,
         y: Math.sin(angle) * (point.x-origin.x) + Math.cos(angle) * (point.y-origin.y) + origin.y
     };
+}
+
+Arena.prototype.rotateZone = function (zone, angle) {
+  if (actualFrame.zones && actualFrame.zones[zone]) {
+    for(var n = 0; n < actualFrame.zones[zone].length; n++) {
+      actualFrame.zones[zone][n] = rotate_point(actualFrame.zones[zone][n], center, angle);
+    }
+  }
 }
 
 Arena.prototype.inPoly = function (poly, pt) {
@@ -20,17 +33,13 @@ Arena.prototype.inPoly = function (poly, pt) {
     return c;
   }
 
-Arena.prototype.zoneDetector = function (points) {
-    for (var n = 0; n < points.length; n++) {
-      if (!actualFrame.cv[n])
-        actualFrame.cv[n] = {};
-      actualFrame.cv[n].position = points[n];
+Arena.prototype.zoneDetector = function () {
 
       for (var i = 0; i < zones.length; i++) {
         if (!actualFrame.cv[n].zones)
           actualFrame.cv[n].zones = {};
         if (zones[i])
-          actualFrame.cv[n].zones[i] = in_poly(zones[i], points[n]);
+          actualFrame.cv[n].zones[i] = in_poly(zones[i], this.blobs[n]);
       }
     }
   return this;
@@ -58,11 +67,17 @@ Arena.prototype.blobDetector = function (check) {
       return a.area - b.area;
     });
 
-    points = points.slice(0, 2); // only the 2 biggest areas
+    this.blobs = points = points.slice(0, 2); // only the 2 biggest areas
+
+    for (var n = 0; n < points.length; n++) {
+      if (!actualFrame.cv[n])
+        actualFrame.cv[n] = {};
+      actualFrame.cv[n].position = points[n];
 
   }
 
   return this;
 }
 
-exports = module.exports = Arena
+exports = module.exports = new Arena();
+exports.Arena = Arena;
