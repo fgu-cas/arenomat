@@ -21,8 +21,6 @@ io.enable('browser client gzip');          // gzip the file
 io.set('log level', 1);                    // reduce logging
 
 
-var Fun = require("function-enhancements");
-
 var cv = require('opencv');
 var fs = require('fs');
 
@@ -41,6 +39,7 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 });
 
 var routes = require('./routes');
+var arena = require('./lib/arena');
 
 // Set View Engine
 app.engine('html', require('hogan-express'));
@@ -135,7 +134,6 @@ io.sockets.on('connection', function(socket) {
     console.log('codeSave: ' + data);
   });
   socket.on('zones', function(data) {
-    console.log('area: ' + data);
     zones = data;
   });
 });
@@ -170,17 +168,6 @@ try {
 
 var stream = vc.toStream();
 
-
-
-function rotate_point(point, origin, angle) {
-  angle = angle * Math.PI / 180.0;
-  return {
-    x: Math.cos(angle) * (point.x - origin.x) - Math.sin(angle) * (point.y - origin.y) + origin.x,
-    y: Math.sin(angle) * (point.x - origin.x) + Math.cos(angle) * (point.y - origin.y) + origin.y
-  };
-}
-
-
 stream.on("data", function(im) {
   stream.pause();
 
@@ -203,7 +190,8 @@ stream.on("data", function(im) {
   actualFrame.cv[-1] = {position: center};
 
 
-  blobDetector(cropped);
+  arena.blobDetector(cropped);
+  arena.zoneDetector();
 
   if (isRunning && code) {
     var now = new Date().getTime() / 1000;
@@ -229,57 +217,6 @@ stream.on("data", function(im) {
     stream.resume();
   });
 });
-
-function blobDetector(check) {
-//+ Jonas Raoni Soares Silva
-//@ http://jsfromhell.com/math/is-point-in-poly [v1.0]
-  function in_poly(poly, pt) {
-    for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
-      ((poly[i].y <= pt.y && pt.y < poly[j].y) || (poly[j].y <= pt.y && pt.y < poly[i].y))
-        && (pt.x < (poly[j].x - poly[i].x) * (pt.y - poly[i].y) / (poly[j].y - poly[i].y) + poly[i].x)
-        && (c = !c);
-    return c;
-  }
-
-  // matrix clone for image processing
-  check.convertGrayscale();
-  check = check.threshold(240, 255);
-  check.dilate(7);
-
-  contours = check.findContours();
-
-  if (contours.size() > 0) {
-
-    actualFrame.tracked = true;
-    var points = [];
-    for (var n = 0; n < contours.size(); n++) {
-      mu = contours.moments(n);
-
-      points.push({x: Math.round(mu.m10 / mu.m00), y: Math.round(mu.m01 / mu.m00), area: contours.area(n)});
-    }
-
-    points.sort(function(a, b) {
-      return a.area - b.area;
-    });
-
-    points = points.slice(0, 2); // only the 2 biggest areas
-
-    for (var n = 0; n < points.length; n++) {
-      if (!actualFrame.cv[n])
-        actualFrame.cv[n] = {};
-      actualFrame.cv[n].position = points[n];
-
-      for (var i = 0; i < zones.length; i++) {
-        if (!actualFrame.cv[n].zones)
-          actualFrame.cv[n].zones = {};
-        if (zones[i])
-          actualFrame.cv[n].zones[i] = in_poly(zones[i], points[n]);
-      }
-    }
-  }
-}
-
-
 
 board.on('error', function() {
   console.log('not ready!');

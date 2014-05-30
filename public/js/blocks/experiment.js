@@ -197,7 +197,7 @@ Blockly.JavaScript.rotatezone = function() {
     Blockly.JavaScript.rotatezone.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(zone, angle) {');
-    func.push(' if (actualFrame.zones && actualFrame.zones[zone]) for(var n = 0; n < actualFrame.zones[zone].length; n++) actualFrame.zones[zone][n] = rotate_point(actualFrame.zones[zone][n], center, angle);');
+    func.push(' if (actualFrame.zones && actualFrame.zones[zone]) arena.rotateZone(zone, angle);');
     func.push('}');
     Blockly.JavaScript.definitions_['rotatezone'] = func.join('\n');
   }
