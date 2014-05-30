@@ -7,17 +7,20 @@ var express = require('express')
 
   , fs = require('fs')
   , partialsPath = __dirname + '/views/partials'
-  , partials = []
+  , partials = {}
   , files = [];
 
 
-var camelize = function () {
-    return this.replace (/(?:^|[-_])(\w)/g, function (_, c) {
+var camelize = function (string) {
+    return string.replace (/(?:^|[-_])(\w)/g, function (_, c) {
       return c ? c.toUpperCase () : '';
     })
   }
+
+// get partials
 fs.readdirSync(partialsPath).forEach(function(file) {
-  partials[camelize(file)] = 'partials/' + file;
+  var filename = file.replace(/\..+$/, ''); // strip extension
+  partials[camelize(filename)] = 'partials/' + filename;
 });
 
 /* GET home page. */
@@ -25,12 +28,7 @@ router.get('/', function(req, res) {
   var fc;
   Frame.count({}, function(err, frameCount) {
     res.render('index', {
-      partials: {
-        tabLogic: 'partials/tab_logic',
-        tabCamera: 'partials/tab_camera',
-        tabAnalyze: 'partials/tab_analyze',
-        tabSettings: 'partials/tab_settings',
-      },
+      partials: partials,
       halfCamWidth: camWidth / 2,
       halfCamHeight: camHeight / 2,
       camWidth: camWidth,
