@@ -186,7 +186,7 @@
           i--;
 
 
-          var radius = Math.sqrt(this.positions[n][i].area) / 3;
+          var radius = 10; //Math.sqrt(this.positions[n][i].area) / 3;
           ctx.beginPath();
           ctx.arc(this.positions[n][i].x, this.positions[n][i].y, radius, 0, Math.PI * 2, true);
           ctx.fillStyle = 'rgba(' + this.colors[c] + ', 1)';
