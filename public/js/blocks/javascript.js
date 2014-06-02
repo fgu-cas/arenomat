@@ -3,7 +3,7 @@ Blockly.Language.javascript_setinterval = {
   init: function() {
     this.setColour(210);
     this.appendValueInput("interval")
-      .setCheck(Number)
+      .setCheck("Number")
       .appendTitle("setInterval");
     this.appendStatementInput("callback");
     this.setPreviousStatement(true);
@@ -42,7 +42,7 @@ Blockly.Language.javascript_settimeout = {
   init: function() {
     this.setColour(210);
     this.appendValueInput("timeout")
-      .setCheck(Number)
+      .setCheck("Number")
       .appendTitle("setTimeout");
     this.appendStatementInput("callback");
     this.setPreviousStatement(true);

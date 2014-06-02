@@ -100,7 +100,7 @@
           id: sets[n],
           width: 600,
           height: 600
-        }).css({width: '100%', position: 'absolute'});
+        }).css({position: 'absolute'});
 
         $(this.element).append(canvas);
         ctxs[sets[n]] = canvas.get(0).getContext("2d");

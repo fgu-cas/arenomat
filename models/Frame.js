@@ -1,7 +1,9 @@
-var mongoose = require("mongoose-paginate");
+var mongoose = require("mongoose-paginate"),
+    Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;
 
 var FrameSchema = new mongoose.Schema({
-  session_id: String,
+  session: { type: ObjectId, required: true, ref: 'Session' },
   timestamp: Number,
   tracked: Boolean,
   cv: [],

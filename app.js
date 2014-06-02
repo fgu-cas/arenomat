@@ -76,6 +76,9 @@ mongoose.connect(URI, function(err) {
   return console.log('Connected to database');
 });
 
+var Frame = mongoose.model('Frame');
+var Session = mongoose.model('Session');
+
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -108,7 +111,6 @@ app.use(function(err, req, res, next) {
 });
 
 
-module.exports = app;
 
 
 
@@ -116,11 +118,18 @@ module.exports = app;
 io.sockets.on('connection', function(socket) {
   console.log('connection');
   socket.on('codeStart', function(data) {
+    code = data;
+    console.log('codeStart: ' + data);
+
+/*
+    var session = new Session(data);
+    session.save();
+*/
     isRunning = true;
     first = true;
     startTime = new Date().getTime() / 1000;
-    code = data;
-    console.log('codeStart: ' + data);
+
+
   });
   socket.on('codeStop', function() {
     isRunning = false;
@@ -150,10 +159,9 @@ var isRunning = false;
 var startTime = 0, loopTime = 0;
 
 var arduino;
+var timeout;
 
 var first = true;
-
-var Frame = mongoose.model('Frame');
 
 // WEBCAM
 try {
@@ -206,7 +214,14 @@ stream.on("data", function(im) {
       mSetup = setup;
       mSetup();
     }
-    mLoop();
+
+//    if (timeout) clearTimeout(timeout);
+//    timeout = setTimeout(function () { mLoop(); }.bind(this), 1);
+mLoop();
+/*
+    var frame = new Frame(actualFrame);
+    frame.save();
+*/
   }
 
   io.set('log level', 2);
@@ -224,7 +239,6 @@ board.on('error', function() {
 
 board.on("ready", function() {
   board.io.setSamplingInterval(40);
-
 
   console.log('board ready');
   isArduino = true;
@@ -247,4 +261,4 @@ if (vc) {
 }
 
 
-exports = module.exports = app
+exports = module.exports = app;
