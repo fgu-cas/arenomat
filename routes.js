@@ -135,7 +135,7 @@ router.get('/settings', function(req, res) {
   var sys = require('sys')
   var exec = require('child_process').exec;
 
-  exec("uvcdynctrl -c -v", function(error, stdout, stderr) {
+  exec("v4l2-ctl -C  brightness,exposure_absolute,gain,contrast,focus_absolute", function(error, stdout, stderr) {
     res.json({status: stdout});
   });
 });
@@ -144,8 +144,7 @@ router.get('/settings', function(req, res) {
 router.get('/settings/:control/:value', function(req, res) {
   var sys = require('sys')
   var exec = require('child_process').exec;
-
-  exec("/usr/bin/uvcdynctrl -s '" + req.params.control + "' " + req.params.value, function(error, stdout, stderr) {
+  exec("v4l2-ctl -c " + req.params.control + "=" + req.params.value, function(error, stdout, stderr) {
     res.json({status: stdout});
   });
 });

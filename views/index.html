@@ -22,6 +22,14 @@
 		var brightnesstimer;
 		var brightnessoldValue;
 
+		$.get('/settings', function(data) {
+		    data = data.status.split("\n").filter(function(n){ return !!n }).map(function (n) { return n.split(':'); });
+		    data.forEach(function (val) {
+			$('#' + val[0]).slider('setValue', +val[1]);
+                    });
+		});
+
+
 		function delayBrightness(control, value) {
 			clearTimeout(brightnesstimer);
 			brightnesstimer = setTimeout(function() {
