@@ -1,5 +1,6 @@
 <div id="tcamera" class="tab-pane fade">
 	<div class="row">
+<div class="panel-group" id="panels">
 		<div class="col-md-7">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -18,8 +19,10 @@
 		<div class="col-md-5">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h3 class="panel-title">Zones</h3>
+
+					<h3 class="panel-title"><a data-toggle="collapse" data-parent="#panels" href="#panel_zones">Zones</a></h3>
 				</div>
+<div id="pane_zones" class="panel-collapse collapse in">
 				<div class="panel-body">
 
 					<div class="table-responsive">
@@ -33,12 +36,14 @@
 					</div>
 
 				</div>
+</div>
 			</div>
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">Frames</h3>
 				</div>
+<div class="panel-collapse collapse in">
 				<div class="panel-body">
 
 					<div class="table-responsive">
@@ -48,6 +53,7 @@
 							<tr><th>fps:</th><td align=right> <span id="fps">0</span></td></tr>
 						</table>
 					</div>
+</div>
 
 				</div>
 			</div>
@@ -55,6 +61,7 @@
 				<div class="panel-heading">
 					<h3 class="panel-title">Custom variables</h3>
 				</div>
+<div class="panel-collapse collapse in">
 				<div class="panel-body">
 
 					<div class="table-responsive">
@@ -66,7 +73,9 @@
 						</table>
 					</div>
 				</div>
+</div>
 			</div>
 		</div>
 	</div>
+</div>
 </div>
