@@ -121,6 +121,8 @@ io.sockets.on('connection', function(socket) {
     code = data;
     console.log('codeStart: ' + data);
 
+    arenomat.stop();
+
 /*
     var session = new Session(data);
     session.save();
@@ -135,7 +137,7 @@ io.sockets.on('connection', function(socket) {
     isRunning = false;
     shocking = 0;
 
-    arenomat.shock.off();
+    arenomat.stop();
 
     console.log('codeStop');
   });

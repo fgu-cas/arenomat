@@ -179,6 +179,7 @@
           ctx.beginPath();
           for (i = 1; i < this.positions[n].length; i++) {
             ctx.moveTo(this.positions[n][i - 1].x, this.positions[n][i - 1].y);
+        ctx.lineWidth = 2;
             ctx.lineTo(this.positions[n][i].x, this.positions[n][i].y);
           }
           ctx.strokeStyle = 'rgba(' + this.colors[c] + ', 0.5)';
@@ -209,7 +210,7 @@
         ctx.globalCompositeOperation = 'destination-over';
         ctx.fillStyle = 'rgba(255,255,255,0.8)';
         ctx.strokeStyle = 'rgb(' + this.colors[n] + ')';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 2;
 
         ctx.beginPath();
         //	ctx.strokeRect(position.x, position.y, 5, 5);

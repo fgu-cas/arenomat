@@ -67,7 +67,7 @@ $(document).ready(function() {
         actualFrame = null;
       }
     }
-  }, 40);
+  }, 10);
 
   // TABS
   // load via hash
