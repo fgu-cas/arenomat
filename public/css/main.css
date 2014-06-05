@@ -54,17 +54,17 @@ html, body {
 }
 
 .slider {
-    width: 100% !important;
-    height: 20px !important;
-}
-.slider-track {
-    height: 20px !important;
+    width: 100% !important; 
 }
 
 .slider-selection {
-    background: blue !important;
+    background: #149bdf !important;
 }
 
 .webcam-panel-body {
 padding: 0 15px !important;
+}
+
+a { 
+cursor: pointer; cursor: hand;
 }

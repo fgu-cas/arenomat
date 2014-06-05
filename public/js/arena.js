@@ -65,7 +65,7 @@
       this.record();
     },
     setData: function(frame) {
-      if (frame.tracked)
+      if (frame.tracked && frame.cv[0])
         this.inZones = frame.cv[0].zones;
       if (!this.moving)
         this.zones = frame.zones;
