@@ -83,7 +83,7 @@
           if (!this.positions[n])
             this.positions[n] = [];
           this.positions[n].push(frame.cv[n].position);
-          if (this.positions[n].length > 50)
+          if (this.positions[n].length > 500)
             this.positions[n].shift();
         }
       }
