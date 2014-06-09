@@ -212,8 +212,15 @@ router.get('/projector', function(req, res) {
 
 // route to show all our sessions
 router.get("/sessions", function(req, res) {
-  Session.find({}, function(err, docs) {
-    res.render('sessions/index', {sessions: docs, layout: false});
+
+
+
+Session.aggregate([{ 
+    $group : { _id : "$name", sessions: { $push: "$createdAt"} },
+//    $group : { _id: "$sessions.createdAt", sessions: { $push: "$sessions.createdAt" }}
+}], function(err, docs) {
+console.log(docs);
+    res.render('sessions/index', {experiments: docs, layout: false});
   });
 });
 

@@ -13,25 +13,24 @@
 			<ul class="nav navbar-nav nav-tabs">
 
 				<li class="dropdown">
-					<a href="#" data-toggle="dropdown" class="dropdown-toggle">File<b class="caret"></b></a>
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle">Session<b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="" id="codeClear"><i class="fa fa-file"></i> New</a></li>
-						<li class="divider"></li>
+						<li><a id="sessions" href="/sessions" data-toggle="modal" data-target="#modal"><i class="fa fa-cloud-download"></i> Export</a></li>
+					</ul>
+				</li>
+
+				<li class="dropdown">
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle">Experiment<b class="caret"></b></a>
+					<ul class="dropdown-menu">
 						<li><a id="codeLoad" href="/experiments" data-toggle="modal" data-target="#modal"><i class="fa fa-cloud-download"></i> Load</a></li>
 						<li><a href="#save" id="codeSave"><i class="fa fa-save"></i> Save</a></li>
-						<li class="divider"></li>
-						<li>
-							<a href="#" id="codeImport"><i class="fa fa-download"></i> Import</a>
-							<input type="file" id="import" style="display: none;"/>
-						</li>
-						<li><a href="#" id="codeExport"><i class="fa fa-upload"></i> Export</a></li>
 					</ul>
 				</li>
 
 
 				<li class="active"><a id="blogic" data-toggle="tab" href="#tlogic">Logic</a></li>
 				<li><a data-toggle="tab" href="#tcamera">Camera</a></li>
-				<!--				<li><a data-toggle="tab" href="#tanalyze">Analyze</a></li> -->
+				<li><a data-toggle="tab" href="#tanalyze">Analyze</a></li>
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">

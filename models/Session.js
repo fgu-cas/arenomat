@@ -1,12 +1,11 @@
-var mongoose = require("mongoose-paginate")
-  , timestamps = require('mongoose-timestamp');
+var mongoose = require("mongoose-paginate");
 
 var SessionSchema = new mongoose.Schema({
   name: String,
   code: String,
   xml: String,
-  zones: {}
+  zones: {},
+  createdAt: { type: Date, default: Date.now }
 });
 
-SessionSchema.plugin(timestamps);
 mongoose.model('Session', SessionSchema);
