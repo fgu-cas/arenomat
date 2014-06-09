@@ -1,6 +1,14 @@
 camWidth = 800, camHeight = 600;
 zones = [];
 actualFrame = {};
+settings = {
+    subject_area: '1000,2000',
+    robot_area: '3000,4000',
+    threshold: '200,250'
+};
+
+sessionId = -1;
+
 
 var five = require("johnny-five");
 var board = new five.Board();
@@ -118,15 +126,17 @@ app.use(function(err, req, res, next) {
 io.sockets.on('connection', function(socket) {
   console.log('connection');
   socket.on('codeStart', function(data) {
-    code = data;
+    code = data.code;
     console.log('codeStart: ' + data);
 
     arenomat.stop();
 
-/*
     var session = new Session(data);
     session.save();
-*/
+
+    sessionId = session._id;
+console.log(sessionId);
+
     isRunning = true;
     first = true;
     startTime = new Date().getTime() / 1000;
@@ -187,7 +197,8 @@ stream.on("data", function(im) {
   small.resize(camHeight / 2, camHeight / 2);
 
   actualFrame = {
-    timestamp: new Date(),
+    session: sessionId,
+    timestamp: new Date().toISOString(),
     elapsedTime: 0,
     isArduino: isArduino,
     isWebcam: isWebcam,
@@ -220,15 +231,14 @@ stream.on("data", function(im) {
 //    if (timeout) clearTimeout(timeout);
 //    timeout = setTimeout(function () { mLoop(); }.bind(this), 1);
 mLoop();
-/*
-    var frame = new Frame(actualFrame);
-    frame.save();
-*/
+
+//    var frame = new Frame(actualFrame);
+//    frame.save();
   }
 
-  io.set('log level', 2);
+  io.set('log level', 0);
   io.sockets.emit('frame', actualFrame);
-  io.set('log level', 5); // logging level to 5
+//  io.set('log level', 5); // logging level to 5
 
   process.nextTick(function() {
     stream.resume();

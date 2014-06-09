@@ -67,7 +67,7 @@ Blockly.Language.turntable = {
 
     this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/turntable.png", 16, 16)).appendTitle("Turntable")
     this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["CW", "CW"], ["CCW", "CCW"]]), "direction")
-    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["stop", 0], ["0.25 RPM", 30], ["0.5 RPM", 90], ["0.75 RPM", 150], ["1 RPM", 210], ["2 RPM", 255]]), "velocity")
+    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["stop", "0"], ["0.25 RPM", "30"], ["0.5 RPM", "90"], ["0.75 RPM", "150"], ["1 RPM", "210"], ["2 RPM", "255"]]), "velocity")
 
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -86,7 +86,7 @@ Blockly.JavaScript.turntable = function() {
     var func = [];
     func.push('function ' + functionName + '(direction, velocity) {');
     func.push('  console.log("motor: " + velocity);');
-    func.push('  arenomat.turntable.rotate(direction, velocity);');
+    func.push('  arenomat.turntable.rotate(direction, +velocity);');
     func.push('}');
     Blockly.JavaScript.definitions_['turntable'] = func.join('\n');
   }

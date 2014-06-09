@@ -49,7 +49,6 @@ $(document).ready(function() {
   });
 
   $('#addZone').click(function() {
-    console.log('add');
     $('#vision').arena('addZone', 0);
   });
 

@@ -112,8 +112,6 @@ $(document).ready(function() {
   function codeSave() {
     var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
     var name = $(xml).find('value[name="name"]')[0].innerText;
-//               $(xml).find('value[name="day"]')[0].innerText;
-
     var textxml = Blockly.Xml.domToText(xml);
     var code = Blockly.Generator.workspaceToCode('JavaScript');
 
@@ -155,11 +153,20 @@ $(document).ready(function() {
 
   $(".codeStart").click(function(e) {
     e.preventDefault();
+
+var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+
+    var name = $(xml).find('value[name="name"]')[0].innerText || '';
+    var textxml = Blockly.Xml.domToText(xml);
+
     var code = Blockly.Generator.workspaceToCode('JavaScript');
+
     $(".codeStart").attr('disabled', true);
     $(".codeStop").attr('disabled', false);
-    socket.emit('codeStart', code);
+
+    socket.emit('codeStart', {name: name, xml: textxml, code: code});
   });
+
   $(".codeStop").click(function(e) {
     e.preventDefault();
     $(".codeStop").attr('disabled', true);

@@ -4,7 +4,7 @@ var mongoose = require("mongoose-paginate"),
 
 var FrameSchema = new mongoose.Schema({
   session: { type: ObjectId, required: true, ref: 'Session' },
-  timestamp: Number,
+  timestamp: String,
   tracked: Boolean,
   cv: [],
   actions: {},

@@ -4,11 +4,14 @@ var express = require('express')
 
   , Experiment = mongoose.model('Experiment')
   , Frame = mongoose.model('Frame')
+  , Session = mongoose.model('Session')
 
   , fs = require('fs')
   , partialsPath = __dirname + '/views/partials'
   , partials = {}
-  , files = [];
+  , files = []
+  , sys = require('sys')
+  , exec = require('child_process').exec;
 
 
 var camelize = function (string) {
@@ -44,6 +47,8 @@ router.get("/experiments", function(req, res) {
     res.render('experiments/index', {experiments: docs, layout: false});
   });
 });
+
+
 
 //this is going to be our create route
 router.post('/experiments', function(req, res) {
@@ -132,21 +137,23 @@ router.get('/soundfiles', function(req, res) {
 });
 
 router.get('/settings', function(req, res) {
-  var sys = require('sys')
-  var exec = require('child_process').exec;
-
-  exec("v4l2-ctl -C  brightness,exposure_absolute,gain,contrast,focus_absolute", function(error, stdout, stderr) {
-    res.json({status: stdout});
+  exec("v4l2-ctl -C  brightness,exposure_absolute,gain,contrast,focus_absolute,sharpness,saturation", function(error, stdout, stderr) {
+    res.json({status: stdout, settings: settings});
   });
 });
 
 
 router.get('/settings/:control/:value', function(req, res) {
-  var sys = require('sys')
-  var exec = require('child_process').exec;
-  exec("v4l2-ctl -c " + req.params.control + "=" + req.params.value, function(error, stdout, stderr) {
-    res.json({status: stdout});
-  });
+  if (req.params.control.substring(0, 9) == 'settings_') {
+    settings[req.params.control.substring(9)] = req.params.value;
+    console.log(settings);
+  }
+  else {
+
+    exec("v4l2-ctl -c " + req.params.control + "=" + req.params.value, function(error, stdout, stderr) {
+      res.json({});
+    });
+  }
 });
 
 router.get('/projector', function(req, res) {
@@ -199,6 +206,14 @@ router.get('/projector', function(req, res) {
   canvas.toBuffer(function(err, buf) {
     res.writeHead(200, {'Content-Type': 'image/png', 'Content-Length': buf.length});
     res.end(buf);
+  });
+});
+
+
+// route to show all our sessions
+router.get("/sessions", function(req, res) {
+  Session.find({}, function(err, docs) {
+    res.render('sessions/index', {sessions: docs, layout: false});
   });
 });
 
