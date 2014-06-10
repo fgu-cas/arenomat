@@ -108,10 +108,8 @@ cursor: pointer; cursor: hand;
     width:25px
 }
 .tree li span {
-    border:1px solid #999;
     display:inline-block;
     text-decoration:none;
-    padding: 2px 3px;
 }
 .tree li.parent_li>span {
     cursor:pointer

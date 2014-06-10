@@ -155,8 +155,13 @@ $(document).ready(function() {
     e.preventDefault();
 
 var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+var name = '';
+    var names = $(xml).find('value[name="name"]');
+    if (names.length) name = names[0].innerText || '';
 
-    var name = $(xml).find('value[name="name"]')[0].innerText || '';
+if (!name) {
+  alert('No session name, aborting');
+} else {
     var textxml = Blockly.Xml.domToText(xml);
 
     var code = Blockly.Generator.workspaceToCode('JavaScript');
@@ -165,6 +170,7 @@ var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
     $(".codeStop").attr('disabled', false);
 
     socket.emit('codeStart', {name: name, xml: textxml, code: code});
+}
   });
 
   $(".codeStop").click(function(e) {

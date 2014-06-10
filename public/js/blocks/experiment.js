@@ -4,7 +4,7 @@ Blockly.Language.experiment = {
     this.setColour(50);
     this.appendDummyInput("")
       .appendTitle(new Blockly.FieldImage("img/experiment.png", 16, 16))
-      .appendTitle("experiment")
+      .appendTitle("session")
 
     this.appendValueInput("name").appendTitle('name');
     this.appendValueInput("person").appendTitle('person');

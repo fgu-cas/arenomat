@@ -1,3 +1,8 @@
+require('nodetime').profile({
+    accountKey: 'b78fd9461ce9c83eccf23885c281f5aaadf9760f', 
+    appName: 'Arenomat'
+  });
+
 camWidth = 800, camHeight = 600;
 zones = [];
 actualFrame = {};
