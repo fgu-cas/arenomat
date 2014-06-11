@@ -40,11 +40,15 @@ Blockly.JavaScript.zone = function() {
 Blockly.Language.position = {
   init: function() {
     this.setColour(10);
-    this.appendValueInput("object")
+    this.appendDummyInput("")
       .appendTitle(new Blockly.FieldImage("img/position.png", 16, 16))
+.appendTitle("get")
+    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["x", "x"], ["y", "y"], ["area", "area"]]), "axis");
+    this.appendDummyInput("").appendTitle("of")
+    this.appendValueInput("object")
+
 
     this.setInputsInline(true);
-    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["x", "x"], ["y", "y"], ["area", "area"]]), "axis");
     this.setOutput(true, "Number");
     this.setTooltip('return position attribute');
   }
