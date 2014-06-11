@@ -194,11 +194,11 @@ Blockly.Language.out = {
     this.setColour(190);
     this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/out.png", 16, 16)).appendTitle("out")
 
-    this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput(""), "key");
+    this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("variable"), "key");
+    this.appendValueInput("value", "Text")
 
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.appendValueInput("value", Text)
     this.setTooltip('out');
   }
 };

@@ -1,6 +1,7 @@
 
 Blockly.Language.experiment = {
   init: function() {
+this.setMovable(false);
     this.setColour(50);
     this.appendDummyInput("")
       .appendTitle(new Blockly.FieldImage("img/experiment.png", 16, 16))
