@@ -9,7 +9,7 @@ actualFrame = {};
 settings = {
     subject_area: '1000,2000',
     robot_area: '3000,4000',
-    threshold: '200,250'
+    threshold: '200,255'
 };
 
 sessionId = -1;

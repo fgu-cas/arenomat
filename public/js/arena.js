@@ -168,7 +168,7 @@
     },
     drawObjects: function(tracked) {
       var ctx = this.ctxs['objects'];
-      ctx.canvas.width = ctx.canvas.width;
+//      ctx.canvas.width = ctx.canvas.width;
 
       ctx.beginPath();
       ctx.globalAlpha = 1;
@@ -200,7 +200,7 @@
         }
     },
     drawZones: function() {
-      var ctx = this.ctxs['zones'];
+      var ctx = this.ctxs['objects'];
       ctx.canvas.width = ctx.canvas.width;
       for (var n = 0; n < this.zones.length; n++) {
         var points = this.zones[n];

@@ -69,7 +69,8 @@ $(document).ready(function() {
   }
   // save to hash
   $(document.body).on("click", "a[data-toggle]", function(event) {
-    location.hash = this.getAttribute("href");
+    if (this.getAttribute("href").substring(0, 1) !== '/')
+      location.hash = this.getAttribute("href");
   });
 
   $(document).on('shown.bs.tab', 'a#blogic', function(e) {
@@ -99,4 +100,8 @@ $(function () {
         }
         e.stopPropagation();
     });
+});
+
+$('body').on('hidden.bs.modal', '.modal', function () {
+    $(this).removeData('bs.modal');
 });

@@ -146,7 +146,7 @@ router.get('/settings', function(req, res) {
 router.get('/settings/:control/:value', function(req, res) {
   if (req.params.control.substring(0, 9) == 'settings_') {
     settings[req.params.control.substring(9)] = req.params.value;
-    console.log(settings);
+    res.json({});
   }
   else {
 
