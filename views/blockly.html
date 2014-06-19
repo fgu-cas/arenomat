@@ -1,4 +1,27 @@
 <xml id="toolbox" style="display: none">
+	<category name="Session">
+		<block type="experiment"></block>
+		<block type="out"></block>
+		<block type="time"></block>
+	</category>
+	<category name="Arena">
+		<block type="rotatezone"></block>
+		<block type="subject"></block>
+		<block type="robot"></block>
+		<block type="center"></block>
+		<block type="distance"></block>
+		<block type="zone"></block>
+		<block type="position"></block>
+	</category>
+	<category name="Input / Output">
+		<block type="light"></block>
+		<block type="shock"></block>
+		<block type="turntable"></block>
+		<block type="feeder"></block>
+		<block type="sound"></block>
+		<block type="motor_position"></block>
+	</category>
+
 	<category name="Control">
 		<category name="If">
 			<block type="controls_if"></block>
@@ -40,28 +63,7 @@
 			<block type="controls_flow_statements"></block>
 		</category>
 	</category>
-	<category name="Session">
-		<block type="experiment"></block>
-		<block type="out"></block>
-		<block type="time"></block>
-	</category>
-	<category name="Arena">
-		<block type="rotatezone"></block>
-		<block type="subject"></block>
-		<block type="robot"></block>
-		<block type="center"></block>
-		<block type="distance"></block>
-		<block type="zone"></block>
-		<block type="position"></block>
-	</category>
-	<category name="Input / Output">
-		<block type="light"></block>
-		<block type="shock"></block>
-		<block type="turntable"></block>
-		<block type="feeder"></block>
-		<block type="sound"></block>
-		<block type="motor_position"></block>
-	</category>
+
 	<category name="Logic">
 		<block type="logic_compare"></block>
 		<block type="logic_operation"></block>
@@ -113,6 +115,12 @@
 		</block>
 		<block type="math_random_float"></block>
 	</category>
+	<category name="Text">
+		<block type="text"></block>
+		<block type="text_length"></block>
+    </category>
+	<category name="Variables" custom="VARIABLE"></category>
+	<category name="Functions" custom="PROCEDURE"></category>
 	<category name="Lists">
 		<block type="lists_create_empty"></block>
 		<block type="lists_create_with"></block>
@@ -129,164 +137,4 @@
 		<block type="lists_getIndex"></block>
 		<block type="lists_setIndex"></block>
 	</category>
-	<category name="Text">
-		<block type="text"></block>
-		<block type="text_length"></block>
-    </category>
-	<category name="Variables" custom="VARIABLE"></category>
-	<category name="Functions" custom="PROCEDURE"></category>
-	<category name="Library">
-		<category name="Randomize">
-			<block type="procedures_defnoreturn">
-				<mutation>
-					<arg name="list"></arg>
-				</mutation>
-				<title name="NAME">randomize</title>
-				<statement name="STACK">
-					<block type="controls_for" inline="true">
-						<title name="VAR">x</title>
-						<value name="FROM">
-							<block type="math_number">
-								<title name="NUM">1</title>
-							</block>
-						</value>
-						<value name="TO">
-							<block type="lists_length" inline="false">
-								<value name="VALUE">
-									<block type="variables_get">
-										<title name="VAR">list</title>
-									</block>
-								</value>
-							</block>
-						</value>
-						<value name="BY">
-							<block type="math_number">
-								<title name="NUM">1</title>
-							</block>
-						</value>
-						<statement name="DO">
-							<block type="variables_set" inline="false">
-								<title name="VAR">y</title>
-								<value name="VALUE">
-									<block type="math_random_int" inline="true">
-										<value name="FROM">
-											<block type="math_number">
-												<title name="NUM">1</title>
-											</block>
-										</value>
-										<value name="TO">
-											<block type="lists_length" inline="false">
-												<value name="VALUE">
-													<block type="variables_get">
-														<title name="VAR">list</title>
-													</block>
-												</value>
-											</block>
-										</value>
-									</block>
-								</value>
-								<next>
-									<block type="variables_set" inline="false">
-										<title name="VAR">temp</title>
-										<value name="VALUE">
-											<block type="lists_getIndex" inline="true">
-												<mutation statement="false" at="true"></mutation>
-												<title name="MODE">GET</title>
-												<title name="WHERE">FROM_START</title>
-												<value name="AT">
-													<block type="variables_get">
-														<title name="VAR">y</title>
-													</block>
-												</value>
-												<value name="VALUE">
-													<block type="variables_get">
-														<title name="VAR">list</title>
-													</block>
-												</value>
-											</block>
-										</value>
-										<next>
-											<block type="lists_setIndex" inline="false">
-												<value name="AT">
-													<block type="variables_get">
-														<title name="VAR">y</title>
-													</block>
-												</value>
-												<value name="LIST">
-													<block type="variables_get">
-														<title name="VAR">list</title>
-													</block>
-												</value>
-												<value name="TO">
-													<block type="lists_getIndex" inline="true">
-														<mutation statement="false" at="true"></mutation>
-														<title name="MODE">GET</title>
-														<title name="WHERE">FROM_START</title>
-														<value name="AT">
-															<block type="variables_get">
-																<title name="VAR">x</title>
-															</block>
-														</value>
-														<value name="VALUE">
-															<block type="variables_get">
-																<title name="VAR">list</title>
-															</block>
-														</value>
-													</block>
-												</value>
-												<next>
-													<block type="lists_setIndex" inline="false">
-														<value name="AT">
-															<block type="variables_get">
-																<title name="VAR">x</title>
-															</block>
-														</value>
-														<value name="LIST">
-															<block type="variables_get">
-																<title name="VAR">list</title>
-															</block>
-														</value>
-														<value name="TO">
-															<block type="variables_get">
-																<title name="VAR">temp</title>
-															</block>
-														</value>
-													</block>
-												</next>
-											</block>
-										</next>
-									</block>
-								</next>
-							</block>
-						</statement>
-					</block>
-				</statement>
-			</block>
-		</category>
-	</category>
-    <category name="Timers">
-		<block type="javascript_setinterval">
-			<value name="interval">
-				<block type="math_number">
-					<title name="NUM">1000</title>
-				</block>
-			</value>
-		</block>
-		<block type="javascript_settimeout">
-			<value name="timeout">
-				<block type="math_number">
-					<title name="NUM">1000</title>
-				</block>
-			</value>
-		</block>
-    </category>
-    <category name="Console">
-		<block type="javascript_consolelog">
-			<value name="log">
-				<block type="text">
-					<title name="TEXT">Hello World</title>
-				</block>
-			</value>
-		</block>
-    </category>
 </xml>
