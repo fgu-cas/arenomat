@@ -1,9 +1,4 @@
-require('nodetime').profile({
-    accountKey: 'b78fd9461ce9c83eccf23885c281f5aaadf9760f', 
-    appName: 'Arenomat'
-  });
-
-camWidth = 800, camHeight = 600;
+camWidth = 1280, camHeight = 720;
 zones = [];
 actualFrame = {};
 settings = {
@@ -123,6 +118,9 @@ app.use(function(err, req, res, next) {
   });
 });
 
+http.listen(80, function() {
+  console.log('Listening on port %d', http.address().port);
+});
 
 
 
@@ -250,6 +248,8 @@ mLoop();
   });
 });
 
+
+
 board.on('error', function() {
   console.log('not ready!');
 });
@@ -267,9 +267,6 @@ board.on("ready", function() {
   });
 });
 
-http.listen(80, function() {
-  console.log('Listening on port %d', http.address().port);
-});
 
 if (vc) {
   isWebcam = true;
