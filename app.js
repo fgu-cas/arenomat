@@ -49,6 +49,19 @@ fs.readdirSync(modelsPath).forEach(function(file) {
 var routes = require('./routes');
 var arena = require('./lib/arena');
 
+//mongoose
+//mongoose.set('debug', true)
+var URI = "mongodb://localhost/arenomat";
+mongoose.connect(URI, function(err) {
+  if (err) {
+    throw err;
+  }
+  return console.log('Connected to database');
+});
+
+var Frame = mongoose.model('Frame');
+var Session = mongoose.model('Session');
+
 // Set View Engine
 app.engine('html', require('hogan-express'));
 app.set('view options', {layout: true});
@@ -74,18 +87,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 
 
-//mongoose
-//mongoose.set('debug', true)
-var URI = "mongodb://localhost/arenomat";
-mongoose.connect(URI, function(err) {
-  if (err) {
-    throw err;
-  }
-  return console.log('Connected to database');
-});
-
-var Frame = mongoose.model('Frame');
-var Session = mongoose.model('Session');
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
