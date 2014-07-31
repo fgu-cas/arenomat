@@ -1,4 +1,4 @@
-camWidth = 1280, camHeight = 720;
+camWidth = 800, camHeight = 600;
 zones = [];
 actualFrame = {};
 settings = {
@@ -11,7 +11,8 @@ sessionId = -1;
 
 
 var five = require("johnny-five");
-var board = new five.Board();
+
+board = new five.Board();
 
 var express = require('express');
 var path = require('path');
@@ -181,10 +182,12 @@ var first = true;
 
 // WEBCAM
 try {
-  var vc = new cv.VideoCapture(0, camWidth, camHeight);
+  var vc = new cv.VideoCapture(0);
+  vc.setWidth(camWidth);
+  vc.setHeight(camHeight);
 } catch (e) {
   try {
-    var vc = new cv.VideoCapture(1, camWidth, camHeight);
+    var vc = new cv.VideoCapture(1);
   } catch (e) {
     console.log('no webcam');
   }
