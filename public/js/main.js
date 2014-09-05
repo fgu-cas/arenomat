@@ -20,9 +20,11 @@ $(document).ready(function() {
     $('#fps').text(fps).css('color', (fps < 15) ? 'red' : 'green');
     oldtime = now;
 
-
+    var success_rate = (cv_counter / cam_counter * 100).toFixed(2);
+console.log(success_rate);
     $('#cam_counter').text(cam_counter);
     $('#cv_counter').text(cv_counter);
+    $('#success_rate').text(success_rate + '%');
     $('#elapsedTime').text(frame.elapsedTime.toFixed(2) + 's').css('background', (frame.isRunning) ? 'red' : 'green');
 //console.log(frame.output);
     $('#isShocking span').text((frame.actions.shocking) / 10 + 'mA');
