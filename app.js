@@ -6,7 +6,8 @@ settings = {
     robot_area: '3000,4000',
     threshold: '200,255'
 };
-
+shocked = 0;
+var distance = 0;
 sessionId = -1;
 
 
@@ -132,7 +133,7 @@ io.sockets.on('connection', function(socket) {
   console.log('connection');
   socket.on('codeStart', function(data) {
     code = data.code;
-    console.log('codeStart: ' + data);
+    console.log('codeStart: ' + code);
 
     arenomat.stop();
 
@@ -144,6 +145,7 @@ console.log(sessionId);
 
     isRunning = true;
     first = true;
+    distance = 0;
     startTime = new Date().getTime() / 1000;
 
 
@@ -202,17 +204,22 @@ stream.on("data", function(im) {
   var small = cropped.copy();
   var center = {x: camHeight / 2, y: camHeight / 2};
   small.resize(camHeight / 2, camHeight / 2);
-
+if (actualFrame.cv && actualFrame.cv[0]) {
+  var oldx = actualFrame.cv[0].position.x || 0;
+  var oldy = actualFrame.cv[0].position.y || 0;
+}
   actualFrame = {
     session: sessionId,
     timestamp: new Date().toISOString(),
     elapsedTime: 0,
     isArduino: isArduino,
     isWebcam: isWebcam,
+    isRunning: isRunning,
     cv: [],
     actions: {shocking: 0},
     webcam: small.toBuffer().toString('base64'),
-    zones: zones
+    zones: zones,
+    shocked: shocked
   }
 
   actualFrame.cv[-1] = {position: center};
@@ -220,6 +227,14 @@ stream.on("data", function(im) {
 
   arena.blobDetector(cropped);
   arena.zoneDetector();
+
+console.log(actualFrame.cv[0]);
+if (actualFrame.cv[0]) {
+
+  distance += Math.sqrt(Math.pow(actualFrame.cv[0].position.x - oldx, 2) + Math.pow(actualFrame.cv[0].position.y - oldy, 2));
+  actualFrame.distance = distance;
+console.log('Distance: ' + distance, Math.pow(actualFrame.cv[0].x - oldx, 2));
+}
 
   if (isRunning && code) {
     var now = new Date().getTime() / 1000;

@@ -152,6 +152,9 @@ $(document).ready(function() {
   });
 
   $(".codeStart").click(function(e) {
+    cam_counter = 0;
+    cv_counter = 0;
+
     e.preventDefault();
 
 var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);

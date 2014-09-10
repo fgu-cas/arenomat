@@ -6,7 +6,7 @@ Blockly.Language.out = {
 
     this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("variable"), "key");
     this.appendValueInput("value", "Text")
-
+this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip('out');

@@ -28,6 +28,10 @@
 
     this.positions = {}
 
+    this.shiftKey = false;
+    this.mouseX = 0;
+    this.mouseY = 0;
+
     this.colors = [
       [30, 221, 47],
       [235, 176, 53],
@@ -115,6 +119,7 @@
 
       var that = this;
 
+      $(document).bind('keydown keyup', this, this.keydown);
       $('#zones')
         .bind('mousedown', this, this.mousedown)
         .bind('contextmenu', this, this.rightclick)
@@ -251,8 +256,19 @@
           e.offsetX = (e.pageX - $(e.target).offset().left);
           e.offsetY = (e.pageY - $(e.target).offset().top);
         }
+if (that.shiftKey) {
+console.log('shift');
+        for (var i = 0; i < that.zones[that.activeZone].length; i++) {
+    	    that.zones[that.activeZone][i].x += Math.round(e.offsetX - that.mouseX);
+    	    that.zones[that.activeZone][i].y += Math.round(e.offsetY - that.mouseY);
+	}
+
+	that.mouseX = e.offsetX;
+	that.mouseY = e.offsetY;
+} else {
         that.zones[that.activeZone][that.activePoint].x = Math.round(e.offsetX);
         that.zones[that.activeZone][that.activePoint].y = Math.round(e.offsetY);
+}
         that.drawZones();
       }
     },
@@ -263,6 +279,10 @@
       that.activePoint = null;
       that.moving = false;
       that.drawZones();
+    },
+    keydown: function (e) {
+      var that = e.data;
+	console.log(that.shiftKey = e.shiftKey);
     },
     rightclick: function(e) {
       var that = e.data;
@@ -332,6 +352,10 @@
         x: Math.round(x),
         y: Math.round(y)
       });
+
+	that.mouseX = x;
+	that.mouseY = y;
+
       that.activePoint = insertAt;
       that.moving = true;
 //      $('vision').bind('mousemove', that, that.move);
