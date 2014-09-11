@@ -2,7 +2,7 @@ var socket, oldtime;
 var activeArea = [false];
  var cam_counter = 0;
   var cv_counter = 0;
- 
+ var done = false;
 $(document).ready(function() {
   var old, position = {x: 0, y: 0};
   var actualFrame = {};
@@ -28,6 +28,14 @@ $(document).ready(function() {
 
     var mins = Math.floor(frame.elapsedTime / 60);
     var secs = frame.elapsedTime - mins * 60;
+
+    var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+    var length = +$(xml).find('value[name="length"]')[0].innerText;
+if (frame.elapsedTime > length * 60 && !done) {
+    done = true;
+ $('#modal .modal-content').html('<div class="modal-body"><div class="row"><div class="col-md-12"><div class="alert alert-warning"><i class="fa fa-exclamation-triangle fa-6"></i> Experiment je u konce!</div></div></div></div>');
+ $('#modal').modal('show');
+}
 
     $('#elapsedTime').text(mins+ ':'+secs.toFixed(2)).css('background', (frame.isRunning) ? 'red' : 'green');
 //console.log(frame.output);
@@ -91,6 +99,80 @@ $(document).on('hidden.bs.modal', '.modal', function () {
     $(this).removeData('bs.modal');
     $(this).find('.modal-body').html('');
 });
+
+
+$("#shock-control").on("slide", function(slideEvt) {
+    $("#shock_val").text(slideEvt.value/10 + 'mA');
+});
+
+                var timer;
+                var oldValue;
+
+                var brightnesstimer;
+                var brightnessoldValue;
+
+                $.get('/settings', function(data) {
+                    data.status.split("\n").filter(function(n){ return !!n }).map(function (n) { return n.split(':'); })
+                      .forEach(function (val) {
+                        $('#' + val[0]).slider('setValue', +val[1]);
+                      });
+                    for (var key in data.settings) {
+                        $('#settings_' + key).slider('setValue', [+data.settings[key].split(',')[0],+data.settings[key].split(',')[1]]);
+                    }
+                });
+
+
+                function delayBrightness(control, value) {
+                        clearTimeout(brightnesstimer);
+                        brightnesstimer = setTimeout(function() {
+                                $.get('/settings/' + control + '/' + value, function(data) {
+                                });
+                        }, 200);
+                }
+
+                function delayShow(value) {
+                        clearTimeout(timer);
+                        timer = setTimeout(function() {
+                                $.get('/frames/' + value, function(data) {
+//          if (data.tracked) {
+                                        for (var n = 0; n < 7; n++) {
+                                                var t = '';
+                                                if (data.cv[n]) {
+                                                        t = data.cv[n].position.x + ', ' + data.cv[n].position.y;
+                                                }
+                                                $('#object_' + (n + 1)).text(t);
+
+                                                $('#output').text(JSON.stringify(data.output));
+//}
+                                        }
+                                        $("#image").attr("src", 'data:image/jpeg;base64,' + data.webcam);
+                                });
+                        }, 200);
+                }
+
+                $("#ex6").slider({
+                        tooltip: 'always'
+                }).on('slide', function(slideEvt) {
+                        if (oldValue !== slideEvt.value) {
+                                oldValue = slideEvt.value;
+                                delayShow(slideEvt.value);
+                        }
+                });
+
+
+                $(".webcam-control")
+                  .slider({
+                          tooltip: 'always'
+                  })
+                  .on('slide', function(slideEvt) {
+			console.log(slideEvt.value);
+                          if (brightnessoldValue !== slideEvt.value) {
+                                  brightnessoldValue = slideEvt.value;
+                                  delayBrightness($(this).data('webcam'), slideEvt.value);
+                          }
+                  });
+
+                delayShow(1);
 
 });
 
