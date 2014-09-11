@@ -6,12 +6,13 @@ Blockly.Language.out = {
 
     this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("variable"), "key");
     this.appendValueInput("value", "Text")
-this.setInputsInline(true);
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip('out');
   }
 };
+
 Blockly.JavaScript.out = function() {
   var argument0 = this.getTitleValue('key') || '0';
   var argument1 = Blockly.JavaScript.valueToCode(this, 'value', Blockly.JavaScript.ORDER_COMMA) || 'false';

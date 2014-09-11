@@ -3,7 +3,7 @@ $(document).ready(function() {
     "#000000", "#3B3131", "#463E3F", "#504A4B", "#5C5858", "#666362",
     "#F9B7FF", "#E3E4FA", "#FFFFFF"];
   Blockly.inject(document.getElementById('blockly'),
-    {path: './', toolbox: document.getElementById('toolbox')});
+          {path: './', toolbox: document.getElementById('toolbox')});
 
   /**
    * Bind an event to a function call.
@@ -158,23 +158,24 @@ $(document).ready(function() {
 
     e.preventDefault();
 
-var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-var name = '';
+    var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+    var name = '';
     var names = $(xml).find('value[name="name"]');
-    if (names.length) name = names[0].innerText || '';
+    if (names.length)
+      name = names[0].innerText || '';
 
-if (!name) {
-  alert('No session name, aborting');
-} else {
-    var textxml = Blockly.Xml.domToText(xml);
+    if (!name) {
+      alert('No session name, aborting');
+    } else {
+      var textxml = Blockly.Xml.domToText(xml);
 
-    var code = Blockly.Generator.workspaceToCode('JavaScript');
+      var code = Blockly.Generator.workspaceToCode('JavaScript');
 
-    $(".codeStart").attr('disabled', true);
-    $(".codeStop").attr('disabled', false);
+      $(".codeStart").attr('disabled', true);
+      $(".codeStop").attr('disabled', false);
 
-    socket.emit('codeStart', {name: name, xml: textxml, code: code});
-}
+      socket.emit('codeStart', {name: name, xml: textxml, code: code});
+    }
   });
 
   $(".codeStop").click(function(e) {

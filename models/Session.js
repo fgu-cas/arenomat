@@ -7,7 +7,7 @@ var SessionSchema = new mongoose.Schema({
   shocked: Number,
   distance: Number,
   zones: {},
-  createdAt: { type: Date, default: Date.now }
+  createdAt: {type: Date, default: Date.now}
 });
 
 mongoose.model('Session', SessionSchema);

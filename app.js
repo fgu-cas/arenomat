@@ -2,10 +2,10 @@ camWidth = 800, camHeight = 600;
 zones = [];
 actualFrame = {};
 settings = {
-    subject_area: '1000,2000',
-    robot_area: '3000,4000',
-    threshold: '200,255',
-    shock: 2
+  subject_area: '1000,2000',
+  robot_area: '3000,4000',
+  threshold: '200,255',
+  shock: 2
 };
 shocked = 0;
 arenaAngle = 0;
@@ -143,7 +143,7 @@ io.sockets.on('connection', function(socket) {
     session.save();
 
     sessionId = session._id;
-console.log(sessionId);
+    console.log(sessionId);
 
     isRunning = true;
     first = true;
@@ -208,10 +208,10 @@ stream.on("data", function(im) {
   var small = cropped.copy();
   var center = {x: camHeight / 2, y: camHeight / 2};
   small.resize(camHeight / 2, camHeight / 2);
-if (actualFrame.tracked) {
-  var oldx = actualFrame.cv[0].position.x || 0;
-  var oldy = actualFrame.cv[0].position.y || 0;
-}
+  if (actualFrame.tracked) {
+    var oldx = actualFrame.cv[0].position.x || 0;
+    var oldy = actualFrame.cv[0].position.y || 0;
+  }
   actualFrame = {
     session: sessionId,
     timestamp: new Date().toISOString(),
@@ -229,16 +229,20 @@ if (actualFrame.tracked) {
   actualFrame.cv[-1] = {position: center};
 
 
+  // detect/track position
   arena.blobDetector(cropped);
+  
+  // detect object in zones
   arena.zoneDetector();
 
-//console.log(actualFrame.cv[0]);
-if (actualFrame.tracked && oldx && oldy) {
-  distance = distance + (+Math.sqrt(Math.pow(actualFrame.cv[0].position.x - oldx, 2) + Math.pow(actualFrame.cv[0].position.y - oldy, 2)));
-}
-    distance += 0;
+  // distance counting
+  if (actualFrame.tracked && oldx && oldy) {
+    distance = distance + (+Math.sqrt(Math.pow(actualFrame.cv[0].position.x - oldx, 2) + Math.pow(actualFrame.cv[0].position.y - oldy, 2)));
+  }
+  distance += 0;
   actualFrame.distance = distance;
 
+  // core - running the code
   if (isRunning && code) {
     var now = new Date().getTime() / 1000;
 
@@ -253,15 +257,12 @@ if (actualFrame.tracked && oldx && oldy) {
       mSetup();
     }
 
-//    if (timeout) clearTimeout(timeout);
-//    timeout = setTimeout(function () { mLoop(); }.bind(this), 1);
-mLoop();
+    // main custom program loop
+    mLoop();
 
+    // save frame to db
     var frame = new Frame(actualFrame);
-frame.webcam = 0;
-//console.log(frame);
-//if (frame.cv[0] && frame.cv[0].zones) console.log(frame.cv[0].zones);
-//if (frame.cv[0] && frame.cv[0].position) console.log(frame.cv[0].position);
+    frame.webcam = 0;
     frame.save();
   }
 

@@ -3,10 +3,10 @@ Blockly.Language.shock = {
   init: function() {
     this.setColour(0);
     this.appendDummyInput("")
-      .appendTitle(new Blockly.FieldImage("img/shock.png", 16, 16)).appendTitle("Shock")
+            .appendTitle(new Blockly.FieldImage("img/shock.png", 16, 16)).appendTitle("Shock")
     this.appendDummyInput("")
 //      .appendTitle(new Blockly.FieldDropdown([["0.2mA", "2"], ["0.3mA", "3"], ["0.4mA", "4"], ["0.5mA", "5"], ["0.6mA", "6"], ["0.7mA", "7"]]), "current")
-      .appendTitle(new Blockly.FieldDropdown([["300ms", "300"], ["500ms", "500"], ["1s", "1000"]]), "delay")
+            .appendTitle(new Blockly.FieldDropdown([["300ms", "300"], ["500ms", "500"], ["1s", "1000"]]), "delay")
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip('Shock');
@@ -28,7 +28,7 @@ Blockly.JavaScript.shock = function() {
     Blockly.JavaScript.definitions_['shock'] = func.join('\n');
   }
   var code = Blockly.JavaScript.shock.functionName +
-    '(' + argument0 + ',' + argument1 + ');\n';
+          '(' + argument0 + ',' + argument1 + ');\n';
   return code;
 
 };

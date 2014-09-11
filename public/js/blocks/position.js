@@ -1,12 +1,9 @@
-
-
-
 Blockly.Language.position = {
   init: function() {
     this.setColour(10);
     this.appendDummyInput("")
-      .appendTitle(new Blockly.FieldImage("img/position.png", 16, 16))
-.appendTitle("get")
+            .appendTitle(new Blockly.FieldImage("img/position.png", 16, 16))
+            .appendTitle("get")
     this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["x", "x"], ["y", "y"], ["area", "area"]]), "axis");
     this.appendDummyInput("").appendTitle("of")
     this.appendValueInput("object")
@@ -24,7 +21,7 @@ Blockly.JavaScript.position = function() {
 
   if (!Blockly.JavaScript.definitions_['position']) {
     var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
-      'position', Blockly.Generator.NAME_TYPE);
+            'position', Blockly.Generator.NAME_TYPE);
     Blockly.JavaScript.position.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(object, attr) {');
@@ -36,7 +33,7 @@ Blockly.JavaScript.position = function() {
     Blockly.JavaScript.definitions_['position'] = func.join('\n');
   }
   var code = Blockly.JavaScript.position.functionName +
-    '(' + argument0 + ', "' + argument1 + '")';
+          '(' + argument0 + ', "' + argument1 + '")';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 

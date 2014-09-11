@@ -2,9 +2,9 @@
 (function($, window, document, undefined) {
 
   var pluginName = "arena",
-    defaults = {
-      //propertyName: "value"
-    };
+          defaults = {
+            //propertyName: "value"
+          };
 
   // The actual plugin constructor
   function Plugin(element, options) {
@@ -121,31 +121,31 @@
 
       $(document).bind('keydown keyup', this, this.keydown);
       $('#zones')
-        .bind('mousedown', this, this.mousedown)
-        .bind('contextmenu', this, this.rightclick)
-        .bind('mouseup', this, this.stopdrag)
-        .bind('mousemove', this, this.move)
-        .hover(function() {
-          that.overMe = true;
-          that.drawZones();
-        }, function() {
-          that.overMe = false;
-          that.drawZones();
-        })
+              .bind('mousedown', this, this.mousedown)
+              .bind('contextmenu', this, this.rightclick)
+              .bind('mouseup', this, this.stopdrag)
+              .bind('mousemove', this, this.move)
+              .hover(function() {
+                that.overMe = true;
+                that.drawZones();
+              }, function() {
+                that.overMe = false;
+                that.drawZones();
+              })
 
       $('#zonelist')
-        .on('click', '.change', function(e) {
-          e.preventDefault();
-          that.changeZone($(e.target).attr('href'));
-          $('.change').removeClass('activeZone');
-          $(e.target).addClass('activeZone')
-        })
-        .on('click', '.deleteZone', function(e) {
-          if (!$(e.target).attr('href'))
-            e.target = $(e.target).parent();
-          that.deleteZone($(e.target).attr('href'));
-          e.preventDefault();
-        });
+              .on('click', '.change', function(e) {
+                e.preventDefault();
+                that.changeZone($(e.target).attr('href'));
+                $('.change').removeClass('activeZone');
+                $(e.target).addClass('activeZone')
+              })
+              .on('click', '.deleteZone', function(e) {
+                if (!$(e.target).attr('href'))
+                  e.target = $(e.target).parent();
+                that.deleteZone($(e.target).attr('href'));
+                e.preventDefault();
+              });
 
       if (window.localStorage && window.localStorage.zones)
         this.zones = JSON.parse(window.localStorage.zones);
@@ -184,7 +184,7 @@
           ctx.beginPath();
           for (i = 1; i < this.positions[n].length; i++) {
             ctx.moveTo(this.positions[n][i - 1].x, this.positions[n][i - 1].y);
-        ctx.lineWidth = 2;
+            ctx.lineWidth = 2;
             ctx.lineTo(this.positions[n][i].x, this.positions[n][i].y);
           }
           ctx.strokeStyle = 'rgba(' + this.colors[c] + ', 0.5)';
@@ -256,19 +256,19 @@
           e.offsetX = (e.pageX - $(e.target).offset().left);
           e.offsetY = (e.pageY - $(e.target).offset().top);
         }
-if (that.shiftKey) {
-console.log('shift');
-        for (var i = 0; i < that.zones[that.activeZone].length; i++) {
-    	    that.zones[that.activeZone][i].x += Math.round(e.offsetX - that.mouseX);
-    	    that.zones[that.activeZone][i].y += Math.round(e.offsetY - that.mouseY);
-	}
+        if (that.shiftKey) {
+          console.log('shift');
+          for (var i = 0; i < that.zones[that.activeZone].length; i++) {
+            that.zones[that.activeZone][i].x += Math.round(e.offsetX - that.mouseX);
+            that.zones[that.activeZone][i].y += Math.round(e.offsetY - that.mouseY);
+          }
 
-	that.mouseX = e.offsetX;
-	that.mouseY = e.offsetY;
-} else {
-        that.zones[that.activeZone][that.activePoint].x = Math.round(e.offsetX);
-        that.zones[that.activeZone][that.activePoint].y = Math.round(e.offsetY);
-}
+          that.mouseX = e.offsetX;
+          that.mouseY = e.offsetY;
+        } else {
+          that.zones[that.activeZone][that.activePoint].x = Math.round(e.offsetX);
+          that.zones[that.activeZone][that.activePoint].y = Math.round(e.offsetY);
+        }
         that.drawZones();
       }
     },
@@ -280,9 +280,9 @@ console.log('shift');
       that.moving = false;
       that.drawZones();
     },
-    keydown: function (e) {
+    keydown: function(e) {
       var that = e.data;
-	console.log(that.shiftKey = e.shiftKey);
+      console.log(that.shiftKey = e.shiftKey);
     },
     rightclick: function(e) {
       var that = e.data;
@@ -292,7 +292,7 @@ console.log('shift');
         e.offsetY = (e.pageY - $(e.target).offset().top);
       }
       var x = e.offsetX,
-        y = e.offsetY;
+              y = e.offsetY;
       for (var i = 0; i < that.zones[that.activeZone].length; i++) {
         dis = Math.sqrt(Math.pow(x - that.zones[that.activeZone][i].x, 2) + Math.pow(y - that.zones[that.activeZone][i].y, 2));
         if (dis < 6) {
@@ -339,10 +339,10 @@ console.log('shift');
       for (var i = 0; i < that.zones[that.activeZone].length; i++) {
         if (i > 1) {
           lineDis = dotLineLength(
-            x, y,
-            that.zones[that.activeZone][i].x, that.zones[that.activeZone][i].y,
-            that.zones[that.activeZone][i - 1].x, that.zones[that.activeZone][i - 1].y,
-            true);
+                  x, y,
+                  that.zones[that.activeZone][i].x, that.zones[that.activeZone][i].y,
+                  that.zones[that.activeZone][i - 1].x, that.zones[that.activeZone][i - 1].y,
+                  true);
           if (lineDis < 6) {
             insertAt = i;
           }
@@ -353,8 +353,8 @@ console.log('shift');
         y: Math.round(y)
       });
 
-	that.mouseX = x;
-	that.mouseY = y;
+      that.mouseX = x;
+      that.mouseY = y;
 
       that.activePoint = insertAt;
       that.moving = true;
@@ -427,12 +427,12 @@ console.log('shift');
       };
     }(x, y, x0, y0, x1, y1), o.x >= Math.min(x0, x1) && o.x <= Math.max(x0, x1) && o.y >= Math.min(y0, y1) && o.y <= Math.max(y0, y1))) {
       var l1 = lineLength(x, y, x0, y0),
-        l2 = lineLength(x, y, x1, y1);
+              l2 = lineLength(x, y, x1, y1);
       return l1 > l2 ? l2 : l1;
     } else {
       var a = y0 - y1,
-        b = x1 - x0,
-        c = x0 * y1 - y0 * x1;
+              b = x1 - x0,
+              c = x0 * y1 - y0 * x1;
       return Math.abs(a * x + b * y + c) / Math.sqrt(a * a + b * b);
     }
   };
