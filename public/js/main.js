@@ -11,9 +11,26 @@ var timer;
 var oldValue;
 
 var brightnesstimer;
-var brightnessoldValue;
+var controlOldVal;
 
-function delayBrightness(control, value) {
+function getSettings() {
+	// load current settings
+	$.get('/settings', function(data) {
+		data.status.split("\n").filter(function(n) {
+			return !!n
+		}).map(function(n) {
+			return n.split(':');
+		})
+				.forEach(function(val) {
+					$('#' + val[0]).slider('setValue', +val[1]);
+				});
+		for (var key in data.settings) {
+			$('#settings_' + key).slider('setValue', [+data.settings[key].split(',')[0], +data.settings[key].split(',')[1]]);
+		}
+	});
+}
+
+function delayControl(control, value) {
 	clearTimeout(brightnesstimer);
 	brightnesstimer = setTimeout(function() {
 		$.get('/settings/' + control + '/' + value, function(data) {
@@ -150,21 +167,6 @@ $(document).ready(function() {
 	});
 
 
-	// load current settings
-	$.get('/settings', function(data) {
-		data.status.split("\n").filter(function(n) {
-			return !!n
-		}).map(function(n) {
-			return n.split(':');
-		})
-				.forEach(function(val) {
-					$('#' + val[0]).slider('setValue', +val[1]);
-				});
-		for (var key in data.settings) {
-			$('#settings_' + key).slider('setValue', [+data.settings[key].split(',')[0], +data.settings[key].split(',')[1]]);
-		}
-	});
-
 	// for stats
 	$("#ex6").slider({
 		tooltip: 'always'
@@ -182,24 +184,13 @@ $(document).ready(function() {
 			})
 			.on('slide', function(slideEvt) {
 				console.log(slideEvt.value);
-				if (brightnessoldValue !== slideEvt.value) {
-					brightnessoldValue = slideEvt.value;
-					delayBrightness($(this).data('webcam'), slideEvt.value);
+				if (controlOldVal !== slideEvt.value) {
+					controlOldVal = slideEvt.value;
+					
+					delayControl($(this).data('webcam'), slideEvt.value);
 				}
 			});
 
-	delayShow(1);
-
-});
-
-// load tab via hash
-$(window).on('popstate', function() {
-	var anchor = location.hash || $("a[data-toggle=tab]").first().attr("href");
-	$('a[href=' + anchor + ']').tab('show');
-});
-
-// tree
-$(function() {
 	$('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
 	$('.tree li.parent_li > span').on('click', function(e) {
 		var children = $(this).parent('li.parent_li').find(' > ul > li');
@@ -212,4 +203,14 @@ $(function() {
 		}
 		e.stopPropagation();
 	});
+
+	getSettings();
+	delayShow(1);
+
+});
+
+// load tab via hash
+$(window).on('popstate', function() {
+	var anchor = location.hash || $("a[data-toggle=tab]").first().attr("href");
+	$('a[href=' + anchor + ']').tab('show');
 });
