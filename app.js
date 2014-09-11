@@ -8,6 +8,7 @@ settings = {
     shock: 2
 };
 shocked = 0;
+arenaAngle = 0;
 var distance = 0;
 sessionId = -1;
 
@@ -146,6 +147,8 @@ console.log(sessionId);
 
     isRunning = true;
     first = true;
+    arenaAngle = 0;
+    shocked = 0;
     distance = 0;
     startTime = new Date().getTime() / 1000;
 
@@ -205,7 +208,7 @@ stream.on("data", function(im) {
   var small = cropped.copy();
   var center = {x: camHeight / 2, y: camHeight / 2};
   small.resize(camHeight / 2, camHeight / 2);
-if (actualFrame.cv && actualFrame.cv[0]) {
+if (actualFrame.tracked) {
   var oldx = actualFrame.cv[0].position.x || 0;
   var oldy = actualFrame.cv[0].position.y || 0;
 }
@@ -230,11 +233,10 @@ if (actualFrame.cv && actualFrame.cv[0]) {
   arena.zoneDetector();
 
 //console.log(actualFrame.cv[0]);
-if (actualFrame.cv[0]) {
-
-  distance += 0+Math.sqrt(Math.pow(actualFrame.cv[0].position.x - oldx, 2) + Math.pow(actualFrame.cv[0].position.y - oldy, 2));
-console.log('Distance: ' + distance, Math.pow(actualFrame.cv[0].x - oldx, 2));
+if (actualFrame.tracked && oldx && oldy) {
+  distance = distance + (+Math.sqrt(Math.pow(actualFrame.cv[0].position.x - oldx, 2) + Math.pow(actualFrame.cv[0].position.y - oldy, 2)));
 }
+    distance += 0;
   actualFrame.distance = distance;
 
   if (isRunning && code) {
@@ -257,9 +259,9 @@ mLoop();
 
     var frame = new Frame(actualFrame);
 frame.webcam = 0;
-console.log(frame);
-if (frame.cv[0] && frame.cv[0].zones) console.log(frame.cv[0].zones);
-if (frame.cv[0] && frame.cv[0].position) console.log(frame.cv[0].position);
+//console.log(frame);
+//if (frame.cv[0] && frame.cv[0].zones) console.log(frame.cv[0].zones);
+//if (frame.cv[0] && frame.cv[0].position) console.log(frame.cv[0].position);
     frame.save();
   }
 

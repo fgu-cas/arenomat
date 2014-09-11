@@ -26,7 +26,9 @@ function getSettings() {
 				.forEach(function(val) {
 					$('#' + val[0]).slider('setValue', +val[1]);
 				});
+		
 		for (var key in data.settings) {
+		    if (data.settings[key].slider)
 			$('#settings_' + key).slider('setValue', [+data.settings[key].split(',')[0], +data.settings[key].split(',')[1]]);
 		}
 	});
@@ -62,7 +64,7 @@ function delayShow(value) {
 
 
 $(document).ready(function() {
-    $("#shock-control").on("slide slideStop", function(slideEvt) {
+    $("#settings_shock").on("slide slideStop", function(slideEvt) {
 	$("#shock_val").text(slideEvt.value/10+'mA');
     });
 
@@ -71,6 +73,7 @@ $(document).ready(function() {
 	    .slider({
 		tooltip: 'always'
 	    });
+
 	$(".webcam-control").on('slide slideStop', function(slideEvt) {
 		console.log(slideEvt.value);
 		if (controlOldVal !== slideEvt.value) {
@@ -104,12 +107,16 @@ $(document).ready(function() {
 		// elapsed time in mins and secs
 		var mins = Math.floor(frame.elapsedTime / 60);
 		var secs = frame.elapsedTime - mins * 60;
+		var length = 0;
 
 		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-		var length = +$(xml).find('value[name="length"]')[0].innerText;
+		var lengthdom = $(xml).find('value[name="length"]');
+		if (lengthdom[0]) {
+		    length = +lengthdom[0].innerText || 0;
+		}
 
 		// end of experiment check, if ended up show the modal window with info
-		if (frame.elapsedTime > length * 60 && !done) {
+		if (length > 0 && frame.elapsedTime > length * 60 && !done) {
 			done = true;
 			$('#modal .modal-content').html('<div class="modal-body"><div class="row"><div class="col-md-12"><div class="alert alert-warning"><i class="fa fa-exclamation-triangle fa-6"></i> Experiment je u konce!</div></div></div></div>');
 			$('#modal').modal('show');
@@ -117,8 +124,9 @@ $(document).ready(function() {
 
 		// update elapsed time and icon statuses
 		$('#elapsedTime').text(mins + ':' + secs.toFixed(2)).css('background', (frame.isRunning) ? 'red' : 'green');
-		$('#isShocking span').text((frame.actions.shocking) / 10 + 'mA');
+//		$('#isShocking span').text((frame.actions.shocking) / 10 + 'mA');
 		$('#isShocking i').css('color', (frame.actions.shocking > 1) ? 'red' : 'green');
+		$('.webcam-panel-body').css('background', (frame.actions.shocking > 1) ? 'red' : 'white');
 		$('#isArduino i').css({color: (frame.isArduino) ? 'green' : 'red'});
 		$('#isWebcam i').css({color: (frame.isWebcam) ? 'green' : 'red'});
 

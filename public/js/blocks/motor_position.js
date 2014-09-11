@@ -5,10 +5,9 @@
 
 
 Blockly.Language.motor_position = {
-  helpUrl: 'http://www.seeedstudio.com/wiki/Project_Seven_-_Temperature',
   init: function() {
     this.setColour(10);
-    this.appendDummyInput("").appendTitle("Motor position").appendTitle(new Blockly.FieldImage("img/motor_position.png", 32, 32))
+    this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/motor_position.png", 16, 16)).appendTitle("Arena angle")
     this.setOutput(true, 'Number');
     this.setTooltip('return number of ambient humidity');
   }
