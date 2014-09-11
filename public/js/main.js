@@ -13,6 +13,8 @@ var oldValue;
 var brightnesstimer;
 var controlOldVal;
 
+
+
 function getSettings() {
 	// load current settings
 	$.get('/settings', function(data) {
@@ -60,6 +62,24 @@ function delayShow(value) {
 
 
 $(document).ready(function() {
+    $("#shock-control").on("slide slideStop", function(slideEvt) {
+	$("#shock_val").text(slideEvt.value/10+'mA');
+    });
+
+	// controls to send to server
+	$(".webcam-control")
+	    .slider({
+		tooltip: 'always'
+	    });
+	$(".webcam-control").on('slide slideStop', function(slideEvt) {
+		console.log(slideEvt.value);
+		if (controlOldVal !== slideEvt.value) {
+			controlOldVal = slideEvt.value;
+			
+			delayControl($(this).data('webcam'), slideEvt.value);
+		}
+	});
+
 	var webcamctx = $('#webcam').get(0).getContext("2d");
 	var vision = $('#vision').arena();
 
@@ -177,19 +197,6 @@ $(document).ready(function() {
 		}
 	});
 
-	// controls to send to server
-	$(".webcam-control")
-			.slider({
-				tooltip: 'always'
-			})
-			.on('slide', function(slideEvt) {
-				console.log(slideEvt.value);
-				if (controlOldVal !== slideEvt.value) {
-					controlOldVal = slideEvt.value;
-					
-					delayControl($(this).data('webcam'), slideEvt.value);
-				}
-			});
 
 	$('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
 	$('.tree li.parent_li > span').on('click', function(e) {

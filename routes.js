@@ -78,9 +78,12 @@ router.get('/experiments/:name', function(req, res) {
   res.json(req.experiment);
 });
 
-//put experiments
-router.get('/experiments/:name', function(req, res) {
-  res.render("experiments/edit", {experiment: req.experiment});
+//export session
+router.get('/sessions/export/:id', function(req, res) {
+  Experiment.find({id: od}, function(err, docs) {
+    console.log(docs[0]);
+  });
+//  res.render("experiments/edit", {experiment: req.experiment});
 });
 
 router.delete('/experiments/:name', function(req, res) {

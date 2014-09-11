@@ -12,8 +12,7 @@
                     <ul>
 			{{#sessions}}
                         <li>
-                            <a href=""><span><i class="glyphicon glyphicon-time"></i> {{.}}</span> &ndash; info</a>
-			    <a href="#del" class="del" data-session="{{.}}">X</a>
+                            <a href=""><span><i class="glyphicon glyphicon-time"></i> {{.}}</span> &ndash; export</a>
                         </li>
 			{{/sessions}}
             </ul>
@@ -26,12 +25,9 @@
 
 	$(document).ready(function() {
 
-		$(".load").click(function(e) {
+		$(".export").click(function(e) {
 			$.get('/sessions/' + $(this).data('session'), function(data) {
-				Blockly.mainWorkspace.clear();
-				var xml = Blockly.Xml.textToDom(data.xml);
-				Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
-				$('#modal').modal('hide')
+console.log(data);
 			});
 			e.preventDefault();
 		});

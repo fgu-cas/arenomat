@@ -4,7 +4,8 @@ actualFrame = {};
 settings = {
     subject_area: '1000,2000',
     robot_area: '3000,4000',
-    threshold: '200,255'
+    threshold: '200,255',
+    shock: 2
 };
 shocked = 0;
 var distance = 0;
@@ -228,13 +229,13 @@ if (actualFrame.cv && actualFrame.cv[0]) {
   arena.blobDetector(cropped);
   arena.zoneDetector();
 
-console.log(actualFrame.cv[0]);
+//console.log(actualFrame.cv[0]);
 if (actualFrame.cv[0]) {
 
-  distance += Math.sqrt(Math.pow(actualFrame.cv[0].position.x - oldx, 2) + Math.pow(actualFrame.cv[0].position.y - oldy, 2));
-  actualFrame.distance = distance;
+  distance += 0+Math.sqrt(Math.pow(actualFrame.cv[0].position.x - oldx, 2) + Math.pow(actualFrame.cv[0].position.y - oldy, 2));
 console.log('Distance: ' + distance, Math.pow(actualFrame.cv[0].x - oldx, 2));
 }
+  actualFrame.distance = distance;
 
   if (isRunning && code) {
     var now = new Date().getTime() / 1000;
@@ -254,8 +255,12 @@ console.log('Distance: ' + distance, Math.pow(actualFrame.cv[0].x - oldx, 2));
 //    timeout = setTimeout(function () { mLoop(); }.bind(this), 1);
 mLoop();
 
-//    var frame = new Frame(actualFrame);
-//    frame.save();
+    var frame = new Frame(actualFrame);
+frame.webcam = 0;
+console.log(frame);
+if (frame.cv[0] && frame.cv[0].zones) console.log(frame.cv[0].zones);
+if (frame.cv[0] && frame.cv[0].position) console.log(frame.cv[0].position);
+    frame.save();
   }
 
   io.set('log level', 0);

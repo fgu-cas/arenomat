@@ -58,7 +58,7 @@ html, body {
 }
 
 .slider-selection {
-    background: #149bdf !important;
+    background: #149bdf;
 }
 
 .webcam-panel-body {
@@ -174,4 +174,11 @@ cursor: pointer; cursor: hand;
 }
 .badge-inverse:hover {
   background-color: #1a1a1a;
+}
+
+#RC .slider-selection {
+    background: #FF8282;
+}
+#RC .slider-handle {
+    background: red;
 }

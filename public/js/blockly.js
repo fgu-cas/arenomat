@@ -154,6 +154,7 @@ $(document).ready(function() {
   $(".codeStart").click(function(e) {
     cam_counter = 0;
     cv_counter = 0;
+    done = false;
 
     e.preventDefault();
 
