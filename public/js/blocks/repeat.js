@@ -22,8 +22,11 @@ Blockly.JavaScript.repeat = function() {
   var argument0 = this.getTitleValue('delay') || '0';
   var codeblock = Blockly.JavaScript.statementToCode(this, 'code');
 
-  if (!Blockly.JavaScript.definitions_['repeat']) {
-    var functionName = Blockly.JavaScript.variableDB_.getDistinctName('repeat', Blockly.Generator.NAME_TYPE);
+//  if (!Blockly.JavaScript.definitions_['repeat']) {
+//    var functionName = 'repeat' + new Date().getTime();
+    var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
+      'repeat', Blockly.Generator.NAME_TYPE);
+
     Blockly.JavaScript.repeat.functionName = functionName;
     var func = [];
     func.push('var var_' + functionName + ';');
@@ -35,8 +38,8 @@ Blockly.JavaScript.repeat = function() {
     func.push(codeblock);
 
     func.push('} }');
-    Blockly.JavaScript.definitions_['repeat'] = func.join('\n');
-  }
+    Blockly.JavaScript.definitions_[functionName] = func.join('\n');
+//  }
   var code = Blockly.JavaScript.repeat.functionName + '(' + argument0 + ');\n';
   return code;
 }

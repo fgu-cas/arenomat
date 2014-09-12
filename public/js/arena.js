@@ -282,7 +282,7 @@
     },
     keydown: function(e) {
       var that = e.data;
-      console.log(that.shiftKey = e.shiftKey);
+	return true;
     },
     rightclick: function(e) {
       var that = e.data;

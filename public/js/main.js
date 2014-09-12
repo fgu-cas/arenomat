@@ -116,17 +116,22 @@ $(document).ready(function() {
     }
 
     // end of experiment check, if ended up show the modal window with info
-    if (length > 0 && frame.elapsedTime > length * 60 && !done) {
+    if (length > 0 && frame.elapsedTime > length*60  && !done) {
       done = true;
-      $('#modal .modal-content').html('<div class="modal-body"><div class="row"><div class="col-md-12"><div class="alert alert-warning"><i class="fa fa-exclamation-triangle fa-6"></i> Experiment je u konce!</div></div></div></div>');
+	$('#elapsedTime').css('background', '#d9534f');
+      $('#modal .modal-content').html('<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4 class="modal-title" id="myModalLabel">Session timeout</h4></div><div class="modal-body"><div class="row"><div class="col-md-12"><div class="alert alert-danger"><i class="fa fa-exclamation-triangle fa-3x"></i> <big>Session has reached it\'s specified time!</big></div><br /><div class="alert alert-warning"><p>The experiment is still going on, don\'t worry.</p><p>But maybe you should have look and stop it soon.</p></div></div></div></div>');
       $('#modal').modal('show');
     }
 
     // update elapsed time and icon statuses
-    $('#elapsedTime').text(mins + ':' + secs.toFixed(2)).css('background', (frame.isRunning) ? 'red' : 'green');
-//		$('#isShocking span').text((frame.actions.shocking) / 10 + 'mA');
-    $('#isShocking i').css('color', (frame.actions.shocking > 1) ? 'red' : 'green');
-    $('.webcam-panel-body').css('background', (frame.actions.shocking > 1) ? 'red' : 'white');
+    $('#elapsedTime').text(mins + ':' + secs.toFixed(2));
+
+    // shock info
+    $('#shock_val').css('color', (frame.actions.shocking > 1) ? '#d9534f' : 'green');
+    $('#isShocking *, #isShocking').css('background', (frame.actions.shocking > 1) ? '#d9534f' : '').css('color', (frame.actions.shocking > 1) ? 'white' : 'green');
+    $('.webcam-panel-body').css('background', (frame.actions.shocking > 1) ? '#d9534f' : '');
+
+    // status icons
     $('#isArduino i').css({color: (frame.isArduino) ? 'green' : 'red'});
     $('#isWebcam i').css({color: (frame.isWebcam) ? 'green' : 'red'});
 

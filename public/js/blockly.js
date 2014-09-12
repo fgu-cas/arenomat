@@ -173,6 +173,7 @@ $(document).ready(function() {
 
       $(".codeStart").attr('disabled', true);
       $(".codeStop").attr('disabled', false);
+    $("#elapsedTime").css('background', 'white');
 
       socket.emit('codeStart', {name: name, xml: textxml, code: code});
     }
@@ -182,6 +183,7 @@ $(document).ready(function() {
     e.preventDefault();
     $(".codeStop").attr('disabled', true);
     $(".codeStart").attr('disabled', false);
+    $("#elapsedTime").css('background', 'white');
     socket.emit('codeStop');
   });
 

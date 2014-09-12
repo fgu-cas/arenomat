@@ -22,7 +22,11 @@
     "opencv": "peterbraden/node-opencv",
     "socket.io": "^0.9.16",
     "speaker": "0.1.0",
-    "static-favicon": "~1.0.0"
+    "static-favicon": "~1.0.0",
+    "passport-local": "~1.0.0",
+    "passport": "~0.2.1",
+    "connect-flash": "~0.1.1",
+    "express-session": "~1.8.1"
   },
   "devDependencies": {
     "nodemon": "*"

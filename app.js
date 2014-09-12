@@ -18,9 +18,13 @@ var five = require("johnny-five");
 board = new five.Board();
 
 var express = require('express');
+var session = require('express-session');
+var flash = require('connect-flash');
+
 var path = require('path');
 var favicon = require('static-favicon');
 var logger = require('morgan');
+
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
@@ -44,6 +48,8 @@ process.addListener('uncaughtException', function(err, stack) {
   console.log('\u0007'); // Terminal bell
 });
 
+
+
 var mongoose = require('mongoose-paginate');
 var modelsPath = __dirname + '/models';
 fs.readdirSync(modelsPath).forEach(function(file) {
@@ -65,6 +71,25 @@ mongoose.connect(URI, function(err) {
 
 var Frame = mongoose.model('Frame');
 var Session = mongoose.model('Session');
+var User = mongoose.model('User');
+
+var passport = require('passport')
+  , LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    User.findOne({ username: username }, function(err, user) {
+      if (err) { return done(err); }
+      if (!user) {
+        return done(null, false, { message: 'Incorrect username.' });
+      }
+      if (!user.validPassword(password)) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, user);
+    });
+  }
+));
 
 // Set View Engine
 app.engine('html', require('hogan-express'));
@@ -87,10 +112,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(flash());
+app.use(session({secret: 'keyboard cat'}))
 app.use('/', routes);
+app.use(passport.initialize());
+app.use(passport.session());
 
-
+app.post('/login',
+  passport.authenticate('local', { successRedirect: '/success',
+                                   failureRedirect: '/fail',
+                                   failureFlash: true })
+);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
