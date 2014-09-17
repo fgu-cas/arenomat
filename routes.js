@@ -68,6 +68,7 @@ router.post('/experiments', function(req, res) {
 router.param('name', function(req, res, next, name) {
   //find the name that matches and shows the first one
   Experiment.find({name: name}, function(err, docs) {
+console.log('param: ', docs[0]);
     req.experiment = docs[0];
     next();
   });
@@ -87,7 +88,7 @@ router.get('/sessions/export/:id', function(req, res) {
 });
 
 router.delete('/experiments/:name', function(req, res) {
-  console.log(req.params);
+  console.log(req.params, Experiment);
   return Experiment.findById(req.params.id, function(err, experiment) {
     console.log(err, experiment);
     experiment.remove();

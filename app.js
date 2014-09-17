@@ -1,4 +1,4 @@
-camWidth = 800, camHeight = 600;
+camWidth = 640, camHeight = 480;
 zones = [];
 actualFrame = {};
 settings = {
@@ -13,9 +13,6 @@ var distance = 0;
 sessionId = -1;
 
 
-var five = require("johnny-five");
-
-board = new five.Board();
 
 var express = require('express');
 var session = require('express-session');
@@ -42,6 +39,10 @@ var fs = require('fs');
 
 var lame = require('lame');
 var Speaker = require('speaker');
+
+var five = require("johnny-five");
+board = new five.Board();
+
 
 process.addListener('uncaughtException', function(err, stack) {
   console.log('Caught exception: ' + err + '\n' + err.stack);
@@ -260,7 +261,7 @@ stream.on("data", function(im) {
 
   actualFrame.cv[-1] = {position: center};
 
-
+//console.log(board.io.firmware.name);
   // detect/track position
   arena.blobDetector(cropped);
   
@@ -314,16 +315,12 @@ board.on('error', function() {
 });
 
 board.on("ready", function() {
-  board.io.setSamplingInterval(40);
+  board.io.setSamplingInterval(100);
 
   console.log('board ready');
   isArduino = true;
 
   arenomat = require('./lib/arenomat.js');
-
-  this.repl.inject({
-    arenomat: arenomat
-  });
 });
 
 

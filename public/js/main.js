@@ -225,7 +225,7 @@ $(document).ready(function() {
   });
 
   getSettings();
-  delayShow(1);
+  //delayShow(1);
 
 });
 
