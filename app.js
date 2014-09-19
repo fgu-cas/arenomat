@@ -237,6 +237,7 @@ var stream = vc.toStream();
 stream.on("data", function(im) {
   stream.pause();
 
+
   var cropped = im.roi((camWidth - camHeight) / 2, 0, camHeight, camHeight)
   var small = cropped.copy();
   var center = {x: camHeight / 2, y: camHeight / 2};
@@ -321,6 +322,8 @@ board.on("ready", function() {
   isArduino = true;
 
   arenomat = require('./lib/arenomat.js');
+  arenomat.beat();
+
 });
 
 
