@@ -39,9 +39,12 @@
 		$(".del").click(function(e) {
 			var name = $(this).data('experiment');
 			bootbox.confirm("Do you really want to delete: " + name + "?", function(result) {
-				console.log(result);
-				if (result)
-					$.ajax({url: "/experiments/" + name, type: "DELETE"});
+				if (result) {
+					$.ajax({url: "/experiments/" + name, type: "DELETE"}).done(function (data) {
+					    location.reload();
+					    console.log(data);
+					});
+				}
 			});
 			e.preventDefault();
 		});

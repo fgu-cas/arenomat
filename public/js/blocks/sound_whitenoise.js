@@ -3,7 +3,7 @@ Blockly.Language.whitenoise = {
     this.setColour(10);
     this.appendDummyInput("")
       .appendTitle(new Blockly.FieldImage("img/whitenoise.png", 16, 16))
-      .appendTitle("whitenoise")
+      .appendTitle("White noise")
 
     this.setOutput(true, "Sample");
     this.setTooltip('return whitenoise activity');
@@ -16,7 +16,7 @@ Blockly.JavaScript.whitenoise = function() {
     Blockly.JavaScript.whitenoise.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '() {');
-    func.push(' return Math.random(); ');
+    func.push(' return Math.random() * 2 - 1; ');
     func.push('}');
     Blockly.JavaScript.definitions_['whitenoise'] = func.join('\n');
   }

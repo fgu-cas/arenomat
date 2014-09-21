@@ -8,7 +8,7 @@ Blockly.Language.shock = {
 //      .appendTitle(new Blockly.FieldDropdown([["0.2mA", "2"], ["0.3mA", "3"], ["0.4mA", "4"], ["0.5mA", "5"], ["0.6mA", "6"], ["0.7mA", "7"]]), "current")
             .appendTitle(new Blockly.FieldDropdown([["300ms", "300"], ["500ms", "500"], ["1s", "1000"]]), "delay")
 
-    this.appendDummyInput("").appendTitle('pause ').appendTitle(new Blockly.FieldTextInput("100"), "pause").appendTitle('s');
+    this.appendDummyInput("").appendTitle('pause ').appendTitle(new Blockly.FieldTextInput("1"), "pause").appendTitle('s');
 
 
     this.setPreviousStatement(true, null);

@@ -3,7 +3,7 @@ Blockly.Language.sinewave = {
     this.setColour(10);
     this.appendDummyInput("")
       .appendTitle(new Blockly.FieldImage("img/sinewave.png", 16, 16))
-      .appendTitle("sinewave")
+      .appendTitle("Sine wave")
 
     this.appendDummyInput("").appendTitle('freq ').appendTitle(new Blockly.FieldTextInput("100"), "freq").appendTitle('Hz');
 

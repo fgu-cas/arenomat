@@ -2,9 +2,11 @@ Blockly.Language.out = {
   helpUrl: 'http://www.example.com/',
   init: function() {
     this.setColour(190);
-    this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/out.png", 16, 16)).appendTitle("out")
+    this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/out.png", 16, 16)).appendTitle("Output variable")
 
-    this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("variable"), "key");
+    this.appendDummyInput("").appendTitle(new Blockly.FieldDropdown([["Save", 0], ["Show", 1]]), "show")
+    .appendTitle('variable ').appendTitle(new Blockly.FieldTextInput("variable"), "variable");
+
     this.appendValueInput("value", "Text")
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
@@ -14,7 +16,7 @@ Blockly.Language.out = {
 };
 
 Blockly.JavaScript.out = function() {
-  var argument0 = this.getTitleValue('key') || '0';
+  var argument0 = this.getTitleValue('variable') || '0';
   var argument1 = Blockly.JavaScript.valueToCode(this, 'value', Blockly.JavaScript.ORDER_COMMA) || 'false';
 
   if (!Blockly.JavaScript.definitions_['out']) {

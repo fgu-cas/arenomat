@@ -68,7 +68,7 @@ router.post('/experiments', function(req, res) {
 router.param('name', function(req, res, next, name) {
   //find the name that matches and shows the first one
   Experiment.find({name: name}, function(err, docs) {
-console.log('param: ', docs[0]);
+//console.log('param: ', docs[0]);
     req.experiment = docs[0];
     next();
   });
@@ -81,24 +81,22 @@ router.get('/experiments/:name', function(req, res) {
 
 //export session
 router.get('/sessions/export/:id', function(req, res) {
-  Experiment.find({id: od}, function(err, docs) {
+  Experiment.find({id: req.params.id}, function(err, docs) {
     console.log(docs[0]);
   });
 //  res.render("experiments/edit", {experiment: req.experiment});
 });
 
 router.delete('/experiments/:name', function(req, res) {
-  console.log(req.params, Experiment);
-  return Experiment.findById(req.params.id, function(err, experiment) {
-    console.log(err, experiment);
+  return Experiment.findById(req.experiment.id, function(err, experiment) {
+//    console.log(err, experiment);
     experiment.remove();
     if (!err) {
-      console.log("removed");
       return res.send('');
     } else {
       console.log(err);
     }
-    res.redirect("/experiments/");
+//    res.redirect("/experiments/");
   });
 });
 

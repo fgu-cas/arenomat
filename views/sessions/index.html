@@ -27,7 +27,6 @@
 
 		$(".export").click(function(e) {
 			$.get('/sessions/' + $(this).data('session'), function(data) {
-console.log(data);
 			});
 			e.preventDefault();
 		});
@@ -35,7 +34,6 @@ console.log(data);
 		$(".del").click(function(e) {
 			var name = $(this).data('session');
 			bootbox.confirm("Do you really want to delete: " + name + "?", function(result) {
-				console.log(result);
 				if (result)
 					$.ajax({url: "/sessions/" + name, type: "DELETE"});
 			});
