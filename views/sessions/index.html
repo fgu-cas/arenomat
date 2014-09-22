@@ -1,6 +1,6 @@
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-	<h4 class="modal-title">Load session</h4>
+	<h4 class="modal-title">Export session</h4>
 
 </div>  
 <div class="modal-body">  
@@ -8,11 +8,11 @@
     <ul>
 {{#experiments}}
         <li>
-            <span class="badge badge-success">{{_id}} &nbsp;</span>
+            <span class="badge badge-success"><input type="checkbox" />{{_id}} &nbsp;</span>
                     <ul>
 			{{#sessions}}
                         <li>
-                            <a href=""><span><i class="glyphicon glyphicon-time"></i> {{.}}</span> &ndash; export</a>
+                            <input type="checkbox" /><a href=""><span>{{date}}</span> &ndash; export</a>
                         </li>
 			{{/sessions}}
             </ul>

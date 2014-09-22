@@ -218,7 +218,7 @@ router.get("/sessions", function(req, res) {
 
 
 Session.aggregate([{ 
-    $group : { _id : "$name", sessions: { $push: "$createdAt"} },
+    $group : { _id : "$name", sessions: { $push: { date: "$createdAt" } } },
 //    $group : { _id: "$sessions.createdAt", sessions: { $push: "$sessions.createdAt" }}
 }], function(err, docs) {
 console.log(docs);
