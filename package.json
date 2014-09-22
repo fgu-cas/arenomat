@@ -6,7 +6,6 @@
   "dependencies": {
     "baudio": "^2.1.2",
     "body-parser": "~1.0.0",
-    "canvas": "^1.1.3",
     "connect-flash": "~0.1.1",
     "cookie-parser": "~1.0.1",
     "debug": "~0.7.4",

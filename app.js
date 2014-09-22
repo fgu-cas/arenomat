@@ -1,4 +1,4 @@
-camWidth = 640, camHeight = 480;
+camWidth = 800, camHeight = 600;
 zones = [];
 actualFrame = {};
 settings = {
@@ -39,10 +39,14 @@ var fs = require('fs');
 
 var lame = require('lame');
 var Speaker = require('speaker');
-
+var SerialPort = require("serialport").SerialPort;
 var five = require("johnny-five");
-board = new five.Board();
-
+board = new five.Board({
+  port: new SerialPort("/dev/ttyACM0", {
+    baudrate: 115200,
+    buffersize: 128
+  })
+});
 
 process.addListener('uncaughtException', function(err, stack) {
   console.log('Caught exception: ' + err + '\n' + err.stack);

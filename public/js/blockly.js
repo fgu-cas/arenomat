@@ -173,7 +173,7 @@ $(document).ready(function() {
 
       $(".codeStart").attr('disabled', true);
       $(".codeStop").attr('disabled', false);
-    $("#elapsedTime").css('background', 'white');
+    $("#elapsedTime").css('background', 'green').css('color', 'white');
 
       socket.emit('codeStart', {name: name, xml: textxml, code: code});
     }
@@ -183,7 +183,7 @@ $(document).ready(function() {
     e.preventDefault();
     $(".codeStop").attr('disabled', true);
     $(".codeStart").attr('disabled', false);
-    $("#elapsedTime").css('background', 'white');
+    $("#elapsedTime").css('background', '').css('color', 'black');
     socket.emit('codeStop');
   });
 
