@@ -4,6 +4,7 @@ var SessionSchema = new mongoose.Schema({
   name: String,
   day: String,
   subject: String,
+  person: String,
   code: String,
   xml: String,
   shocked: Number,

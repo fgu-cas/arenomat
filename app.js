@@ -172,7 +172,7 @@ io.sockets.on('connection', function(socket) {
   console.log('connection');
   socket.on('codeStart', function(data) {
     code = data.code;
-    console.log('codeStart: ' + code);
+    console.log('codeStart', data);
 
     arenomat.stop();
 

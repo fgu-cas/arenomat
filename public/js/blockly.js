@@ -114,16 +114,17 @@ $(document).ready(function() {
     var name = $(xml).find('value[name="name"]')[0].innerText;
     var textxml = Blockly.Xml.domToText(xml);
     var code = Blockly.Generator.workspaceToCode('JavaScript');
+    var zones = [];
 
-    var data = {name: name, xml: textxml, code: code};
+    if (window.localStorage && window.localStorage.zones) zones = JSON.parse(window.localStorage.zones);
 
-    $.get("/experiments/" + name, function(data) {
+    var data = {name: name, xml: textxml, code: code, zones: zones};
+console.log(data);
 
-    });
-
-    $.post("/experiments", data, function(data) {
-      alert(name + ' has been sucessfully saved.');
-    });
+    $.post("/experiments", data)
+       .done(function (data) {
+         alert(name + ' has been sucessfully saved.');
+       });
   }
 
   var loadInput = $('#import');
@@ -159,6 +160,7 @@ $(document).ready(function() {
     e.preventDefault();
 
     var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+
     var name = '';
     var names = $(xml).find('value[name="name"]');
     if (names.length)
@@ -169,13 +171,29 @@ $(document).ready(function() {
     } else {
       var textxml = Blockly.Xml.domToText(xml);
 
+
+    var day = '';
+    var days = $(xml).find('value[name="day"]');
+    if (days.length)
+      day = days[0].innerText || '';
+
+    var person = '';
+    var persons = $(xml).find('value[name="subject"]');
+    if (persons.length)
+      person = persons[0].innerText || '';
+
+    var subject = '';
+    var subjects = $(xml).find('value[name="subject"]');
+    if (subjects.length)
+      subject = subjects[0].innerText || '';
+
       var code = Blockly.Generator.workspaceToCode('JavaScript');
 
       $(".codeStart").attr('disabled', true);
       $(".codeStop").attr('disabled', false);
     $("#elapsedTime").css('background', 'green').css('color', 'white');
 
-      socket.emit('codeStart', {name: name, xml: textxml, code: code});
+      socket.emit('codeStart', {name: name, person: person, subject: subject, day: day, xml: textxml, code: code});
     }
   });
 

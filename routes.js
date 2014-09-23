@@ -1,6 +1,8 @@
 var express = require('express')
   , router = express.Router()
   , mongoose = require('mongoose-paginate')
+  , moment = require('moment')
+  , Hogan = require('hogan')
 
   , Experiment = mongoose.model('Experiment')
   , Frame = mongoose.model('Frame')
@@ -43,7 +45,7 @@ router.get('/', function(req, res) {
 
 // route to show all our experiments
 router.get("/experiments", function(req, res) {
-  Experiment.find({}, function(err, docs) {
+  Experiment.find({}).sort({name: 1}).exec(function(err,docs){
     res.render('experiments/index', {experiments: docs, layout: false});
   });
 });
@@ -52,15 +54,10 @@ router.get("/experiments", function(req, res) {
 
 //this is going to be our create route
 router.post('/experiments', function(req, res) {
-  var b = req.body;
-  new Experiment({
-    name: b.name,
-    code: b.code,
-    xml: b.xml
-  }).save(function(err, experiment) {
+  new Experiment(req.body).save(function(err, experiment) {
     if (err)
       res.json(err);
-    res.redirect('/experiments/' + experiment.name);
+//    res.redirect('/experiments/' + experiment.name);
   });
 })
 
@@ -75,8 +72,12 @@ router.param('name', function(req, res, next, name) {
 });
 
 //experiment load
-router.get('/experiments/:name', function(req, res) {
-  res.json(req.experiment);
+router.get('/experiments/:id', function(req, res) {
+console.log('getexperiment', req.params.id);
+  Experiment.findById(req.params.id, function(err, docs) {
+    console.log(docs);
+    res.json(docs);
+  });
 });
 
 //export session
@@ -87,8 +88,8 @@ router.get('/sessions/export/:id', function(req, res) {
 //  res.render("experiments/edit", {experiment: req.experiment});
 });
 
-router.delete('/experiments/:name', function(req, res) {
-  return Experiment.findById(req.experiment.id, function(err, experiment) {
+router.delete('/experiments/:id', function(req, res) {
+  return Experiment.findById(req.params.id, function(err, experiment) {
 //    console.log(err, experiment);
     experiment.remove();
     if (!err) {
@@ -218,11 +219,20 @@ router.get("/sessions", function(req, res) {
 
 
 Session.aggregate([{ 
-    $group : { _id : "$name", sessions: { $push: { date: "$createdAt" } } },
+    $group : { _id : "$name", sessions: { $push: { date: "$createdAt", day: "$day" } } },
 //    $group : { _id: "$sessions.createdAt", sessions: { $push: "$sessions.createdAt" }}
 }], function(err, docs) {
 console.log(docs);
-    res.render('sessions/index', {experiments: docs, layout: false});
+
+    res.render('sessions/index', {experiments: docs, layout: false, 
+	czdate: function() {
+	    return function(text) {
+    		var date = moment(new Date(Hogan.compile(text).render(this)));
+    		return date.format("YY/MM/DD HH:mm");
+	    }
+	}
+    });
+
   });
 });
 

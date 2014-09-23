@@ -68,11 +68,15 @@
       }
       this.record();
     },
+    setZones: function(zones) {
+        this.zones = zones;
+        this.drawZones();
+    },
     setData: function(frame) {
       if (frame.tracked && frame.cv[0])
         this.inZones = frame.cv[0].zones;
-      if (!this.moving)
-        this.zones = frame.zones;
+      //if (!this.moving)
+    //    this.zones = frame.zones;
 
       var diff = this.zones.length - $('#zonelist tr').length;
       if (diff > 0)

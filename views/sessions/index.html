@@ -8,11 +8,11 @@
     <ul>
 {{#experiments}}
         <li>
-            <span class="badge badge-success"><input type="checkbox" />{{_id}} &nbsp;</span>
+            <input type="checkbox" /> {{_id}}
                     <ul>
 			{{#sessions}}
                         <li>
-                            <input type="checkbox" /><a href=""><span>{{date}}</span> &ndash; export</a>
+                            <input type="checkbox" /> <a href=""><span>{{#czdate}}{{date}}{{/czdate}}, den: {{day}} - {{subject}} - {{person}}</span> &ndash; export</a>
                         </li>
 			{{/sessions}}
             </ul>
