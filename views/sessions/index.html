@@ -12,7 +12,7 @@
                     <ul>
 			{{#sessions}}
                         <li>
-                            <input type="checkbox" /> <a href=""><span>{{#czdate}}{{date}}{{/czdate}}, den: {{day}} - {{subject}} - {{person}}</span> &ndash; export</a>
+                            <input type="checkbox" /> <a href="#" class="export" data-session-id="{{id}}" data-session-name="{{_id}} {{#czdate}}{{date}}{{/czdate}} den {{day}} {{subject}} {{person}}"><span>{{#czdate}}{{date}}{{/czdate}}, den: {{day}} - {{subject}} - {{person}}</span> &ndash; export</a>
                         </li>
 			{{/sessions}}
             </ul>
@@ -23,19 +23,46 @@
 </div>
 <script>
 
+isNull = function (val, nul) {
+    return val || nul;
+}
+
+accentsTidy = function(s){
+    var r = s.toLowerCase();
+    non_asciis = {'a': '[àáâãäå]', 'ae': 'æ', 'c': '[çč]', 'd': 'ď', 'e': '[èéêë]', 'i': '[ìíîï]', 'n': '[ñň]', 'o': '[òóôõö]', 'oe': 'œ', 'r': 'ř', 's': 'š', 't': 'ť', 'u': '[ùúûűü]', 'y': '[ýÿ]', 'z' : 'ž'};
+    for (i in non_asciis) { r = r.replace(new RegExp(non_asciis[i], 'g'), i); }
+    return r;
+};
+
 	$(document).ready(function() {
 
 		$(".export").click(function(e) {
-			$.get('/sessions/' + $(this).data('session'), function(data) {
-			});
+			$.get('/sessions/export/' + $(this).data('session-id'), function(input) {
+
+console.log(input, $(this).data('session-name'));
+
+var csvContent = "data:text/csv;charset=utf-8,";
+input.forEach(function(row, index){
+if (row.tracked) {
+   csvContent += row.elapsedTime + ";" + isNull(row.cv[0].position.x, -1) + ";" + isNull(row.cv[0].position.y, -1) + ";" + isNull(row.actions.shocking, 0)+ "\n";
+}
+}); 
+
+var encodedUri = encodeURI(csvContent);
+var link = document.createElement("a");
+link.setAttribute("href", encodedUri);
+link.setAttribute("download", accentsTidy($(this).data('session-name')).replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.csv');
+link.click(); 
+
+			}.bind(this));
 			e.preventDefault();
 		});
 
 		$(".del").click(function(e) {
-			var name = $(this).data('session');
+			var name = $(this).data('session-name');
 			bootbox.confirm("Do you really want to delete: " + name + "?", function(result) {
 				if (result)
-					$.ajax({url: "/sessions/" + name, type: "DELETE"});
+					$.ajax({url: "/sessions/" + $(this).data('session-id'), type: "DELETE"});
 			});
 			e.preventDefault();
 		});

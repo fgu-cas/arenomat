@@ -112,7 +112,7 @@ app.set('partials', {
 //app.enable('view cache');
 
 app.use(favicon());
-app.use(logger('dev'));
+app.use(logger('default'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());

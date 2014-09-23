@@ -82,10 +82,12 @@ console.log('getexperiment', req.params.id);
 
 //export session
 router.get('/sessions/export/:id', function(req, res) {
-  Experiment.find({id: req.params.id}, function(err, docs) {
+console.log('session', req.params.id);
+  Frame.find({session: req.params.id}, function(err, docs) {
     console.log(docs[0]);
+        res.json(docs);
+//    res.render("sessions/export", {sessions: docs});
   });
-//  res.render("experiments/edit", {experiment: req.experiment});
 });
 
 router.delete('/experiments/:id', function(req, res) {
@@ -219,11 +221,9 @@ router.get("/sessions", function(req, res) {
 
 
 Session.aggregate([{ 
-    $group : { _id : "$name", sessions: { $push: { date: "$createdAt", day: "$day" } } },
+    $group : { _id : "$name", sessions: { $push: { id: "$_id", date: "$createdAt", day: "$day" } } },
 //    $group : { _id: "$sessions.createdAt", sessions: { $push: "$sessions.createdAt" }}
 }], function(err, docs) {
-console.log(docs);
-
     res.render('sessions/index', {experiments: docs, layout: false, 
 	czdate: function() {
 	    return function(text) {

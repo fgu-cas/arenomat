@@ -34,7 +34,7 @@
     "nodemon": "*"
   },
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "nodemon  --ignore node_modules/ app.js",
     "preinstall": "npm i -g forever"
   },
   "author": "Majkl",
