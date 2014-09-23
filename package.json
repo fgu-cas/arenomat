@@ -12,6 +12,7 @@
     "express": "~4.0.0",
     "express-session": "~1.8.1",
     "function-enhancements": "^0.1.0",
+    "heatmap": "0.0.5",
     "hjs": "~0.0.6",
     "hogan": "^1.0.2",
     "hogan-express": "^0.5.2",

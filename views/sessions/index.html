@@ -15,6 +15,7 @@
                             <input type="checkbox" /> 
 			    <span>{{#czdate}}{{date}}{{/czdate}}, den: {{day}}, {{subject}}, {{person}}</span>
 			    <a href="#" class="export  btn btn-success btn-xs pull-right" data-session-id="{{id}}" data-session-name="{{_id}} {{#czdate}}{{date}}{{/czdate}} den {{day}} {{subject}} {{person}}">export</a>
+			    <a href="/sessions/heatmap/{{id}}" class="btn btn-warning btn-xs pull-right" data-session-id="{{id}}" data-session-name="{{_id}} {{#czdate}}{{date}}{{/czdate}} den {{day}} {{subject}} {{person}}">heatmap</a>
                         </li>
 			{{/sessions}}
             </ul>

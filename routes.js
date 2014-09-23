@@ -90,6 +90,41 @@ console.log('session', req.params.id);
   });
 });
 
+// heatmap of the session
+router.get('/sessions/heatmap/:id', function(req, res) {
+console.log('session', req.params.id);
+  Frame.find({session: req.params.id}, function(err, docs) {
+//        res.json(docs);
+
+var heatmap = require('heatmap');
+var heat = heatmap(camWidth, camHeight, { radius : 30 });
+var ctx = heat.canvas.getContext('2d');
+
+for (var i = 0; i < docs.length; i++) {
+    if (docs[i].tracked) {
+	console.log(docs[i].cv[0].position.x, docs[i].cv[0].position.y);
+	heat.addPoint(docs[i].cv[0].position.x, docs[i].cv[0].position.y);
+    }
+}
+heat.draw();
+
+
+  // mask
+  ctx.strokeStyle = 'rgba(0,0,0, 0.5)';
+  ctx.beginPath();
+  ctx.arc(ctx.canvas.width / 2, ctx.canvas.height / 2, ctx.canvas.height / 2, 0, 2 * Math.PI);
+  ctx.stroke();
+
+
+  heat.canvas.toBuffer(function(err, buf) {
+    res.writeHead(200, {'Content-Type': 'image/png', 'Content-Length': buf.length});
+    res.end(buf);
+  });
+
+//    res.render("sessions/export", {sessions: docs});
+  });
+});
+
 router.delete('/experiments/:id', function(req, res) {
   return Experiment.findById(req.params.id, function(err, experiment) {
 //    console.log(err, experiment);
