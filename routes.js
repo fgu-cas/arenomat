@@ -97,8 +97,9 @@ console.log('session', req.params.id);
 //        res.json(docs);
 
 var heatmap = require('heatmap');
-var heat = heatmap(camWidth, camHeight, { radius : 30 });
+var heat = heatmap(camHeight, camHeight, { radius : 100 });
 var ctx = heat.canvas.getContext('2d');
+
 
 for (var i = 0; i < docs.length; i++) {
     if (docs[i].tracked) {
@@ -109,11 +110,13 @@ for (var i = 0; i < docs.length; i++) {
 heat.draw();
 
 
-  // mask
-  ctx.strokeStyle = 'rgba(0,0,0, 0.5)';
-  ctx.beginPath();
-  ctx.arc(ctx.canvas.width / 2, ctx.canvas.height / 2, ctx.canvas.height / 2, 0, 2 * Math.PI);
-  ctx.stroke();
+      // mask
+      ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+      ctx.beginPath();
+      ctx.arc(ctx.canvas.width / 2, ctx.canvas.height / 2, ctx.canvas.height / 2, 0, 2 * Math.PI);
+      ctx.rect(ctx.canvas.width, 0, -ctx.canvas.width, ctx.canvas.height);
+      ctx.fill();
+
 
 
   heat.canvas.toBuffer(function(err, buf) {
