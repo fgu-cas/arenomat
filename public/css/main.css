@@ -197,3 +197,6 @@ padding: 2px !important;
 padding-left: 20px;
 }
 
+.input-group-xs {
+    width: 70px;
+}
