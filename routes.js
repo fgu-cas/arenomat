@@ -221,7 +221,7 @@ router.get("/sessions", function(req, res) {
 
 
 Session.aggregate([{ 
-    $group : { _id : "$name", sessions: { $push: { id: "$_id", date: "$createdAt", day: "$day" } } },
+    $group : { _id : "$name", sessions: { $push: { id: "$_id", date: "$createdAt", day: "$day", subject: "$subject", person: "$person" } } },
 //    $group : { _id: "$sessions.createdAt", sessions: { $push: "$sessions.createdAt" }}
 }], function(err, docs) {
     res.render('sessions/index', {experiments: docs, layout: false, 

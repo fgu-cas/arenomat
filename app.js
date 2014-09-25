@@ -180,7 +180,7 @@ io.sockets.on('connection', function(socket) {
     session.save();
 
     sessionId = session._id;
-    console.log(sessionId);
+    console.log(sessionId, data);
 
     isRunning = true;
     first = true;
@@ -326,7 +326,19 @@ board.on("ready", function() {
   isArduino = true;
 
   arenomat = require('./lib/arenomat.js');
-  arenomat.beat();
+
+
+    var beat = new five.Led({
+	pin: 13
+    });
+
+    // the loop routine runs over and over again forever to "flash/blink/strobe" an led
+    board.loop( 1000, function() {
+	beat.toggle();
+    });
+
+
+//  arenomat.beat();
 
 });
 

@@ -9,7 +9,10 @@ var FrameSchema = new mongoose.Schema({
   cv: [],
   actions: {},
   elapsedTime: Number,
+  distance: Number,
   output: {},
+  zones: [],
+  shocked: Number,
   webcam: String,
 });
 

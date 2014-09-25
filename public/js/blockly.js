@@ -178,7 +178,7 @@ console.log(data);
       day = days[0].innerText || '';
 
     var person = '';
-    var persons = $(xml).find('value[name="subject"]');
+    var persons = $(xml).find('value[name="person"]');
     if (persons.length)
       person = persons[0].innerText || '';
 
@@ -192,8 +192,9 @@ console.log(data);
       $(".codeStart").attr('disabled', true);
       $(".codeStop").attr('disabled', false);
     $("#elapsedTime").css('background', 'green').css('color', 'white');
-
-      socket.emit('codeStart', {name: name, person: person, subject: subject, day: day, xml: textxml, code: code});
+var data = {name: name, person: person, subject: subject, day: day, xml: textxml, code: code};
+console.log(data);
+      socket.emit('codeStart', data);
     }
   });
 

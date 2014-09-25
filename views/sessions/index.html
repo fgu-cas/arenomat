@@ -12,7 +12,9 @@
                     <ul>
 			{{#sessions}}
                         <li>
-                            <input type="checkbox" /> <a href="#" class="export" data-session-id="{{id}}" data-session-name="{{_id}} {{#czdate}}{{date}}{{/czdate}} den {{day}} {{subject}} {{person}}"><span>{{#czdate}}{{date}}{{/czdate}}, den: {{day}} - {{subject}} - {{person}}</span> &ndash; export</a>
+                            <input type="checkbox" /> 
+			    <span>{{#czdate}}{{date}}{{/czdate}}, den: {{day}}, {{subject}}, {{person}}</span>
+			    <a href="#" class="export  btn btn-success btn-xs pull-right" data-session-id="{{id}}" data-session-name="{{_id}} {{#czdate}}{{date}}{{/czdate}} den {{day}} {{subject}} {{person}}">export</a>
                         </li>
 			{{/sessions}}
             </ul>
