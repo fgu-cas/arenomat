@@ -1,4 +1,3 @@
-camWidth = 640, camHeight = 480;
 zones = [];
 actualFrame = {};
 settings = {
@@ -13,7 +12,10 @@ var distance = 0;
 sessionId = -1;
 
 
+config = require('./config');
+camWidth = config.camWidth, camHeight = config.camHeight;
 
+console.log(config);
 var express = require('express');
 var session = require('express-session');
 var flash = require('connect-flash');
