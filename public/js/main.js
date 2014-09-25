@@ -64,6 +64,8 @@ function delayShow(value) {
 
 
 $(document).ready(function() {
+ $("[data-toggle='tooltip']").tooltip({ placement: "top" });
+
   $("#settings_shock").on("slide slideStop", function(slideEvt) {
     $("#shock_val").text(slideEvt.value / 10 + 'mA');
   });
@@ -159,6 +161,21 @@ $(document).ready(function() {
 //}
   });
 
+
+  $('#rotate').click(function() {
+    $('#vision').arena('rotateZone', $('#rotate_angle').val());
+  });
+  $('#flip').click(function() {
+    $('#vision').arena('flipZone');
+  });
+  $('#slice').click(function() {
+    $('#vision').arena('slice', $('#slice_angle').val());
+//alert('slice');
+  });
+  $('#rectangle').click(function() {
+alert('rectangle');
+  });
+
   // add zone
   $('#addZone').click(function() {
     $('#vision').arena('addZone', 0);
@@ -182,8 +199,8 @@ $(document).ready(function() {
   }
 
   // save to hash
-  $(document.body).on("click", "a[data-toggle]", function(event) {
-    if (this.getAttribute("href").substring(0, 1) !== '/')
+  $(document.body).on("click", ".nav a[data-toggle]", function(event) {
+    if (this.getAttribute("href") && this.getAttribute("href").substring(0, 1) !== '/')
       location.hash = this.getAttribute("href");
   });
 

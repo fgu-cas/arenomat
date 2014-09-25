@@ -5,9 +5,23 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<div class="pull-right">
-							<a role="button" id="rotate" type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="left" title="Rotate left"><i class="fa fa-rotate-left"></i></a>
-							<a role="button" id="flip" type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="left" title="Flip"><i class="fa fa-exchange"></i></a>
-							<a role="button" id="slice" type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="left" title="Generate a slice"><i class="fa fa-circle-o-notch"></i></a>
+<div class="pull-left input-group-xs">
+ <div class="input-group">
+      <input type="text" value="15" id="rotate_angle" class="form-control input-sm">
+      <span class="input-group-btn">
+		<a role="button" id="rotate" type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="left" title="Rotate zone by given angle"><i class="fa fa-rotate-left"></i></a>
+      </span>
+    </div><!-- /input-group -->
+</div>
+							<a role="button" id="flip" type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="left" title="Mirror the zone over Y axis"><i class="fa fa-exchange"></i></a>
+<div class="pull-left input-group-xs">
+ <div class="input-group">
+      <input type="text" value="45" id="slice_angle" class="form-control input-sm">
+      <span class="input-group-btn">
+`		<a role="button" id="slice" type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="left" title="Generate a slice of given angle"><i class="fa fa-circle-o-notch"></i></a>
+      </span>
+    </div><!-- /input-group -->
+</div>
 							<a role="button" id="rectangle" type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="left" title="Generate a rectangle"><i class="fa fa-edit"></i></a>
 						</div>
 						<h3 style="line-height: 30px" class="panel-title"><a data-toggle="collapse" data-target="#panel_webcam">Arena</a></h3>

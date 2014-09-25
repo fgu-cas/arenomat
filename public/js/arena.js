@@ -1,3 +1,5 @@
+var camWidth = 800, camHeight = 600;
+
 ;
 (function($, window, document, undefined) {
 
@@ -41,10 +43,49 @@
       [25, 40, 35]
     ];
 
+    this.center = { x: camHeight / 2, y: camHeight / 2 };
+
     this.init();
   }
 
   Plugin.prototype = {
+
+
+
+    rotatePoint: function(point, origin, angle) {
+  var angle = angle * Math.PI / 180.0;
+  return {
+    x: Math.cos(angle) * (point.x - origin.x) - Math.sin(angle) * (point.y - origin.y) + origin.x,
+    y: Math.sin(angle) * (point.x - origin.x) + Math.cos(angle) * (point.y - origin.y) + origin.y
+  };
+},
+
+    rotateZone: function(angle) {
+	var zone = this.activeZone;
+        for (var n = 0; n < this.zones[zone].length; n++) {
+	  this.zones[zone][n] = this.rotatePoint(this.zones[zone][n], this.center, angle);
+	}
+	this.drawZones();
+    },
+    flipZone: function() {
+	var zone = this.activeZone;
+        for (var n = 0; n < this.zones[zone].length; n++) {
+	  this.zones[zone][n].x = this.center.x - (this.zones[zone][n].x - this.center.x);
+	}
+	this.drawZones();
+    },
+
+    slice: function (angle) {
+	var newzone = [ this.center ];
+	for(var n = 0; n < angle; n++) {
+	    newzone.push({
+		x: this.center.x + this.center.x * Math.cos(Math.PI / 180 * n),
+		y: this.center.y + this.center.y * Math.sin(Math.PI / 180 * n)
+	    });
+	}
+	this.zones[this.activeZone] = newzone;
+    },
+
     addZone: function(no) {
       if (no > 0)
         this.zones.push([]);

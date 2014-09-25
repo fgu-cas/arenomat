@@ -1,4 +1,4 @@
-camWidth = 800, camHeight = 600;
+camWidth = 640, camHeight = 480;
 zones = [];
 actualFrame = {};
 settings = {
@@ -81,21 +81,6 @@ var User = mongoose.model('User');
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
 
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    User.findOne({ username: username }, function(err, user) {
-      if (err) { return done(err); }
-      if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-      if (!user.validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-      return done(null, user);
-    });
-  }
-));
-
 // Set View Engine
 app.engine('html', require('hogan-express'));
 app.set('view options', {layout: true});
@@ -112,22 +97,59 @@ app.set('partials', {
 //app.enable('view cache');
 
 app.use(favicon());
-app.use(logger('default'));
+//app.use(logger('default'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
 app.use(session({secret: 'keyboard cat'}))
-app.use('/', routes);
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.post('/login',
-  passport.authenticate('local', { successRedirect: '/success',
-                                   failureRedirect: '/fail',
-                                   failureFlash: true })
-);
+
+
+  /* Handle Login POST */
+  routes.post('/login', passport.authenticate('local', {
+    successRedirect: '/home',
+    failureRedirect: '/',
+    failureFlash : true
+  }));
+
+
+app.use('/', routes);
+
+  // serialize sessions
+  passport.serializeUser(function(user, done) {
+    done(null, user.id)
+  })
+
+  passport.deserializeUser(function(id, done) {
+    User.findOne({ _id: id }, function (err, user) {
+      done(err, user)
+    })
+  })
+
+  // use local strategy
+  passport.use(new LocalStrategy({
+      usernameField: 'email',
+      passwordField: 'password'
+    },
+    function(email, password, done) {
+console.log(email, password);
+      User.findOne({email: email}, function (err, user) {
+    console.log(err, user);
+        if (err) { return done(err) }
+        if (!user) {
+          return done(null, false, { message: 'Unknown user' })
+        }
+        if (!user.authenticate(password)) {
+          return done(null, false, { message: 'Invalid password' })
+        }
+        return done(null, user)
+      })
+    }
+  ))
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -333,7 +355,7 @@ board.on("ready", function() {
     });
 
     // the loop routine runs over and over again forever to "flash/blink/strobe" an led
-    board.loop( 1000, function() {
+    board.loop( 4000, function() {
 	beat.toggle();
     });
 
