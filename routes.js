@@ -97,13 +97,12 @@ console.log('session', req.params.id);
 //        res.json(docs);
 
 var heatmap = require('heatmap');
-var heat = heatmap(camHeight, camHeight, { radius : 100 });
+var heat = heatmap(camHeight, camHeight, { radius : 10 });
 var ctx = heat.canvas.getContext('2d');
 
 
 for (var i = 0; i < docs.length; i++) {
     if (docs[i].tracked) {
-	console.log(docs[i].cv[0].position.x, docs[i].cv[0].position.y);
 	heat.addPoint(docs[i].cv[0].position.x, docs[i].cv[0].position.y);
     }
 }
