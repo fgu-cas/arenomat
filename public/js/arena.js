@@ -65,6 +65,7 @@ var camWidth = 800, camHeight = 600;
         for (var n = 0; n < this.zones[zone].length; n++) {
 	  this.zones[zone][n] = this.rotatePoint(this.zones[zone][n], this.center, angle);
 	}
+	this.record();
 	this.drawZones();
     },
     flipZone: function() {
@@ -72,18 +73,21 @@ var camWidth = 800, camHeight = 600;
         for (var n = 0; n < this.zones[zone].length; n++) {
 	  this.zones[zone][n].x = this.center.x - (this.zones[zone][n].x - this.center.x);
 	}
+	this.record();
 	this.drawZones();
     },
 
     slice: function (angle) {
 	var newzone = [ this.center ];
-	for(var n = 0; n < angle; n++) {
+	for(var n = 0; n <= angle; n++) {
 	    newzone.push({
 		x: this.center.x + this.center.x * Math.cos(Math.PI / 180 * n),
 		y: this.center.y + this.center.y * Math.sin(Math.PI / 180 * n)
 	    });
 	}
 	this.zones[this.activeZone] = newzone;
+	this.record();
+	this.drawZones();
     },
 
     addZone: function(no) {
