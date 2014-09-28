@@ -77,7 +77,7 @@ var camWidth = 800, camHeight = 600;
 
     slice: function (angle) {
 	var newzone = [ this.center ];
-	for(var n = 0; n < angle; n++) {
+	for(var n = 0; n <= angle; n++) {
 	    newzone.push({
 		x: this.center.x + this.center.x * Math.cos(Math.PI / 180 * n),
 		y: this.center.y + this.center.y * Math.sin(Math.PI / 180 * n)
