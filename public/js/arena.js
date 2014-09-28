@@ -331,6 +331,7 @@ var camWidth = 800, camHeight = 600;
     },
     keydown: function(e) {
       var that = e.data;
+	that.shiftKey = e.shiftKey;
 	return true;
     },
     rightclick: function(e) {
@@ -372,6 +373,7 @@ var camWidth = 800, camHeight = 600;
       x = e.offsetX;
       y = e.offsetY;
 
+if (!that.shiftKey) {
       // new point
       for (var i = 0; i < that.zones[that.activeZone].length; i++) {
         dis = Math.sqrt(Math.pow(x - that.zones[that.activeZone][i].x, 2) + Math.pow(y - that.zones[that.activeZone][i].y, 2));
@@ -402,10 +404,12 @@ var camWidth = 800, camHeight = 600;
         y: Math.round(y)
       });
 
+      that.activePoint = insertAt;
+
+}
       that.mouseX = x;
       that.mouseY = y;
 
-      that.activePoint = insertAt;
       that.moving = true;
 //      $('vision').bind('mousemove', that, that.move);
 
