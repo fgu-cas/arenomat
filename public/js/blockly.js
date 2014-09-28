@@ -192,8 +192,11 @@ console.log(data);
       $(".codeStart").attr('disabled', true);
       $(".codeStop").attr('disabled', false);
     $("#elapsedTime").css('background', 'green').css('color', 'white');
-var data = {name: name, person: person, subject: subject, day: day, xml: textxml, code: code};
-console.log(data);
+    var data = {name: name, person: person, subject: subject, day: day, xml: textxml, code: code};
+
+    $("#settings_shock").slider().slider('setValue', 2);
+    $('#shock_val').text('0.2mA');
+
       socket.emit('codeStart', data);
     }
   });
