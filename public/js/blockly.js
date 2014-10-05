@@ -121,8 +121,8 @@ $(document).ready(function() {
     var data = {name: name, xml: textxml, code: code, zones: zones};
 console.log(data);
 
-    $.post("/experiments", data)
-       .done(function (data) {
+    $.post("/experiments/" + name, data).done(function (data) {
+console.log(data);
          alert(name + ' has been sucessfully saved.');
        });
   }

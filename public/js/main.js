@@ -14,6 +14,20 @@ var brightnesstimer;
 var controlOldVal;
 
 
+$.fn.pressEnter = function(fn) {  
+
+    return this.each(function() {  
+        $(this).bind('enterPress', fn);
+        $(this).keyup(function(e){
+            if(e.keyCode == 13)
+            {
+              $(this).trigger("enterPress");
+            }
+        })
+    });  
+ }; 
+
+
 
 function getSettings() {
   // load current settings
@@ -162,6 +176,13 @@ $(document).ready(function() {
   });
 
 
+$('#slice_angle').pressEnter(function () {
+    $('#vision').arena('slice', $('#slice_angle').val());
+});
+$('#rotate_angle').pressEnter(function () {
+    $('#vision').arena('rotateZone', $('#rotate_angle').val());
+});
+
   $('#rotate').click(function() {
     $('#vision').arena('rotateZone', $('#rotate_angle').val());
   });
@@ -170,7 +191,6 @@ $(document).ready(function() {
   });
   $('#slice').click(function() {
     $('#vision').arena('slice', $('#slice_angle').val());
-//alert('slice');
   });
   $('#rectangle').click(function() {
 alert('rectangle');

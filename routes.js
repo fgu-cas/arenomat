@@ -52,20 +52,25 @@ router.get("/experiments", function(req, res) {
 
 
 
-//this is going to be our create route
-router.post('/experiments', function(req, res) {
-  new Experiment(req.body).save(function(err, experiment) {
-    if (err)
-      res.json(err);
-//    res.redirect('/experiments/' + experiment.name);
-  });
-})
+
+//handle updates and create
+router.post('/experiments/:name', function(req, res) {
+  var b = req.body;
+    return Experiment.update(
+	{name: b.name},
+	{name: b.name, code: b.code, xml: b.xml},
+	{upsert: true},
+	function(err) {
+    	    res.redirect("/experiments/" + b.name);
+	}
+    );
+});
 
 //get our params from documents
 router.param('name', function(req, res, next, name) {
   //find the name that matches and shows the first one
   Experiment.find({name: name}, function(err, docs) {
-//console.log('param: ', docs[0]);
+console.log('param: ', docs[0]);
     req.experiment = docs[0];
     next();
   });
@@ -73,7 +78,7 @@ router.param('name', function(req, res, next, name) {
 
 //experiment load
 router.get('/experiments/:id', function(req, res) {
-console.log('getexperiment', req.params.id);
+console.log('router: get experiment:', req.params.id);
   Experiment.findById(req.params.id, function(err, docs) {
     console.log(docs);
     res.json(docs);
@@ -129,30 +134,17 @@ heat.draw();
 
 router.delete('/experiments/:id', function(req, res) {
   return Experiment.findById(req.params.id, function(err, experiment) {
-//    console.log(err, experiment);
+   console.log('db: remove ', experiment);
     experiment.remove();
     if (!err) {
       return res.send('');
     } else {
       console.log(err);
     }
-//    res.redirect("/experiments/");
+    res.redirect("/experiments/");
   });
 });
 
-//handle updates
-router.post('/experiments/:name', function(req, res) {
-  var b = req.body;
-  return Experiment.findById(req.params.id, function(err, experiment) {
-    Experiment.update(
-      {name: req.params.name},
-    {name: b.name, code: b.code, xml: b.xml},
-    function(err) {
-      res.redirect("/experiments/" + b.name);
-    }
-    );
-  });
-});
 
 
 router.get('/frames/:id', function(req, res) {

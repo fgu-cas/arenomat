@@ -1,7 +1,7 @@
 zones = [];
 actualFrame = {};
 settings = {
-  subject_area: '1000,2000',
+  subject_area: '100,2000',
   robot_area: '3000,4000',
   threshold: '200,255',
   shock: 2
@@ -11,6 +11,13 @@ arenaAngle = 0;
 var distance = 0;
 sessionId = -1;
 
+function tohex(str) {
+    var hex = '';
+    for(var i=0;i<str.length;i++) {
+	hex += ''+str.charCodeAt(i).toString(16);
+    }
+    return hex;
+}
 
 config = require('./config');
 camWidth = config.camWidth, camHeight = config.camHeight;
@@ -41,13 +48,30 @@ var fs = require('fs');
 
 var lame = require('lame');
 var Speaker = require('speaker');
-var SerialPort = require("serialport").SerialPort;
+
+var SP = require("serialport")
+var SerialPort = SP.SerialPort;
 var five = require("johnny-five");
+var serialports = [];
+
+SP.list(function (err, ports) {
+console.log(ports);
+  serialports = ports;
+  ports.forEach(function(port) {
+    console.log(port.comName, port.pnpId, port.manufacturer, port);
+  });
+});
+	var port = new SerialPort('/dev/ttyACM0', {
+	    baudrate: 115200,
+	    buffersize: 128
+	});
+
+  port.on('data', function(data) {
+//    console.log('data received: ' + tohex(''+data));
+  });
+
 board = new five.Board({
-  port: new SerialPort("/dev/ttyACM0", {
-    baudrate: 115200,
-    buffersize: 128
-  })
+  port: port
 });
 
 process.addListener('uncaughtException', function(err, stack) {
@@ -99,7 +123,7 @@ app.set('partials', {
 //app.enable('view cache');
 
 app.use(favicon());
-//app.use(logger('default'));
+app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
@@ -213,7 +237,7 @@ io.sockets.on('connection', function(socket) {
     distance = 0;
     startTime = new Date().getTime() / 1000;
 
-
+settings['shock'] = 2;
   });
   socket.on('codeStop', function() {
     isRunning = false;
@@ -255,6 +279,8 @@ try {
 } catch (e) {
   try {
     var vc = new cv.VideoCapture(1);
+    vc.setWidth(camWidth);
+    vc.setHeight(camHeight);
   } catch (e) {
     console.log('no webcam');
   }
@@ -352,11 +378,7 @@ board.on("ready", function() {
   arenomat = require('./lib/arenomat.js');
 
 
-    var beat = new five.Led({
-	pin: 13
-    });
-
-    // the loop routine runs over and over again forever to "flash/blink/strobe" an led
+    var beat = new five.Led({pin: 13});
     board.loop( 4000, function() {
 	beat.toggle();
     });

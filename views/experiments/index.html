@@ -42,10 +42,12 @@ console.log(data);
 		$(".del").click(function(e) {
 			var name = $(this).data('experiment-name');
 			var id = $(this).data('experiment-id');
+			var that = this;
 			bootbox.confirm("Do you really want to delete: " + name + "?", function(result) {
 				if (result) {
 					$.ajax({url: "/experiments/" + id, type: "DELETE"}).done(function (data) {
-					    location.reload();
+		//			    location.reload();
+$(that).closest( "tr" ).hide();
 					    console.log(data);
 					});
 				}
