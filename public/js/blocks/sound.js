@@ -3,9 +3,9 @@ Blockly.Language.sound = {
   init: function() {
     this.setColour(190);
 
-    this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/sound.png", 16, 16)).appendTitle("Sound generator")
-    this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("100"), "length").appendTitle('s').appendTitle('by function');
-    this.appendValueInput("value");
+    this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/sound.png", 16, 16)).appendTitle("Sound")
+    this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("100"), "length").appendTitle('s');
+    this.appendValueInput("value").appendTitle('by function');
 
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);

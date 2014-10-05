@@ -3,10 +3,10 @@ Blockly.Language.repeat = {
     this.setColour(50);
     this.appendDummyInput("")
       .appendTitle(new Blockly.FieldImage("img/repeat.png", 16, 16))
-      .appendTitle("repeat");
-    this.appendDummyInput("").appendTitle('every ').appendTitle(new Blockly.FieldTextInput("100"), "delay").appendTitle('s');
+      .appendTitle("every");
+    this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("100"), "delay").appendTitle('s');
 
-    this.appendStatementInput("code").appendTitle('code');
+    this.appendStatementInput("code").appendTitle('do');
     this.setInputsInline(false);
 
     this.setPreviousStatement(true, null);
