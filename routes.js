@@ -4,6 +4,8 @@ var express = require('express')
   , moment = require('moment')
   , Hogan = require('hogan')
 
+  , analyze = require('./lib/analyze.js')
+
   , Experiment = mongoose.model('Experiment')
   , Frame = mongoose.model('Frame')
   , Session = mongoose.model('Session')
@@ -42,6 +44,37 @@ router.get('/', function(req, res) {
     });
   });
 });
+
+
+
+router.get('/analyze/:id', function(req, res) {
+console.log('export sessions: ', req.params.id.split(','));
+  var ids = req.params.id.split(',').map(function (x) {
+    return mongoose.Types.ObjectId(x);
+  });
+
+  Frame.find({session: { $in: req.params.id.split(',') }}, function(err, docs) {
+        res.json(analyze(docs));
+  });
+});
+
+router.get('/analyze', function(req, res) {
+Session.aggregate([{ 
+    $group : { _id : "$name", sessions: { $push: { id: "$_id", date: "$createdAt", day: "$day", subject: "$subject", person: "$person" } } },
+//    $group : { _id: "$sessions.createdAt", sessions: { $push: "$sessions.createdAt" }}
+}], function(err, docs) {
+    res.render('analyze', {experiments: docs, layout: 'layout_analyze',
+	czdate: function() {
+	    return function(text) {
+    		var date = moment(new Date(Hogan.compile(text).render(this)));
+    		return date.format("YY/MM/DD HH:mm");
+	    }
+	}
+    });
+
+  });
+});
+
 
 // route to show all our experiments
 router.get("/experiments", function(req, res) {
@@ -97,6 +130,7 @@ console.log('export sessions: ', req.params.id.split(','));
         res.json(docs);
   });
 });
+
 router.delete('/sessions/:id', function(req, res) {
 console.log('selete sessions: ', req.params.id.split(','));
   var ids = req.params.id.split(',').map(function (x) {

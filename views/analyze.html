@@ -1,0 +1,115 @@
+<!-- Modal -->
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div> <!-- /.modal-content -->
+    </div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
+
+<div class="container">
+
+<div class="btn-group">
+    <a href="#" class="export  btn btn-success btn-xs">analyze</a>
+</div>
+<div class="btn-group">
+    <a href="#" class="del btn btn-danger btn-xs">DELETE</a>
+</div>
+
+
+<div class="tree">
+    <ul>
+{{#experiments}}
+        <li class="parent_li">
+            <input class="exp" type="checkbox" /> <a href="#">{{_id}}</a>
+                    <ul>
+			{{#sessions}}
+                        <li>
+                            <input data-session-id="{{id}}" type="checkbox" /> 
+			    <span>{{#czdate}}{{date}}{{/czdate}}, den: {{day}}, {{subject}}, {{person}}</span>
+                        </li>
+			{{/sessions}}
+            </ul>
+         </li>
+{{/experiments}}
+</ul>
+</div>
+</div>
+<script>
+
+isNull = function (val, nul) {
+    return val || nul;
+}
+var old;
+accentsTidy = function(s){
+    var r = s.toLowerCase();
+    non_asciis = {'a': '[àáâãäå]', 'ae': 'æ', 'c': '[çč]', 'd': 'ď', 'e': '[èéêë]', 'i': '[ìíîï]', 'n': '[ñň]', 'o': '[òóôõö]', 'oe': 'œ', 'r': 'ř', 's': 'š', 't': 'ť', 'u': '[ùúûűü]', 'y': '[ýÿ]', 'z' : 'ž'};
+    for (i in non_asciis) { r = r.replace(new RegExp(non_asciis[i], 'g'), i); }
+    return r;
+};
+
+	$(document).ready(function() {
+  $('.tree input.exp').on('click', function(e) {
+
+
+      var actual = $(this).prop('checked');
+console.log('clicked', actual, $(this).parent());
+      $('input', $(this).parent()).prop('checked', actual);
+
+      e.stopPropagation();
+  });
+
+  $('.tree li.parent_li > a').on('click', function(e) {
+console.log(e);
+	if (old) old.hide('fast');
+	var children = $(this).parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) 
+    	    children.hide('fast')
+	else
+    	    children.show('fast')
+	old = children;
+
+    e.stopPropagation();
+  });
+
+
+		$(".export").click(function(e) {
+		    var selected = [];
+		    $('.tree li.parent_li li input:checked').each(function() {
+		        selected.push($(this).data('session-id'));
+		    });
+			e.preventDefault();
+			location.href = '/analyze/' + selected.join(',');
+		});
+
+		$(".heatmap").click(function(e) {
+		    var selected = [];
+		    $('.tree li.parent_li li input:checked').each(function() {
+		        selected.push($(this).data('session-id'));
+		    });
+			e.preventDefault();
+			location.href = '/sessions/heatmap/' + selected.join(',');
+		});
+
+		$(".del").click(function(e) {
+		    var selected = [];
+		    var names = [];
+		    $('.tree li.parent_li li input:checked').each(function() {
+console.log($(this).data('session-id'));
+		        selected.push($(this).data('session-id'));
+		        names.push($(this).data('session-name'));
+		    });
+			e.preventDefault();
+
+
+
+			var name = $(this).data('session-name');
+			bootbox.confirm("Do you really want to delete: " + names.join(',') + "?", function(result) {
+				if (result)
+					$.ajax({url: "/sessions/" + selected.join(','), type: "DELETE"});
+			});
+		});
+
+	});
+
+</script>
+
