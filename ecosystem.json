@@ -1,0 +1,10 @@
+{
+  "apps" : [{
+    "name"      : "Arenomat",
+    "script"    : "app.js",
+    "cwd": "/data/arenomat",
+  "exec_mode"  : "fork_mode",
+  "instances": 1
+    }]
+  
+}

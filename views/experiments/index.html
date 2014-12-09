@@ -8,13 +8,13 @@
 		<table class="table table-striped table-hover table-condensed">
 			<tr>
 				<th>name</th>
-				<th colspan="2">action</th>
+				<th align=right>action</th>
 			</tr>
 			{{#experiments}}
 			<tr>
 				<td align=top>{{name}}</td>
-				<td><a class="btn btn-danger btn-xs del" href="#del" data-experiment-name="{{name}}" data-experiment-id="{{id}}"><i class="fa fa-trash-o"></i> del</a></td>
-				<td><a href="#load" class="load btn btn-success btn-xs" data-experiment-name="{{name}}" data-experiment-id="{{id}}"><i class="fa fa-download"></i> load</a></td>
+				<td align="right"><div class="btn-group"><a class="btn btn-danger btn-xs del" href="#del" data-experiment-name="{{name}}" data-experiment-id="{{id}}"><i class="fa fa-trash-o"></i> del</a>
+				<a href="#load" class="load btn btn-success btn-xs" data-experiment-name="{{name}}" data-experiment-id="{{id}}"><i class="fa fa-download"></i> load</a></div></td>
 			</tr>
 			{{/experiments}}
 		</table>

@@ -5,7 +5,7 @@ function Config() {
     return {
 	camWidth: 800, // px
 	camHeight: 600, // px
-	arenaWidth: 800 // mm
+	arenaWidth: 0.800 // m
     }
 }
 

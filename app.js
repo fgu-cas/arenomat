@@ -328,7 +328,7 @@ stream.on("data", function(im) {
     distance = distance + (+Math.sqrt(Math.pow(actualFrame.cv[0].position.x - oldx, 2) + Math.pow(actualFrame.cv[0].position.y - oldy, 2)));
   }
   distance += 0;
-  actualFrame.distance = distance;
+  actualFrame.distance = distance / config.camHeight * config.arenaWidth;
 
   // core - running the code
   if (isRunning && code) {

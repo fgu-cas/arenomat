@@ -1,21 +1,26 @@
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-	<h4 class="modal-title">Export session</h4>
-
+	<h4 class="modal-title">Export session as</h4>
+<div class="btn-group">
+    <a href="#" class="export  btn btn-success btn-xs">CSV</a>
+    <a href="#" class="heatmap btn btn-warning btn-xs">heatmap</a>
+</div>
+<div class="btn-group">
+    <a href="#" class="del btn btn-danger btn-xs">DELETE</a>
+</div>
+</div>
 </div>  
 <div class="modal-body">  
 <div class="tree">
     <ul>
 {{#experiments}}
-        <li>
-            <input type="checkbox" /> {{_id}}
+        <li class="parent_li">
+            <input class="exp" type="checkbox" /> <a href="#">{{_id}}</a>
                     <ul>
 			{{#sessions}}
                         <li>
-                            <input type="checkbox" /> 
+                            <input data-session-id="{{id}}" type="checkbox" /> 
 			    <span>{{#czdate}}{{date}}{{/czdate}}, den: {{day}}, {{subject}}, {{person}}</span>
-			    <a href="#" class="export  btn btn-success btn-xs pull-right" data-session-id="{{id}}" data-session-name="{{_id}} {{#czdate}}{{date}}{{/czdate}} den {{day}} {{subject}} {{person}}">export</a>
-			    <a href="/sessions/heatmap/{{id}}" class="btn btn-warning btn-xs pull-right" data-session-id="{{id}}" data-session-name="{{_id}} {{#czdate}}{{date}}{{/czdate}} den {{day}} {{subject}} {{person}}">heatmap</a>
                         </li>
 			{{/sessions}}
             </ul>
@@ -29,7 +34,7 @@
 isNull = function (val, nul) {
     return val || nul;
 }
-
+var old;
 accentsTidy = function(s){
     var r = s.toLowerCase();
     non_asciis = {'a': '[àáâãäå]', 'ae': 'æ', 'c': '[çč]', 'd': 'ď', 'e': '[èéêë]', 'i': '[ìíîï]', 'n': '[ñň]', 'o': '[òóôõö]', 'oe': 'œ', 'r': 'ř', 's': 'š', 't': 'ť', 'u': '[ùúûűü]', 'y': '[ýÿ]', 'z' : 'ž'};
@@ -38,36 +43,64 @@ accentsTidy = function(s){
 };
 
 	$(document).ready(function() {
+  $('.tree input.exp').on('click', function(e) {
+
+
+      var actual = $(this).prop('checked');
+console.log('clicked', actual, $(this).parent());
+      $('input', $(this).parent()).prop('checked', actual);
+
+      e.stopPropagation();
+  });
+
+  $('.tree li.parent_li > a').on('click', function(e) {
+	if (old) old.hide('fast');
+	var children = $(this).parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) 
+    	    children.hide('fast')
+	else
+    	    children.show('fast')
+	old = children;
+
+    e.stopPropagation();
+  });
+
 
 		$(".export").click(function(e) {
-			$.get('/sessions/export/' + $(this).data('session-id'), function(input) {
-
-console.log(input, $(this).data('session-name'));
-
-var csvContent = "data:text/csv;charset=utf-8,";
-input.forEach(function(row, index){
-if (row.tracked) {
-   csvContent += row.elapsedTime + ";" + isNull(row.cv[0].position.x, -1) + ";" + isNull(row.cv[0].position.y, -1) + ";" + isNull(row.actions.shocking, 0)+ "\n";
-}
-}); 
-
-var encodedUri = encodeURI(csvContent);
-var link = document.createElement("a");
-link.setAttribute("href", encodedUri);
-link.setAttribute("download", accentsTidy($(this).data('session-name')).replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.csv');
-link.click(); 
-
-			}.bind(this));
+		    var selected = [];
+		    $('.tree li.parent_li li input:checked').each(function() {
+		        selected.push($(this).data('session-id'));
+		    });
 			e.preventDefault();
+			location.href = '/sessions/export/' + selected.join(',');
+		});
+
+		$(".heatmap").click(function(e) {
+		    var selected = [];
+		    $('.tree li.parent_li li input:checked').each(function() {
+		        selected.push($(this).data('session-id'));
+		    });
+			e.preventDefault();
+			location.href = '/sessions/heatmap/' + selected.join(',');
 		});
 
 		$(".del").click(function(e) {
-			var name = $(this).data('session-name');
-			bootbox.confirm("Do you really want to delete: " + name + "?", function(result) {
-				if (result)
-					$.ajax({url: "/sessions/" + $(this).data('session-id'), type: "DELETE"});
-			});
+		    var selected = [];
+		    var names = [];
+		    $('.tree li.parent_li li input:checked').each(function() {
+console.log($(this).data('session-id'));
+		        selected.push($(this).data('session-id'));
+		        names.push($(this).data('session-name'));
+		    });
 			e.preventDefault();
+
+
+
+			var name = $(this).data('session-name');
+			bootbox.confirm("Do you really want to delete: " + names.join(',') + "?", function(result) {
+				if (result)
+					$.ajax({url: "/sessions/" + selected.join(','), type: "DELETE"});
+			});
 		});
 
 	});

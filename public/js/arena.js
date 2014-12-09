@@ -114,8 +114,12 @@ var camWidth = 800, camHeight = 600;
       this.record();
     },
     setZones: function(zones) {
+	this.moving = true;
         this.zones = zones;
         this.drawZones();
+	this.record();
+console.log(this.zones);
+	this.moving = false;
     },
     setData: function(frame) {
       if (frame.tracked && frame.cv[0])

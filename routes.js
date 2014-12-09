@@ -56,14 +56,15 @@ router.get("/experiments", function(req, res) {
 //handle updates and create
 router.post('/experiments/:name', function(req, res) {
   var b = req.body;
-    return Experiment.update(
+    Experiment.update(
 	{name: b.name},
-	{name: b.name, code: b.code, xml: b.xml},
+	{name: b.name, code: b.code, xml: b.xml, zones: b.zones},
 	{upsert: true},
 	function(err) {
-    	    res.redirect("/experiments/" + b.name);
+//    	    res.redirect("/experiments/" + b.name);
 	}
     );
+    res.json({ ok: true });
 });
 
 //get our params from documents
@@ -86,20 +87,37 @@ console.log('router: get experiment:', req.params.id);
 });
 
 //export session
+
 router.get('/sessions/export/:id', function(req, res) {
-console.log('session', req.params.id);
-  Frame.find({session: req.params.id}, function(err, docs) {
-    console.log(docs[0]);
+console.log('export sessions: ', req.params.id.split(','));
+  var ids = req.params.id.split(',').map(function (x) {
+    return mongoose.Types.ObjectId(x);
+  });
+  Frame.find({session : ids[0] }, function(err, docs) {
         res.json(docs);
-//    res.render("sessions/export", {sessions: docs});
+  });
+});
+router.delete('/sessions/:id', function(req, res) {
+console.log('selete sessions: ', req.params.id.split(','));
+  var ids = req.params.id.split(',').map(function (x) {
+    return mongoose.Types.ObjectId(x);
+  });
+  return Session.findById(ids, function(err, data) {
+   console.log('db: remove session', data);
+    data.remove();
+    if (!err) {
+      return res.send('');
+    } else {
+      console.log(err);
+    }
+    res.redirect("/");
   });
 });
 
 // heatmap of the session
 router.get('/sessions/heatmap/:id', function(req, res) {
-console.log('session', req.params.id);
-  Frame.find({session: req.params.id}, function(err, docs) {
-//        res.json(docs);
+console.log('heatmap sessions: ', req.params.id.split(','));
+  Frame.find({session: { $in: req.params.id.split(',') }}, function(err, docs) {
 
 var heatmap = require('heatmap');
 var heat = heatmap(camHeight, camHeight, { radius : 10 });

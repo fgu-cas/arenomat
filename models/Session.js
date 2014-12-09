@@ -1,4 +1,6 @@
-var mongoose = require("mongoose-paginate");
+var mongoose = require("mongoose-paginate"),
+        Schema = mongoose.Schema,
+        ObjectId = Schema.ObjectId;
 
 var SessionSchema = new mongoose.Schema({
   name: String,
@@ -10,7 +12,15 @@ var SessionSchema = new mongoose.Schema({
   shocked: Number,
   distance: Number,
   zones: {},
-  createdAt: {type: Date, default: Date.now}
+  createdAt: {type: Date, default: Date.now},
+  frames: [{type: Schema.Types.ObjectId, ref:'Frame'}] 
+});
+
+SessionSchema.pre('remove', function(next) {
+    // 'this' is the client being removed. Provide callbacks here if you want
+    // to be notified of the calls' result.
+    Frames.remove({session: this._id}).exec();
+    next();
 });
 
 mongoose.model('Session', SessionSchema);

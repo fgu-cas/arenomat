@@ -122,7 +122,7 @@ $(document).ready(function() {
 console.log(data);
 
     $.post("/experiments/" + name, data).done(function (data) {
-console.log(data);
+console.log('saved', data);
          alert(name + ' has been sucessfully saved.');
        });
   }
