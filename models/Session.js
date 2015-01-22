@@ -12,6 +12,7 @@ var SessionSchema = new mongoose.Schema({
   shocked: Number,
   distance: Number,
   zones: {},
+  analyze: {},
   createdAt: {type: Date, default: Date.now},
   frames: [{type: Schema.Types.ObjectId, ref:'Frame'}] 
 });

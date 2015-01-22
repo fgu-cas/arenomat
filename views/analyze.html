@@ -7,13 +7,17 @@
 </div> <!-- /.modal -->
 
 <div class="container">
-
 <div class="btn-group">
     <a href="#" class="export  btn btn-success btn-xs">analyze</a>
 </div>
 <div class="btn-group">
+    <a href="#" class="csv btn btn-warning btn-xs">csv</a>
+</div>
+<!--
+<div class="btn-group">
     <a href="#" class="del btn btn-danger btn-xs">DELETE</a>
 </div>
+-->
 
 
 <div class="tree">
@@ -21,14 +25,44 @@
 {{#experiments}}
         <li class="parent_li">
             <input class="exp" type="checkbox" /> <a href="#">{{_id}}</a>
-                    <ul>
-			{{#sessions}}
-                        <li>
-                            <input data-session-id="{{id}}" type="checkbox" /> 
-			    <span>{{#czdate}}{{date}}{{/czdate}}, den: {{day}}, {{subject}}, {{person}}</span>
-                        </li>
+<ul>
+<li>
+	    <table class="table">
+<tr>
+<th>&nbsp;</th>
+<th>heat</th>
+<th>date</th>
+<th>exp. day</th>
+<th>subject</th>
+<th>person</th>
+<th style="text-align: right">avg distance [m]</th>
+<th style="text-align: right">zone entrances</th>
+<th style="text-align: right">time shocked</th>
+<th style="text-align: right">outsider [%]</th>
+<th style="text-align: right">path len [m]</th>
+</tr>
+		{{#sessions}}
+                        <tr>
+			    <td><input data-session-id="{{id}}" type="checkbox" /></td>
+			    <td><a href="/img/heatmap/{{id}}.png"><img class="lazy" title="{{analyze.avg_distance}}
+{{analyze.inputs}}
+{{analyze.shocks}}
+{{analyze.outside}}
+{{analyze.path}}" width="48" height="48"data-original="/img/heatmap/{{id}}.png"></a></td>
+			    <td>{{#czdate}}{{date}}{{/czdate}}</td>
+			    <td>{{day}}</td>
+<td>{{subject}}</td>
+<td>{{person}}</td>
+<td style="text-align: right">{{analyze.avg_distance}}</td>
+<td style="text-align: right">{{analyze.inputs}}</td>
+<td style="text-align: right">{{analyze.shocks}}</td>
+<td style="text-align: right">{{analyze.outside}}</td>
+<td style="text-align: right">{{analyze.path}}</td>
+</tr>
 			{{/sessions}}
-            </ul>
+            </table>
+</li>
+</ul>
          </li>
 {{/experiments}}
 </ul>
@@ -48,6 +82,10 @@ accentsTidy = function(s){
 };
 
 	$(document).ready(function() {
+
+    $("img.lazy").lazyload();
+
+
   $('.tree input.exp').on('click', function(e) {
 
 
@@ -67,7 +105,7 @@ console.log(e);
 	else
     	    children.show('fast')
 	old = children;
-
+$("html,body").trigger("scroll");
     e.stopPropagation();
   });
 
@@ -79,6 +117,34 @@ console.log(e);
 		    });
 			e.preventDefault();
 			location.href = '/analyze/' + selected.join(',');
+		});
+
+function download(filename, text) {
+  var pom = document.createElement('a');
+var url = "data:application/octet-stream;charset=utf-8,%EF%BB%BF" + encodeURIComponent(text);
+  pom.setAttribute('href', url);
+  pom.setAttribute('download', filename);
+  pom.click();
+}
+
+		$(".csv").click(function(e) {
+		    var selected = [];
+		    $('.tree li.parent_li li input:checked').each(function() {
+			var line = [];
+			var i = 0;
+			$(this).closest('tr').find('td').each(function () {
+			    if (i > 1) {
+				    line.push($(this).text());
+			    }
+			    i++;
+			});
+
+		        selected.push(line.join(';'));
+		    });
+			e.preventDefault();
+console.log(selected);
+			download('test.csv', selected.join("\r\n"));
+			//location.href = url;
 		});
 
 		$(".heatmap").click(function(e) {
@@ -94,7 +160,7 @@ console.log(e);
 		    var selected = [];
 		    var names = [];
 		    $('.tree li.parent_li li input:checked').each(function() {
-console.log($(this).data('session-id'));
+			console.log($(this).data('session-id'));
 		        selected.push($(this).data('session-id'));
 		        names.push($(this).data('session-name'));
 		    });

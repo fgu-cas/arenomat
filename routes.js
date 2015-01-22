@@ -1,6 +1,6 @@
 var express = require('express')
   , router = express.Router()
-  , mongoose = require('mongoose-paginate')
+  , mongoose = require('mongoose')
   , moment = require('moment')
   , Hogan = require('hogan')
 
@@ -15,7 +15,8 @@ var express = require('express')
   , partials = {}
   , files = []
   , sys = require('sys')
-  , exec = require('child_process').exec;
+  , exec = require('child_process').exec
+  , async = require('async');
 
 
 var camelize = function (string) {
@@ -46,23 +47,58 @@ router.get('/', function(req, res) {
 });
 
 
-
 router.get('/analyze/:id', function(req, res) {
-console.log('export sessions: ', req.params.id.split(','));
-  var ids = req.params.id.split(',').map(function (x) {
-    return mongoose.Types.ObjectId(x);
-  });
 
-  Frame.find({session: { $in: req.params.id.split(',') }}, function(err, docs) {
-        res.json(analyze(docs));
-  });
+
+//  console.log('export sessions: ', req.params.id.split(','));
+res.connection.setTimeout(0); // this could take a while
+
+  var ids = req.params.id.split(',')
+var out = [];
+
+ var findFrames = function (id, callback) {
+    console.log('find session ', id);
+
+    console.log('id', id);
+    Frame.collection.find({ session: mongoose.Types.ObjectId(id) }).toArray(function (err, docs) {
+	console.log('analyze: ', id);
+	var res = analyze(docs);
+	 Session.findById(id, function (err, doc){
+            doc.analyze = res;
+            doc.save();
+	    console.log('save: ', id);
+	    callback(null, docs);
+	 }); 
+    });
+ }
+
+
+ var findFramesCached = function (id, callback) {
+    Session.findById(id, function (err, docs) {
+	if (!err && !docs.analyze) {
+console.log('FIND', id);
+	    findFrames(id, callback);
+        }
+	else {
+console.log('CACHED', id);
+	    callback(null, null);
+	}
+    });
+ }
+
+      async.eachSeries(ids, findFrames, function (err, docs) {
+	res.json(out);
+      });
+
 });
 
 router.get('/analyze', function(req, res) {
+console.log('analyze');
 Session.aggregate([{ 
-    $group : { _id : "$name", sessions: { $push: { id: "$_id", date: "$createdAt", day: "$day", subject: "$subject", person: "$person" } } },
+    $group : { _id : "$name", sessions: { $push: { id: "$_id", date: "$createdAt", day: "$day", subject: "$subject", person: "$person", analyze: "$analyze" } } },
 //    $group : { _id: "$sessions.createdAt", sessions: { $push: "$sessions.createdAt" }}
 }], function(err, docs) {
+    console.log(docs[0]);
     res.render('analyze', {experiments: docs, layout: 'layout_analyze',
 	czdate: function() {
 	    return function(text) {
@@ -136,33 +172,43 @@ console.log('selete sessions: ', req.params.id.split(','));
   var ids = req.params.id.split(',').map(function (x) {
     return mongoose.Types.ObjectId(x);
   });
-  return Session.findById(ids, function(err, data) {
-   console.log('db: remove session', data);
-    data.remove();
-    if (!err) {
-      return res.send('');
-    } else {
-      console.log(err);
-    }
-    res.redirect("/");
+  Session.remove({_id : { $in: ids }}, function(err) {
+   console.log('db: removed session', err);
   });
+  Frame.remove({session : { $in: ids }}, function(err) {
+   console.log('db: removed session frames', err);
+  });
+  res.json('OK'); 
 });
 
 // heatmap of the session
 router.get('/sessions/heatmap/:id', function(req, res) {
 console.log('heatmap sessions: ', req.params.id.split(','));
-  Frame.find({session: { $in: req.params.id.split(',') }}, function(err, docs) {
+res.connection.setTimeout(0); // this could take a while
+
+if (fs.existsSync(__dirname + '/public/img/heatmap/' + req.params.id)) {
+console.log('cached', req.params.id);
+  var rstream = fs.createReadStream(__dirname + '/public/img/heatmap/' + req.params.id);
+  rstream.pipe(res);
+} else {
+//  Frame.collection.find({ session: mongoose.Types.ObjectId(req.params.id) }).forEach(function (docs) {
+//  Frame.find({session: req.params.id }, function(err, docs) {
 
 var heatmap = require('heatmap');
 var heat = heatmap(camHeight, camHeight, { radius : 10 });
 var ctx = heat.canvas.getContext('2d');
 
+Frame.find({session: req.params.id }).stream().on('data', function ( doc) {
 
-for (var i = 0; i < docs.length; i++) {
-    if (docs[i].tracked) {
-	heat.addPoint(docs[i].cv[0].position.x, docs[i].cv[0].position.y);
+//for (var i = 0; i < docs.length; i++) {
+    if (doc.tracked) {
+	heat.addPoint(doc.cv[0].position.x, doc.cv[0].position.y);
     }
-}
+//}
+
+})
+.on('end', function() {
+
 heat.draw();
 
 
@@ -176,12 +222,21 @@ heat.draw();
 
 
   heat.canvas.toBuffer(function(err, buf) {
+fs.writeFile(__dirname + "/public/img/heatmap/" + req.params.id, buf, function(err) {
+    if(err) {
+        console.log(err);
+    } else {
+        console.log("The file was saved!");
+    }
+}); 
+
     res.writeHead(200, {'Content-Type': 'image/png', 'Content-Length': buf.length});
     res.end(buf);
   });
 
 //    res.render("sessions/export", {sessions: docs});
   });
+ }
 });
 
 router.delete('/experiments/:id', function(req, res) {

@@ -78,6 +78,8 @@ function delayShow(value) {
 
 
 $(document).ready(function() {
+    $("img.lazy").lazyload();
+
  $("[data-toggle='tooltip']").tooltip({ placement: "top" });
 
   $("#settings_shock").on("slide slideStop", function(slideEvt) {
