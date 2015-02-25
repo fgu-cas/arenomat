@@ -87,6 +87,7 @@ console.log('CACHED', id);
  }
 
       async.eachSeries(ids, findFrames, function (err, docs) {
+console.log('kuk' , err);
 	res.json(out);
       });
 
