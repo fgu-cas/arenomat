@@ -284,6 +284,10 @@ router.get('/settings', function(req, res) {
   });
 });
 
+router.get('/analysis_settings', function(req, res) {
+    res.json({ok : 'ok' });
+});
+
 
 router.get('/settings/:control/:value', function(req, res) {
   if (req.params.control.substring(0, 9) == 'settings_') {

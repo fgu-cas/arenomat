@@ -4,7 +4,7 @@ Blockly.Language.light = {
     this.setColour(190);
 
     this.appendDummyInput("").appendTitle(new Blockly.FieldImage("img/light.png", 16, 16)).appendTitle("Light");
-    this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("100"), "delay").appendTitle('ms');
+    this.appendDummyInput("").appendTitle(new Blockly.FieldTextInput("100"), "delay").appendTitle('s');
 
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -20,7 +20,7 @@ Blockly.JavaScript.light = function() {
     Blockly.JavaScript.light.functionName = functionName;
     var func = [];
     func.push('function ' + functionName + '(delay) {');
-    func.push('  arenomat.light.pulse(delay);');
+    func.push('  arenomat.light.pulse(delay * 1000);');
     func.push('}');
     Blockly.JavaScript.definitions_['light'] = func.join('\n');
   }
