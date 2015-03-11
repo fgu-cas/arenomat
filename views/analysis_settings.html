@@ -1,0 +1,59 @@
+<div id="tanalsettings" class="tab-pane fade in active">
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div> <!-- /.modal-content -->
+    </div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
+
+<div class="container">
+<div class="row">
+<div class="col-md-8">
+                                <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title"><a data-toggle="collapse" data-target="#modules">Modules</a></h3>
+                                        </div>
+                                        <div id="modules" class="panel-collapse collapse in">
+                                                <div class="panel-body">
+
+{{#analysis.modules}}
+<div class="checkbox col-md-6">
+  <label><input type="checkbox" value="{{class}}">{{name}}</label>
+</div>
+
+{{/analysis.modules}}
+						</div>
+					</div>
+				</div>
+</div>
+<div class="col-md-4">
+                                <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title"><a data-toggle="collapse" data-target="#params">Parameters</a></h3>
+                                        </div>
+                                        <div id="params" class="panel-collapse collapse in">
+                                                <div class="panel-body">
+
+{{#analysis.parameters}}
+
+                                                                <div class="form-group">
+                                                                        <label for="height" class="control-label">{{name}}</label>
+
+									<div class="input-group">
+                                                                          <input id="{{name}}"  class="form-control input-sm" type="text" />
+									  <span class="input-group-addon">{{units}}</span>
+									</div>
+
+                                                                </div>
+
+    
+{{/analysis.parameters}}
+
+						</div>
+					</div>
+				</div>
+</div>
+</div>

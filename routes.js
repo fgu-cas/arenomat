@@ -4,11 +4,12 @@ var express = require('express')
   , moment = require('moment')
   , Hogan = require('hogan')
 
-  , analyze = require('./lib/analyze.js')
+  , analysis = require('./lib/analyze.js')
 
   , Experiment = mongoose.model('Experiment')
   , Frame = mongoose.model('Frame')
   , Session = mongoose.model('Session')
+  
 
   , fs = require('fs')
   , partialsPath = __dirname + '/views/partials'
@@ -62,7 +63,7 @@ var out = [];
     console.log('id', id);
     Frame.collection.find({ session: mongoose.Types.ObjectId(id) }).toArray(function (err, docs) {
 	console.log('analyze: ', id);
-	var res = analyze(docs);
+	var res = analysis.analyze(docs);
 	 Session.findById(id, function (err, doc){
             doc.analyze = res;
             doc.save();
@@ -285,7 +286,11 @@ router.get('/settings', function(req, res) {
 });
 
 router.get('/analysis_settings', function(req, res) {
-    res.json({ok : 'ok' });
+
+console.log(analysis.parameters());
+    var info = analysis.parameters();
+
+    res.render('analysis_settings', { analysis: info , layout: 'layout_analyze'});
 });
 
 
