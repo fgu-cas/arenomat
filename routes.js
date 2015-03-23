@@ -4,7 +4,7 @@ var express = require('express')
   , moment = require('moment')
   , Hogan = require('hogan')
 
-  , analysis = require('./lib/analyze.js')
+  , Analyze = require('./lib/analyze.js')
 
   , Experiment = mongoose.model('Experiment')
   , Frame = mongoose.model('Frame')
@@ -53,55 +53,32 @@ router.get('/analyze/:id', function(req, res) {
 
 //  console.log('export sessions: ', req.params.id.split(','));
 res.connection.setTimeout(0); // this could take a while
+var out = '';
 
-  var ids = req.params.id.split(',')
-var out = [];
+    console.log('find session ', req.params.id);
 
- var findFrames = function (id, callback) {
-    console.log('find session ', id);
+    out += Analyze.names().join(';') + "\r\n";
 
-    console.log('id', id);
-    Frame.collection.find({ session: mongoose.Types.ObjectId(id) }).toArray(function (err, docs) {
-	console.log('analyze: ', id);
-	var res = analysis.analyze(docs);
-	 Session.findById(id, function (err, doc){
-            doc.analyze = res;
-            doc.save();
-	    console.log('save: ', id);
-	    callback(null, docs);
-	 }); 
+    var id = req.params.id;
+    Frame.find({session: req.params.id }).stream().on('data', function ( doc) {
+	console.log('.');
+	Analyze.add(doc);
+    })
+    .on('end', function () {
+	var res = Analyze.result();
+        out += res.join(';') + "\r\n";
     });
- }
 
-
- var findFramesCached = function (id, callback) {
-    Session.findById(id, function (err, docs) {
-	if (!err && !docs.analyze) {
-console.log('FIND', id);
-	    findFrames(id, callback);
-        }
-	else {
-console.log('CACHED', id);
-	    callback(null, null);
-	}
-    });
- }
-
-      async.eachSeries(ids, findFrames, function (err, docs) {
-console.log('kuk' , err);
-	res.json(out);
-      });
-
+    res.json(out);
 });
 
 router.get('/analyze', function(req, res) {
 console.log('analyze');
 Session.aggregate([{ 
     $group : { _id : "$name", sessions: { $push: { id: "$_id", date: "$createdAt", day: "$day", subject: "$subject", person: "$person", analyze: "$analyze" } } },
-//    $group : { _id: "$sessions.createdAt", sessions: { $push: "$sessions.createdAt" }}
 }], function(err, docs) {
-    console.log(docs[0]);
-    res.render('analyze', {experiments: docs, layout: 'layout_analyze',
+    var info = Analyze.parameters();
+    res.render('analyze', {experiments: docs, analysis: info, layout: 'layout_analyze',
 	czdate: function() {
 	    return function(text) {
     		var date = moment(new Date(Hogan.compile(text).render(this)));
@@ -286,11 +263,6 @@ router.get('/settings', function(req, res) {
 });
 
 router.get('/analysis_settings', function(req, res) {
-
-console.log(analysis.parameters());
-    var info = analysis.parameters();
-
-    res.render('analysis_settings', { analysis: info , layout: 'layout_analyze'});
 });
 
 

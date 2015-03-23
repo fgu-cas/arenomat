@@ -1,5 +1,3 @@
-<div id="tanalsettings" class="tab-pane fade in active">
-</div>
 
 <!-- Modal -->
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -10,18 +8,88 @@
 </div> <!-- /.modal -->
 
 <div class="container">
-<div class="btn-group">
-    <a href="#" class="export  btn btn-success btn-xs">analyze</a>
-</div>
-<div class="btn-group">
-    <a href="#" class="csv btn btn-warning btn-xs">csv</a>
+<div class="tab-content">
+
+<div id="tanalsettings" class="tab-pane fade">
+
+
+<div class="row">
+<div class="col-md-8">
+                                <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title"><a data-toggle="collapse" data-target="#modules">Modules</a></h3>
+                                        </div>
+                                        <div id="modules" class="panel-collapse collapse in">
+                                                <div class="panel-body">
+
+{{#analysis.modules}}
+<div class="checkbox col-md-6">
+  <label><input type="checkbox" value="{{class}}">{{name}}</label>
 </div>
 
-<div class="btn-group">
+{{/analysis.modules}}
+						</div>
+					</div>
+				</div>
+</div>
+<div class="col-md-4">
+                                <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                                <h3 class="panel-title"><a data-toggle="collapse" data-target="#params">Parameters</a></h3>
+                                        </div>
+                                        <div id="params" class="panel-collapse collapse in">
+                                                <div class="panel-body">
+
+{{#analysis.parameters}}
+
+                                                                <div class="form-group">
+                                                                        <label for="height" class="control-label">{{name}}</label>
+
+									<div class="input-group">
+                                                                          <input id="{{name}}"  class="form-control input-sm" type="text" />
+									  <span class="input-group-addon">{{units}}</span>
+									</div>
+
+                                                                </div>
+
+    
+{{/analysis.parameters}}
+
+
+						</div>
+					</div>
+				</div>
+</div>
+<div class="col-md-12">
+                                <div class="panel">
+                                        <div class="panel-collapse collapse in">
+					    <div class="btn-group">
+					        <a href="#" class="analyze  btn btn-success btn-lg">analyze</a>
+					    </div>
+					</div>
+				</div>
+</div>
+</div>
+
+</div>
+
+<div id="tanaldata" class="tab-pane fade in active">
+
+<div class="container">
+
+
+                                <div class="panel panel-default">
+                                        <div class="panel-heading">
+<div class="btn-group pull-right">
     <a href="#" class="del btn btn-danger btn-xs">DELETE</a>
 </div>
 
+                                                <h3 class="panel-title"><a data-toggle="collapse" data-target="#sessions">Sessions</a></h3>
 
+
+                                        </div>
+                                        <div id="modules" class="panel-collapse collapse in">
+                                                <div class="panel-body">
 
 <div class="tree">
     <ul>
@@ -38,16 +106,11 @@
 <th>exp. day</th>
 <th>subject</th>
 <th>person</th>
-<th style="text-align: right">avg distance [m]</th>
-<th style="text-align: right">zone entrances</th>
-<th style="text-align: right">time shocked</th>
-<th style="text-align: right">outsider [%]</th>
-<th style="text-align: right">path len [m]</th>
 </tr>
 		{{#sessions}}
                         <tr>
-			    <td><input data-session-id="{{id}}" type="checkbox" /></td>
-			    <td><a href="/img/heatmap/{{id}}.png"><img class="lazy" title="{{analyze.avg_distance}}
+			    <td width=1><input data-session-id="{{id}}" type="checkbox" /></td>
+			    <td width=1><a href="/img/heatmap/{{id}}.png"><img class="lazy" title="{{analyze.avg_distance}}
 {{analyze.inputs}}
 {{analyze.shocks}}
 {{analyze.outside}}
@@ -56,11 +119,6 @@
 			    <td>{{day}}</td>
 <td>{{subject}}</td>
 <td>{{person}}</td>
-<td style="text-align: right">{{analyze.avg_distance}}</td>
-<td style="text-align: right">{{analyze.inputs}}</td>
-<td style="text-align: right">{{analyze.shocks}}</td>
-<td style="text-align: right">{{analyze.outside}}</td>
-<td style="text-align: right">{{analyze.path}}</td>
 </tr>
 			{{/sessions}}
             </table>
@@ -70,6 +128,8 @@
 {{/experiments}}
 </ul>
 </div>
+</div>
+</div></div>
 </div>
 <script>
 
@@ -113,7 +173,7 @@ $("html,body").trigger("scroll");
   });
 
 
-		$(".export").click(function(e) {
+		$(".analyze").click(function(e) {
 		    var selected = [];
 		    $('.tree li.parent_li li input:checked').each(function() {
 		        selected.push($(this).data('session-id'));
