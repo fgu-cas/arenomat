@@ -21,6 +21,7 @@
                         <li>
                             <input data-session-id="{{id}}" type="checkbox" /> 
 			    <span>{{#czdate}}{{date}}{{/czdate}}, den: {{day}}, {{subject}}, {{person}}</span>
+			    <a href="/export/{{id}}" class="export  btn btn-success btn-xs">export do CSV</a>
                         </li>
 			{{/sessions}}
             </ul>

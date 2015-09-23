@@ -47,29 +47,68 @@ router.get('/', function(req, res) {
   });
 });
 
-
-router.get('/analyze/:id', function(req, res) {
-
-
-//  console.log('export sessions: ', req.params.id.split(','));
-res.connection.setTimeout(0); // this could take a while
-var out = '';
-
-    console.log('find session ', req.params.id);
-
-    out += Analyze.names().join(';') + "\r\n";
-
-    var id = req.params.id;
-    Frame.find({session: req.params.id }).stream().on('data', function ( doc) {
-	console.log('.');
+function analyzeSession(id, callback) {
+console.log('session id: ' + id);
+    Frame.find({session: id }).stream().on('data', function ( doc) {
+//	console.log('.');
 	Analyze.add(doc);
     })
     .on('end', function () {
-	var res = Analyze.result();
-        out += res.join(';') + "\r\n";
+	var result = Analyze.result();
+	console.log(result);
+	callback(null, result.join(';'));
     });
 
-    res.json(out);
+
+}
+
+
+router.get('/export/:id', function(req, res) {
+    var id = req.params.id;
+
+    console.log('session id: ' + id);
+    var out = [ 'time', 'x', 'y','shock', 'zones' ].join(';') + '\r\n';
+
+    Frame.find({session: id }).stream().on('data', function (frame) {
+	if (frame.cv[0] && frame.cv[0].position) {
+//console.log(frame.cv[0].zones);
+	zones = Object.keys(frame.cv[0].zones).map(function(_) { return frame.cv[0].zones[_]; })
+	    data = [ frame.elapsedTime, frame.cv[0].position.x, frame.cv[0].position.x, frame.shocked, zones.join(';') ];
+	    out += data.join(';') + '\r\n';
+	}
+    })
+    .on('end', function () {
+	res.send(out);
+    });
+
+
+});
+
+
+router.get('/analyze/:id', function(req, res) {
+
+    Analyze.setParameters(req.query);
+
+res.connection.setTimeout(0); // this could take a while
+
+    var out = '';
+    var ids = req.params.id.split(',')
+    console.log('find sessions: ', ids);
+
+    out += Analyze.names().join(';') + "\r\n";
+
+console.log('header ' + out);
+
+    async.map(ids, analyzeSession, function (e, r) {
+console.log('map: ', e, r);
+        out +=  r.join("\r\n");
+	console.log(out);
+    res.setHeader('Content-disposition', 'attachment; filename=analyze.csv');
+    res.type('text/csv');
+	res.send(out);
+    });
+
+
 });
 
 router.get('/analyze', function(req, res) {
@@ -201,7 +240,7 @@ heat.draw();
 
 
   heat.canvas.toBuffer(function(err, buf) {
-fs.writeFile(__dirname + "/public/img/heatmap/" + req.params.id, buf, function(err) {
+fs.writeFile(__dirname + "/public/img/heatmap/" + req.params.id + ".png", buf, function(err) {
     if(err) {
         console.log(err);
     } else {

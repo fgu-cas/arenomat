@@ -119,6 +119,7 @@
 			    <td>{{day}}</td>
 <td>{{subject}}</td>
 <td>{{person}}</td>
+<td><a href="/export/{{id}}" class="export  btn btn-success btn-xs">export do CSV</a></td>
 </tr>
 			{{/sessions}}
             </table>
@@ -178,8 +179,12 @@ $("html,body").trigger("scroll");
 		    $('.tree li.parent_li li input:checked').each(function() {
 		        selected.push($(this).data('session-id'));
 		    });
+		    var out = "?";
+		    $('#params').find('input').each(function () {
+			out += $(this).attr('id') + '=' + $(this).val() + "&";
+		    });
 			e.preventDefault();
-			location.href = '/analyze/' + selected.join(',');
+			location.href = '/analyze/' + selected.join(',') + out;
 		});
 
 function download(filename, text) {
