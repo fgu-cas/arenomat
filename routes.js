@@ -55,7 +55,7 @@ console.log('session id: ' + id);
     })
     .on('end', function () {
 	var result = Analyze.result();
-	console.log(result);
+//	console.log(result);
 	callback(null, result.join(';'));
     });
 
@@ -102,7 +102,7 @@ console.log('header ' + out);
     async.map(ids, analyzeSession, function (e, r) {
 console.log('map: ', e, r);
         out +=  r.join("\r\n");
-	console.log(out);
+
     res.setHeader('Content-disposition', 'attachment; filename=analyze.csv');
     res.type('text/csv');
 	res.send(out);
@@ -255,6 +255,19 @@ fs.writeFile(__dirname + "/public/img/heatmap/" + req.params.id + ".png", buf, f
 //    res.render("sessions/export", {sessions: docs});
   });
  }
+});
+
+
+router.get('/heatmap/:id', function(req, res){
+console.log(req.params.id.split('.')[0]);
+    var fileName = 'public/img/heatmap/' + req.params.id;
+    fs.exists(fileName, function(exists){
+        if (exists) {
+            res.sendfile(fileName);
+        }else{
+            res.redirect('/sessions/heatmap/' + req.params.id.split('.')[0]);
+        }
+    });
 });
 
 router.delete('/experiments/:id', function(req, res) {
