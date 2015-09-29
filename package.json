@@ -4,6 +4,7 @@
   "description": "Arena automat",
   "main": "app.js",
   "dependencies": {
+    "async": "~1.4.2",
     "baudio": "^2.1.2",
     "body-parser": "~1.0.0",
     "connect-flash": "~0.1.1",
@@ -13,12 +14,12 @@
     "express": "~4.0.0",
     "express-session": "~1.8.1",
     "function-enhancements": "^0.1.0",
-    "heatmap": "0.0.5",
+    "heatmap-fix": "0.0.2",
     "hjs": "~0.0.6",
     "hogan": "^1.0.2",
     "hogan-express": "^0.5.2",
     "johnny-five": "rwaldron/johnny-five",
-    "lame": "~1.0.3",
+    "lame": "~1.2.3",
     "less-middleware": "0.1.15",
     "moment": "^2.8.3",
     "mongoose": "3.8.x",
@@ -30,7 +31,7 @@
     "passport": "~0.2.1",
     "passport-local": "~1.0.0",
     "socket.io": "^0.9.16",
-    "speaker": "0.1.0",
+    "speaker": "0.2.6",
     "static-favicon": "~1.0.0"
   },
   "devDependencies": {

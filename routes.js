@@ -212,7 +212,7 @@ console.log('cached', req.params.id);
 //  Frame.collection.find({ session: mongoose.Types.ObjectId(req.params.id) }).forEach(function (docs) {
 //  Frame.find({session: req.params.id }, function(err, docs) {
 
-var heatmap = require('heatmap');
+var heatmap = require('heatmap-fix');
 var heat = heatmap(camHeight, camHeight, { radius : 10 });
 var ctx = heat.canvas.getContext('2d');
 
