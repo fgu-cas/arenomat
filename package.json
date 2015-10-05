@@ -38,8 +38,8 @@
     "nodemon": "*"
   },
   "scripts": {
-    "start": "nodemon  --ignore node_modules/ app.js",
-    "preinstall": "npm i -g forever"
+    "start": "pm2 start app.js",
+    "preinstall": "npm i -g pm2"
   },
   "author": "Majkl",
   "license": "MIT",
