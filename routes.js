@@ -51,10 +51,10 @@ function analyzeSession(id, callback) {
 console.log('session id: ' + id);
     Frame.find({session: id }).stream().on('data', function ( doc) {
 //	console.log('.');
-	Analyze.add(doc);
+	Analyze.add(doc, id);
     })
     .on('end', function () {
-	var result = Analyze.result();
+	var result = Analyze.result(id);
 //	console.log(result);
 	callback(null, result.join(';'));
     });

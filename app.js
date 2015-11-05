@@ -93,6 +93,7 @@ var arena = require('./lib/arena');
 //mongoose
 //mongoose.set('debug', true)
 var URI = "mongodb://localhost/arenomat";
+//var URI = "mongodb://147.231.40.138/arenomat";
 mongoose.connect(URI, function(err) {
   if (err) {
     throw err;
