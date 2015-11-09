@@ -99,14 +99,19 @@ res.connection.setTimeout(0); // this could take a while
 
 console.log('header ' + out);
 
-    async.map(ids, analyzeSession, function (e, r) {
-console.log('map: ', e, r);
-        out +=  r.join("\r\n");
+  Session.findById(ids[0], function(err, docs) {
+    console.log(docs);
 
-    res.setHeader('Content-disposition', 'attachment; filename=analyze.csv');
+
+
+    async.map(ids, analyzeSession, function (e, r) {
+        out +=  r.join("\r\n");
+    console.log(out);
+    res.setHeader('Content-disposition', 'attachment; filename=' + docs.name + '.csv');
     res.type('text/csv');
 	res.send(out);
     });
+  });
 
 
 });
