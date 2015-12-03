@@ -399,5 +399,7 @@ if (vc) {
   stream.read();
 }
 
+    console.log('Arduino:' + isArduino);
+
 
 exports = module.exports = app;

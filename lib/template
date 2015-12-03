@@ -1,0 +1,55 @@
+require('descriptive-statistics');
+exports = module.exports = {
+  _time: {},
+  _max: {},
+
+  add: function (frame, params, session) {
+	if (!frame.shocked) {
+	    this._time[session] = frame.elapsedTime;
+	}
+	else {
+	    if (this._time[session] > this._max[session]) this._max[session] = this._time[session];
+	    this._time[session] = 0;
+	}
+  },
+
+  result: function (params, session) {
+     return this._max[session] / 1000;
+  },
+
+  parameters: []
+
+}function distance(point1, point2) {
+    return Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2));
+}
+
+
+function TotalDistance(params) {
+
+  if (!(this instanceof Avoidance)) {
+    return new Avoidance(params);
+  }
+
+  this.params = params;
+
+  this.distance = 0;
+
+  this.lastTime = false;
+  this.lastPosition = false;
+
+this.parameters = [  ]
+this.name = "Maximum time avoided [s]";
+this.description = "The longest time without shock";
+
+};
+
+
+Avoidance.prototype.add = function add(frame) {
+}
+
+Avoidance.prototype.result = function result() {
+    return 0;
+}
+
+
+module.exports = Avoidance;

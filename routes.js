@@ -4,7 +4,7 @@ var express = require('express')
   , moment = require('moment')
   , Hogan = require('hogan')
 
-  , Analyze = require('./lib/analyze.js')
+  , Analyzer = require('./lib/analyzer')
 
   , Experiment = mongoose.model('Experiment')
   , Frame = mongoose.model('Frame')
@@ -47,21 +47,6 @@ router.get('/', function(req, res) {
   });
 });
 
-function analyzeSession(id, callback) {
-console.log('session id: ' + id);
-    Frame.find({session: id }).stream().on('data', function ( doc) {
-//	console.log('.');
-	Analyze.add(doc, id);
-    })
-    .on('end', function () {
-	var result = Analyze.result(id);
-//	console.log(result);
-	callback(null, result.join(';'));
-    });
-
-
-}
-
 
 router.get('/export/:id', function(req, res) {
     var id = req.params.id;
@@ -85,30 +70,36 @@ router.get('/export/:id', function(req, res) {
 });
 
 
-router.get('/analyze/:id', function(req, res) {
+function analyzeSession(id, params, callback) {
+    console.log('session id: ' + id);
+    var analyzer = new Analyzer(params);
 
-    Analyze.setParameters(req.query);
+    Frame.find({session: id }).stream().on('data', function ( doc) {
+	analyzer.add(doc);
+    })
+    .on('end', function () {
+	callback(null, analyzer.result().join(';'));
+    });
+}
+
+
+router.get('/analyze/:id', function(req, res) {
 
 res.connection.setTimeout(0); // this could take a while
 
-    var out = '';
     var ids = req.params.id.split(',')
     console.log('find sessions: ', ids);
 
-    out += Analyze.names().join(';') + "\r\n";
-
-console.log('header ' + out);
 
   Session.findById(ids[0], function(err, docs) {
-    console.log(docs);
+    async.map(ids, function (id, callback) { 
+	analyzeSession(id, req.query, callback);
+    }, 
+    function (error, result) {
+	var out = new Analyzer().names().join(';') + "\r\n" + result.join("\r\n");
 
-
-
-    async.map(ids, analyzeSession, function (e, r) {
-        out +=  r.join("\r\n");
-    console.log(out);
-    res.setHeader('Content-disposition', 'attachment; filename=' + docs.name + '.csv');
-    res.type('text/csv');
+	res.setHeader('Content-disposition', 'attachment; filename=' + docs.name + '.csv');
+	res.type('text/csv');
 	res.send(out);
     });
   });
@@ -119,9 +110,10 @@ console.log('header ' + out);
 router.get('/analyze', function(req, res) {
 console.log('analyze');
 Session.aggregate([{ 
-    $group : { _id : "$name", sessions: { $push: { id: "$_id", date: "$createdAt", day: "$day", subject: "$subject", person: "$person", analyze: "$analyze" } } },
+    $group : { _id : "$name", sessions: { $push: { id: "$_id", date: "$createdAt", day: "$day", subject: "$subject", person: "$person", analyze: "$analyze" } } }
 }], function(err, docs) {
-    var info = Analyze.parameters();
+
+    var info = new Analyzer().parameters();
     res.render('analyze', {experiments: docs, analysis: info, layout: 'layout_analyze',
 	czdate: function() {
 	    return function(text) {
