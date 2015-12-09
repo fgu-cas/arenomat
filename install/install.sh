@@ -4,13 +4,16 @@ uvcdynctrl -i /usr/share/uvcdynctrl/data/046d/logitech.xml
 npm config set registry http://registry.npmjs.org/ 
 npm cache clean -f 
 npm install -g n 
-n 0.12.7 
+n 0.12.9 
 npm install -g node-gyp pm2 
 
 mkdir /data
 cd /data
 git clone https://github.com/fgu-cas/arenomat
 cd arenomat
+
+cp ./install/asound.conf /etc/
+
 pm2 startup
 pm2 start app.js
 pm2 save
