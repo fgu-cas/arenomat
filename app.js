@@ -285,7 +285,7 @@ try {
   } catch (e) {
     console.log('no webcam');
 // When opening a file, the full path must be passed to opencv
-var vc = new cv.VideoCapture(path.join(__dirname, 'public', 'media', 'motion.mov'));
+//var vc = new cv.VideoCapture(path.join(__dirname, 'public', 'media', 'motion.mov'));
 
   }
 }
